@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import profile1 from '../../assets/images/profile1.jpg'
 import NotifIcon from '../../assets/icons/bell.png'
 import Order from '../../assets/icons/order.png'
@@ -9,11 +9,17 @@ import Report from '../../assets/icons/report.png'
 import AddStock from '../../assets/icons/addStock.png'
 import AddProduct from '../../assets/icons/addProduct.png'
 import RightArrow from '../../assets/icons/right-arrow.png'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { ScrollView } from 'react-native-gesture-handler'
 
-const Dashboard = () => {
+var resHeight = Dimensions.get('window').height;
+var resWidth = Dimensions.get('window').width;
+
+const Dashboard = ({navigation}) => {
+    const handleGoTo = (page) => {
+        navigation.navigate(page)
+    };
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container} contentContainerStyle={{justifyContent: 'center', flexGrow: 1}}>
             <View style={styles.upperBackground}>
                 <View style={styles.upperItem}>
                     <Image source={profile1} style={styles.profilePicture} />
@@ -50,35 +56,35 @@ const Dashboard = () => {
             </View>
 
             <View style={styles.menus}>
-                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20}}>
-                    <View style={styles.boxMenu}>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: resHeight * 0.03}}>
+                    <TouchableOpacity style={styles.boxMenu}>
                         <Image source={Order} style={styles.menuIcon} />
                         <Text style={styles.menuName}>Order</Text>
-                    </View>
-                    <View style={styles.boxMenu}>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.boxMenu}>
                         <Image source={Inventory} style={styles.menuIcon} />
                         <Text style={styles.menuName}>Inventory</Text>
-                    </View>
-                    <View style={styles.boxMenu}>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.boxMenu} onPress={() => handleGoTo('Customer')}>
                         <Image source={Customer} style={styles.menuIcon} />
                         <Text style={styles.menuName}>Customer</Text>
-                    </View>
+                    </TouchableOpacity>
                 </View>
 
                 <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
 
-                    <View style={styles.boxMenu}>
+                    <TouchableOpacity style={styles.boxMenu}>
                         <Image source={Report} style={styles.menuIcon} />
                         <Text style={styles.menuName}>Report</Text>
-                    </View>
-                    <View style={styles.boxMenu}>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.boxMenu}>
                         <Image source={AddStock} style={styles.menuIcon} />
                         <Text style={styles.menuName}>Add Stock</Text>
-                    </View>
-                    <View style={styles.boxMenu}>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.boxMenu}>
                         <Image source={AddProduct} style={styles.menuIcon} />
                         <Text style={styles.menuName}>Add Product</Text>
-                    </View>
+                    </TouchableOpacity>
                 </View>
             </View>
 
@@ -117,7 +123,8 @@ const Dashboard = () => {
 
                 </View>
             </View>
-        </View>
+            <View style={{marginBottom: resWidth * 0.4}}></View>
+        </ScrollView>
     )
 }
 
@@ -125,171 +132,239 @@ export default Dashboard
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
+        height: resHeight,
     },
     upperBackground: {
+        // position: 'absolute',
+        // top: 0,
+        // right: 0,
+        // left: 0,
         backgroundColor: '#FFE9C0',
-        flex: 0.2,
-        borderBottomRightRadius: 70,
-        borderBottomLeftRadius: 70,
-        paddingVertical: 70,
-        paddingHorizontal: 45,
+        // borderBottomRightRadius: 70,
+        // borderBottomLeftRadius: 70,
+        borderBottomRightRadius: resWidth * 0.18,
+        borderBottomLeftRadius: resWidth * 0.18,
+        // paddingVertical: 70,
+        paddingVertical: resHeight * 0.09,
+        // paddingHorizontal: 45,
+        paddingHorizontal: resWidth * 0.12,
+        zIndex: 0,
     },
     upperItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        top: -30,
+        // top: -30,
+        top: -(resHeight * 0.045),
     },
     profilePicture: {
-        borderRadius: 100,
+        borderRadius: resHeight,
         borderColor: '#855B54',
-        borderWidth: 3,
-        width: 40,
-        height: 40,
+        // borderWidth: 3,
+        borderWidth: resWidth * 0.008,
+        // width: 40,
+        // height: 40,
+        width: resWidth * 0.103,
+        height: resWidth * 0.103,
     },
     userName: {
-        fontSize: 16,
-        marginLeft: 14,
+        // fontSize: 16,
+        fontSize: resWidth * 0.04,
+        // marginLeft: 14,
+        marginLeft: resWidth * 0.038,
         color: '#000',
     },
     notification: {
-        width: 25,
-        height: 25,
+        // width: 25,
+        // height: 25,
+        width: resWidth * 0.064,
+        height: resWidth * 0.064,
     },
     notifStatus: {
         backgroundColor: '#FC6B68',
-        borderRadius: 100,
-        width: 10,
-        height: 10,
+        borderRadius: resHeight,
+        // width: 10,
+        // height: 10,
+        width: resWidth * 0.026,
+        height: resWidth * 0.026,
         right: 0,
         position: 'absolute',
     },
     shortcutBox: {
         backgroundColor: '#fff',
-        shadowColor: '#171717',
-        shadowOffset: {width: -2, height: -4},
-        shadowOpacity: 0.2,
-        shadowRadius: 3,
-        elevation: 5,
-        marginHorizontal: 45,
-        top: 100,
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        borderRadius: 30,
-        paddingHorizontal: 15,
-        paddingVertical: 5,
+        shadowColor: '#969696',
+        // shadowOffset: {width: -2, height: -4},
+        shadowOffset: {width: -(resWidth * 0.05), height: -(resWidth * 0)},
+        // shadowOpacity: 0.2,
+        shadowOpacity: resWidth * 0.01,
+        // shadowRadius: 3,
+        shadowRadius: resWidth * 0.05,
+        // elevation: 5,
+        elevation: resWidth * 0.012,
+        // marginHorizontal: 45,
+        marginHorizontal: resWidth * 0.115,
+        // top: 100,
+        top: -(resHeight * 0.1),
+        // borderRadius: 30,
+        borderRadius: resWidth * 0.07,
+        // paddingHorizontal: 15,
+        paddingHorizontal: resWidth * 0.04,
+        // paddingVertical: 5,
+        paddingVertical: resHeight * 0.008,
         justifyContent: 'center',
+        zIndex: 1,
     },
     shortcutItem: {
         flex: 0.5,
         // backgroundColor: '#ccc',
-        marginHorizontal: 5,
-        marginVertical: 10,
+        // marginHorizontal: 5,
+        // marginVertical: 10,
+        marginVertical: resHeight * 0.0129,
     },
     
     shortcutInfo: {
-        fontSize: 19,
+        // fontSize: 19,
+        fontSize: resWidth * 0.05,
         color: '#855B54',
         textAlign: 'center',
     },
     shortcutDesc: {
-        fontSize: 14,
+        // fontSize: 14,
+        fontSize: resWidth * 0.036,
         color: '#AFAFAF',
         textAlign: 'center',
-        marginVertical: 5,
+        // marginVertical: 5,
+        marginVertical: resHeight * 0.006,
     },
     line: {
-        height: 0.5,
-        backgroundColor: '#707070',
-        marginHorizontal: 7,
-        //marginVertical: 20,
+        // height: 0.5,
+        height: resHeight * 0.0008,
+        opacity: 0.5,
+        backgroundColor: '#969696',
+        // marginHorizontal: 7,
+        marginHorizontal: resWidth * 0.02,
     },
     menus: {
         // backgroundColor: '#ccc',
-        top: 105,
-        paddingHorizontal: 45,
+        // top: 105,
+        top: -(resHeight * 0.05),
+        // paddingHorizontal: 45,
+        paddingHorizontal: resWidth * 0.115,
     },
     boxMenu: {
         backgroundColor: '#fff',
-        width: 91,
-        height: 105,
+        // width: 91,
+        // height: 105,
+        // height: resHeight * 0.14,
+        height: resWidth * 0.28,
+        // shadowColor: '#969696',
+        // shadowOffset: {width: 0, height: -10},
+        // shadowOpacity: 0.1,
+        // shadowRadius: 2,
+        // elevation: 7,
         shadowColor: '#969696',
-        shadowOffset: {width: 0, height: -10},
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
-        elevation: 7,
-        borderRadius: 20,
-        flex: 0.29,
+        shadowOffset: {width: 0, height: -(resWidth * 1)},
+        shadowOpacity: resWidth * 0.01,
+        shadowRadius: resWidth * 0.1,
+        elevation: resWidth * 0.012,
+        // borderRadius: 20,
+        borderRadius: resWidth * 0.054,
+        // flex: 0.29,
+        flex: resWidth * 0.00075,
         justifyContent: 'center',
         alignItems: 'center',
     },
     menuIcon: {
-        width: 45,
-        height: 45,
-        marginBottom: 10,
+        // width: 45,
+        // height: 45,
+        width: resWidth * 0.115,
+        height: resWidth * 0.115,
+        // marginBottom: 10,
+        marginBottom: resHeight * 0.015,
     },
     menuName: {
         color: '#000',
-        fontSize: 13,
+        // fontSize: 13,
+        fontSize: resWidth * 0.033,
     },
     
     waitingOrderElement:{
         // backgroundColor: '#ccc',
-        top: 130,
-        paddingHorizontal: 45,
+        // top: 130,
+        // paddingHorizontal: 45,
+        paddingHorizontal: resWidth * 0.115,
     },
     waitingOrderText: {
-        fontSize: 20,
+        // fontSize: 20,
+        fontSize: resWidth * 0.0505,
         color: '#000',
-        marginBottom: 15
+        // marginBottom: 15,
+        marginBottom: resHeight * 0.02,
     },
     waitingOrderBox: {
         backgroundColor: '#fff',
+        // shadowColor: '#969696',
+        // shadowOffset: {width: 0, height: -10},
+        // shadowOpacity: 0.1,
+        // shadowRadius: 2,
+        // elevation: 7,
         shadowColor: '#969696',
-        shadowOffset: {width: 0, height: -10},
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
-        elevation: 7,
-        borderRadius: 10,
-        padding: 10
+        shadowOffset: {width: 0, height: -(resWidth * 0.9)},
+        shadowOpacity: resWidth * 0.09,
+        shadowRadius: resWidth * 0.09,
+        elevation: resWidth * 0.012,
+        borderRadius: resWidth * 0.035,
+        paddingHorizontal: resWidth * 0.025,
+        paddingVertical: resWidth * 0.05,
     },
     waitingOrderList: {
         flexDirection: 'row',
-        paddingHorizontal: 10,
+        // paddingHorizontal: 10,
+        paddingHorizontal: resWidth * 0.025,
         alignItems: 'center'
     },
     waitingOrderNum: {
         backgroundColor: '#FC6B68',
-        borderRadius: 100,
+        // borderRadius: 100,
+        borderRadius: resHeight,
         color: '#fff',
-        padding: 3,
-        paddingHorizontal: 8,
+        // padding: 3,
+        // paddingHorizontal: 8,
+        paddingVertical: resHeight * 0.003,
+        paddingHorizontal: resWidth * 0.02,
         fontWeight: 'bold',
     },
     waitingOrderMenuName: {
         color: '#000',
-        paddingLeft: 10,
+        // paddingLeft: 10,
+        paddingLeft: resWidth * 0.025,
     },
     waitingOrderRemainingTime: {
         color: '#FF0000',
-        paddingLeft: 10,
-        marginRight: 10,
+        // paddingLeft: 10,
+        // marginRight: 10,
+        marginRight: resWidth * 0.025,
     },
     rightArrow: {
-        width: 15,
-        height: 15,
-        marginRight: 5,
+        // width: 15,
+        // height: 15,
+        width: resWidth * 0.035,
+        height: resWidth * 0.035,
+        // marginRight: 7,
+        marginRight: resWidth * 0.016,
     },
     line2: {
-        height: 0.5,
-        backgroundColor: '#707070',
-        marginHorizontal: 3,
-        marginVertical: 10,
+        height: resHeight * 0.0008,
+        opacity: 0.3,
+        backgroundColor: '#969696',
+        // marginHorizontal: 3,
+        marginHorizontal: resWidth * 0.01,
+        // marginVertical: 10,
+        marginVertical: resHeight * 0.02,
     },
     more: {
-        fontSize: 16,
+        // fontSize: 16,
+        fontSize: resWidth * 0.05,
         color: '#000'
     }
 })

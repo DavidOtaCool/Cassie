@@ -4,6 +4,9 @@ import { TextInput } from 'react-native-gesture-handler'
 import logoCassie from '../../assets/icons/cashie_light.png'
 import axios from 'axios'
 
+var resHeight = Dimensions.get('window').height;
+var resWidth = Dimensions.get('window').width;
+
 const LoginPage = ({navigation}) => {
     const handleGoTo = (page) => {
         navigation.navigate(page)
@@ -25,7 +28,7 @@ const LoginPage = ({navigation}) => {
             console.log('respon: ', res);
 
           if (res.data.status == 'correct') {
-            navigation.navigate('Dashboard');
+            navigation.navigate('DashboardfromLogin');
             // alert('benar')
           } else {
             alert('Sorry, your email/password is wrong :(')
@@ -51,11 +54,13 @@ const LoginPage = ({navigation}) => {
 
             <TextInput 
                 placeholder="Enter your username/email" 
+                placeholderTextColor="#B1B1B1"
                 style={styles.customTextInput}
                 onChangeText={email => onInputChange(email, 'email')}
             />
             <TextInput 
                 placeholder="Password" 
+                placeholderTextColor="#B1B1B1"
                 style={styles.customTextInput2} 
                 onChangeText={password => onInputChange(password, 'password')}
             />
@@ -65,6 +70,11 @@ const LoginPage = ({navigation}) => {
                 <Text style={styles.txtLogin}>Log in</Text>
             </TouchableOpacity>
 
+            <View style={{flexDirection: 'row'}}>
+                <Text style={styles.textDesc}>Don't have an account?</Text>
+                <Text style={styles.textDesc2} onPress={() => handleGoTo('SignUpPage')}> Just sign up here!</Text>
+                {/* <Text style={styles.textDesc2} onPress={() => this.props.navigation.navigate('SignUpPage')}> Just sign up here!</Text> */}
+            </View>
 
         </View>
     )
@@ -74,61 +84,90 @@ export default LoginPage
 
 const styles = StyleSheet.create({
     container: {
-        padding: 50,
+        // padding: 50,
+        padding: resWidth * 0.128,
         alignItems: 'center',
         // flex: 1,
         backgroundColor: '#fff',
         justifyContent: 'center',
-        height: Dimensions.get('window').height,
+        height: resHeight,
     },
     logo: {
-        width: 100,
-        height: 100,
-        borderRadius: 100,
+        // width: 100,
+        // height: 100,
+        width: resWidth * 0.26,
+        height: resWidth * 0.26,
+        borderRadius: resHeight,
     },
     textWelcome: {
-        fontSize: 26,
+        // fontSize: 26,
+        fontSize: resWidth * 0.066,
         fontWeight: 'bold',
         color: '#000',
-        marginTop: 42,
+        // marginTop: 42,
+        marginTop: resHeight * 0.054,
     },
     textDesc: {
-        fontSize: 18,
-        marginTop: 20,
+        // fontSize: 14,
+        fontSize: resWidth * 0.036,
+        // marginTop: 20,
+        marginTop: resHeight * 0.035,
+    },
+    textDesc2: {
+        // fontSize: 14,
+        fontSize: resWidth * 0.036,
+        // marginTop: 20,
+        marginTop: resHeight * 0.035,
+        color: '#00AEE8',
     },
     btnLogin: {
         backgroundColor: '#FC6B68',
         alignSelf: 'stretch',
-        marginTop: 30,
-        padding: 20,
-        borderRadius: 10,
-        shadowColor: '#171717',
-        shadowOffset: {width: -2, height: -4},
-        shadowOpacity: 0.2,
-        shadowRadius: 3,
-        elevation: 5,
+        // marginTop: 20,
+        marginTop: resHeight * 0.039,
+        // padding: 20,
+        padding: resWidth * 0.05,
+        // borderRadius: 10,
+        borderRadius: resWidth * 0.028,
+        shadowColor: '#969696',
+        // shadowOffset: {width: -2, height: -4},
+        shadowOffset: {width: -(resWidth * 0.02), height: -(resWidth * 0.2)},
+        // shadowOpacity: 0.2,
+        shadowOpacity: resWidth * 0.03,
+        // shadowRadius: 3,
+        shadowRadius: resWidth * 0.05,
+        // elevation: 5,
+        elevation: resWidth * 0.02,
     },
     txtLogin: {
         color: '#fff',
         textAlign: 'center',
-        fontSize: 20,
+        // fontSize: 20,
+        fontSize: resWidth * 0.051,
         fontWeight: '500',
     },
     
     customTextInput: {
         alignSelf: 'stretch',
         backgroundColor: '#F4F6FA',
-        borderRadius: 10,
-        marginBottom: 15,
-        padding: 20,
-        marginTop: 34,
+        // borderRadius: 10,
+        borderRadius: resWidth * 0.028,
+        // marginBottom: 15,
+        marginBottom: resHeight * 0.02,
+        // padding: 20,
+        padding: resWidth * 0.05,
+        // marginTop: 34,
+        marginTop: resHeight * 0.043,
     },
 
     customTextInput2: {
         alignSelf: 'stretch',
         backgroundColor: '#F4F6FA',
-        borderRadius: 10,
-        marginBottom: 15,
-        padding: 20,
+        // borderRadius: 10,
+        borderRadius: resWidth * 0.028,
+        // marginBottom: 15,
+        marginBottom: resHeight * 0.02,
+        // padding: 20,
+        padding: resWidth * 0.05,
     },
 })
