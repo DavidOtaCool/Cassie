@@ -2,8 +2,19 @@ import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { createStackNavigator } from '@react-navigation/stack'
-import { Welcome, LoginPage, SignUpPage, Customer } from '../pages/pageCollection';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { 
+        Welcome, 
+        LoginPage, 
+        SignUpPage, 
+        Customer,
+        Menu,
+        Inventory,
+        Report,
+        Cashier,
+        History,
+    } from '../pages/pageCollection';
+
+// import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Footer from '../Footer/Footer';
 const Stack = createNativeStackNavigator();
 
@@ -48,6 +59,46 @@ const Router = () => {
             <Stack.Screen 
                 name="Customer" 
                 component={Customer}
+                options={{
+                    headerShown: false,
+                }}
+            />
+
+            <Stack.Screen 
+                name="Menu" 
+                component={Menu}
+                options={{
+                    headerShown: false,
+                }}
+            />
+
+            <Stack.Screen 
+                name="Inventory" 
+                component={Inventory}
+                options={{
+                    headerShown: false,
+                }}
+            />
+
+            <Stack.Screen 
+                name="Report" 
+                component={Report}
+                options={{
+                    headerShown: false,
+                }}
+            />
+
+            <Stack.Screen 
+                name="Cashier" 
+                component={Cashier}
+                options={{
+                    headerShown: false,
+                }}
+            />
+
+            <Stack.Screen 
+                name="History" 
+                component={History}
                 options={{
                     headerShown: false,
                 }}

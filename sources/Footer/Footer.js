@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import React from 'react'
 import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Dashboard, NewsFeed, Order, Stats, Profile } from '../pages/pageCollection';
-import Router from '../Router/Router';
+// import Router from '../Router/Router';
 import Home from '../assets/icons/home.png'
 import Feed from '../assets/icons/newspaper.png'
 import Statistics from '../assets/icons/statistics.png'
@@ -14,7 +14,7 @@ const Tab = createBottomTabNavigator();
 const OrderButton = ({children, onPress}) => (
     <TouchableOpacity
         style={{
-            top: -45,
+            top: -35,
             justifyContent: 'center',
             alignItems: 'center',
             ...styles.shadow,
@@ -23,8 +23,8 @@ const OrderButton = ({children, onPress}) => (
     >
 
         <View style={{
-            width: 70,
-            height: 70,
+            width: 60,
+            height: 60,
             borderRadius: 50,
             backgroundColor: '#FC6B68',
             ...styles.shadow,
@@ -46,9 +46,10 @@ const Footer = () => {
                     left: 20,
                     borderRadius: 20,
                     bottom: 20,
-                    height: 90,
+                    height: 80,
                     ...styles.shadow,
                     paddingHorizontal: 5,
+                    paddingBottom: 10,
                 }
             }}
         >
@@ -118,8 +119,8 @@ const Footer = () => {
                             source={Plus}
                             resizeMode="contain"
                             style={{
-                                width: 30,
-                                height: 30,
+                                width: 25,
+                                height: 25,
                                 tintColor: '#fff',
                             }}
                         />

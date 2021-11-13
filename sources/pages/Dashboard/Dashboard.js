@@ -2,12 +2,12 @@ import React from 'react'
 import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import profile1 from '../../assets/images/profile1.jpg'
 import NotifIcon from '../../assets/icons/bell.png'
-import Order from '../../assets/icons/order.png'
+import Menu from '../../assets/icons/coffee-cup.png'
 import Inventory from '../../assets/icons/inventory.png'
 import Customer from '../../assets/icons/customer.png'
 import Report from '../../assets/icons/report.png'
-import AddStock from '../../assets/icons/addStock.png'
-import AddProduct from '../../assets/icons/addProduct.png'
+import Cashier from '../../assets/icons/cashier.png'
+import History from '../../assets/icons/history2.png'
 import RightArrow from '../../assets/icons/right-arrow.png'
 import { ScrollView } from 'react-native-gesture-handler'
 
@@ -57,11 +57,11 @@ const Dashboard = ({navigation}) => {
 
             <View style={styles.menus}>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: resHeight * 0.03}}>
-                    <TouchableOpacity style={styles.boxMenu}>
-                        <Image source={Order} style={styles.menuIcon} />
-                        <Text style={styles.menuName}>Order</Text>
+                    <TouchableOpacity style={styles.boxMenu} onPress={() => handleGoTo('Menu')}>
+                        <Image source={Menu} style={styles.menuIcon} />
+                        <Text style={styles.menuName}>Menu</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.boxMenu}>
+                    <TouchableOpacity style={styles.boxMenu} onPress={() => handleGoTo('Inventory')}>
                         <Image source={Inventory} style={styles.menuIcon} />
                         <Text style={styles.menuName}>Inventory</Text>
                     </TouchableOpacity>
@@ -73,17 +73,17 @@ const Dashboard = ({navigation}) => {
 
                 <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
 
-                    <TouchableOpacity style={styles.boxMenu}>
+                    <TouchableOpacity style={styles.boxMenu} onPress={() => handleGoTo('Report')}>
                         <Image source={Report} style={styles.menuIcon} />
                         <Text style={styles.menuName}>Report</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.boxMenu}>
-                        <Image source={AddStock} style={styles.menuIcon} />
-                        <Text style={styles.menuName}>Add Stock</Text>
+                    <TouchableOpacity style={styles.boxMenu} onPress={() => handleGoTo('Cashier')}>
+                        <Image source={Cashier} style={styles.menuIcon} />
+                        <Text style={styles.menuName}>Cashier</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.boxMenu}>
-                        <Image source={AddProduct} style={styles.menuIcon} />
-                        <Text style={styles.menuName}>Add Product</Text>
+                    <TouchableOpacity style={styles.boxMenu} onPress={() => handleGoTo('History')}>
+                        <Image source={History} style={styles.menuIcon} />
+                        <Text style={styles.menuName}>History</Text>
                     </TouchableOpacity>
                 </View>
             </View>
