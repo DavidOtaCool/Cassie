@@ -61,6 +61,7 @@ const LoginPage = ({navigation}) => {
             <TextInput 
                 placeholder="Password" 
                 placeholderTextColor="#B1B1B1"
+                secureTextEntry={true}
                 style={styles.customTextInput2} 
                 onChangeText={password => onInputChange(password, 'password')}
             />

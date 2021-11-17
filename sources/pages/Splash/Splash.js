@@ -4,15 +4,15 @@ import { Dimensions, StyleSheet, Text, View } from 'react-native'
 var resHeight = Dimensions.get('window').height;
 var resWidth = Dimensions.get('window').width;
 
-const Report = () => {
+const Splash = () => {
     return (
         <View style={styles.container}>
-            <Text>Report</Text>
+            <Text>Splash</Text>
         </View>
     )
 }
 
-export default Report
+export default Splash
 
 const styles = StyleSheet.create({
     container: {

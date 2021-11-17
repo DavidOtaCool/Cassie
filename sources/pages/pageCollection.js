@@ -12,6 +12,7 @@ import Inventory from './Inventory/Inventory';
 import Report from './Report/Report';
 import Cashier from './Cashier/Cashier';
 import History from './History/History';
+import AddMenu from './AddMenu/AddMenu';
 
 export {
     Welcome, 
@@ -28,4 +29,5 @@ export {
     Report,
     Cashier,
     History,
+    AddMenu,
 };

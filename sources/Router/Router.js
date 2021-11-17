@@ -12,6 +12,8 @@ import {
         Report,
         Cashier,
         History,
+        AddMenu,
+        Order
     } from '../pages/pageCollection';
 
 // import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
@@ -99,6 +101,22 @@ const Router = () => {
             <Stack.Screen 
                 name="History" 
                 component={History}
+                options={{
+                    headerShown: false,
+                }}
+            />
+
+            <Stack.Screen 
+                name="AddMenu" 
+                component={AddMenu}
+                options={{
+                    headerShown: false,
+                }}
+            />
+
+            <Stack.Screen 
+                name="Order" 
+                component={Order}
                 options={{
                     headerShown: false,
                 }}

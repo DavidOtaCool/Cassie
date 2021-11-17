@@ -67,6 +67,7 @@ export class SignUpPage extends Component {
             <TextInput 
                 placeholder="Password" 
                 placeholderTextColor="#B1B1B1"
+                secureTextEntry={true}
                 style={styles.customTextInput2}
                 value={this.state.cashierPassword}
                 onChangeText={(text)=>this.setState({cashierPassword:text})} 
