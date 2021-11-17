@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react'
 import { Dimensions, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 
@@ -5,12 +6,18 @@ var resHeight = Dimensions.get('window').height;
 var resWidth = Dimensions.get('window').width;
 
 const Profile = ({navigation}) => {
+    
+    const logout = async() =>{
+        await AsyncStorage.clear();
+        navigation.navigate('HomeNoAuth');
+    }
+
     const handleGoTo = (page) => {
         navigation.navigate(page)
     };
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.btnSignUp} onPress={() => handleGoTo('HomeNoAuth')}>
+            <TouchableOpacity style={styles.btnSignUp} onPress={() => logout()}>
                 <Text style={styles.txtSignUp}>Log Out</Text>
             </TouchableOpacity>
         </View>

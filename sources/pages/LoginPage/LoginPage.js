@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { TouchableOpacity, Dimensions, Image, StyleSheet, Text, View, Alert} from 'react-native'
+
 import { TextInput } from 'react-native-gesture-handler'
 import logoCassie from '../../assets/icons/cashie_light.png'
 import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 var resHeight = Dimensions.get('window').height;
 var resWidth = Dimensions.get('window').width;
@@ -28,6 +30,9 @@ const LoginPage = ({navigation}) => {
             console.log('respon: ', res);
 
           if (res.data.status == 'correct') {
+
+            AsyncStorage.setItem('session_token','session_token'+Math.random())
+
             navigation.navigate('DashboardfromLogin');
             // alert('benar')
           } else {
@@ -37,6 +42,19 @@ const LoginPage = ({navigation}) => {
         })
         .catch(err => console.log(err));
     }
+
+    // const getCurrentUser = async function () {
+    //     const currentUser = await Parse.User.currentAsync();
+    //     if (currentUser !== null) {
+    //       Alert.alert(
+    //         'Success!',
+    //         `${currentUser.get('cashier_name')} is the current cashier!`,
+    //       );
+    //     }
+    //   console.log('Current User: ', currentUser);
+    //   return currentUser;
+    //   };
+    
 
     const onInputChange = (value, input) => {
         setCashierLogin({

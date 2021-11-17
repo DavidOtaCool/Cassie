@@ -13,7 +13,9 @@ import {
         Cashier,
         History,
         AddMenu,
-        Order
+        Order,
+        Splash,
+
     } from '../pages/pageCollection';
 
 // import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
@@ -25,7 +27,18 @@ const Stack = createNativeStackNavigator();
 const Router = () => {
     
     return (
-        <Stack.Navigator>
+        <Stack.Navigator
+            initialRouteName="Splash"
+        >
+
+            <Stack.Screen 
+                name="Splash" 
+                component={Splash}
+                options={{
+                    headerShown: false,
+                }}
+            />
+
             <Stack.Screen 
                 name="HomeNoAuth" 
                 component={Welcome}

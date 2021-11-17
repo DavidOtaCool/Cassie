@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import axios from 'axios';
 import profile1 from '../../assets/images/profile1.jpg'
 import NotifIcon from '../../assets/icons/bell.png'
 import Menu from '../../assets/icons/coffee-cup.png'
@@ -18,6 +19,21 @@ const Dashboard = ({navigation}) => {
     const handleGoTo = (page) => {
         navigation.navigate(page)
     };
+
+    // const [cashierName, setCashierName] = useState([]);
+
+    // useEffect(() => {
+    //     navigation.addListener('focus', async() => {
+    //         await axios
+    //             .get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?')
+    //         .then(response => {
+    //             console.log('Cashier Name: ', response)
+    //             setCashierName(response.data.data.result)
+    //     })
+    //         .catch(e => alert(e.message))
+    //     })
+        
+    // }, []);
     return (
         <ScrollView style={styles.container} contentContainerStyle={{justifyContent: 'center', flexGrow: 1}}>
             <View style={styles.upperBackground}>

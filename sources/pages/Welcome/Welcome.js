@@ -1,4 +1,5 @@
-import React from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useEffect } from 'react'
 import { TouchableOpacity, Dimensions, Image, StyleSheet, Text, View, Alert } from 'react-native'
 import logoCassie from '../../assets/icons/cashie_light.png'
 
@@ -6,6 +7,7 @@ var resHeight = Dimensions.get('window').height;
 var resWidth = Dimensions.get('window').width;
 
 const Welcome = ({navigation}) => {
+
 
     const handleGoTo = (page) => {
         navigation.navigate(page)
