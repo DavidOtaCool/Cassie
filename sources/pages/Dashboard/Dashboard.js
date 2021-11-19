@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import profile1 from '../../assets/images/profile1.jpg'
 import NotifIcon from '../../assets/icons/bell.png'
 import Menu from '../../assets/icons/coffee-cup.png'
@@ -20,7 +21,18 @@ const Dashboard = ({navigation}) => {
         navigation.navigate(page)
     };
 
-    // const [cashierName, setCashierName] = useState([]);
+    const [cashierName, setCashierName] = useState([]);
+    
+    useEffect(() => {
+        navigation.addListener('focus', async() => {
+        const cashierNameCheck = async () =>{
+
+            const getCashierName = await AsyncStorage.getItem('cashier_name');
+            setCashierName(getCashierName);
+        }
+        cashierNameCheck();
+    })
+    }, [])
 
     // useEffect(() => {
     //     navigation.addListener('focus', async() => {
@@ -34,12 +46,13 @@ const Dashboard = ({navigation}) => {
     //     })
         
     // }, []);
+
     return (
         <ScrollView style={styles.container} contentContainerStyle={{justifyContent: 'center', flexGrow: 1}}>
             <View style={styles.upperBackground}>
                 <View style={styles.upperItem}>
                     <Image source={profile1} style={styles.profilePicture} />
-                    <Text style={styles.userName}>Hi, Lucas</Text>
+                    <Text style={styles.userName}>Hi, {cashierName}</Text>
                     <View style={{position: 'absolute', right: 0}}>
                         <Image source={NotifIcon} style={styles.notification} />
                         <View style={styles.notifStatus} />

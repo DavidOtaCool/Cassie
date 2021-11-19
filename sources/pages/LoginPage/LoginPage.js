@@ -33,6 +33,8 @@ const LoginPage = ({navigation}) => {
 
             AsyncStorage.setItem('session_token','session_token'+Math.random())
 
+            AsyncStorage.setItem('cashier_name',res.data.cashier_name)
+
             navigation.navigate('DashboardfromLogin');
             // alert('benar')
           } else {

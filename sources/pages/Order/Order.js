@@ -34,17 +34,30 @@ const Order = ({navigation}) => {
     };
 
     useEffect(() => {
-        getData();
-    }, []);
-
-    const getData = () => {
-
-        axios.get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showMenu')
-        .then(res => {
-            console.log("Res getData: ", res);
-            setMenus(res.data.data.result)
+        navigation.addListener('focus', async() => {
+            await axios
+                .get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showMenu')
+            .then(response => {
+                console.log('ResponseAddListener: ', response)
+                setMenus(response.data.data.result)
         })
-    }
+            .catch(e => alert(e.message))
+        })
+        
+    }, []);
+    
+    // useEffect(() => {
+    //     getData();
+    // }, []);
+
+    // const getData = () => {
+
+    //     axios.get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showMenu')
+    //     .then(res => {
+    //         console.log("Res getData: ", res);
+    //         setMenus(res.data.data.result)
+    //     })
+    // }
     return (
         <ScrollView style={styles.container} 
                 // contentContainerStyle={{justifyContent: 'center', flexGrow: 1}}
