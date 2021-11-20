@@ -113,8 +113,8 @@ const AddMenu = ({navigation}) => {
                 onChangeText={value => onInputChange(value, 'menu_price')} 
             />
 
-            <TouchableOpacity style={styles.btnSignUp} onPress={() => submit()}>
-                <Text style={styles.txtSignUp}>Add Menu</Text>
+            <TouchableOpacity style={styles.btnAddMenu} onPress={() => submit()}>
+                <Text style={styles.txtAddMenu}>Add Menu</Text>
             </TouchableOpacity>
 
 
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
         right: 0,
         position: 'absolute',
     },
-    btnSignUp: {
+    btnAddMenu: {
         backgroundColor: '#FC6B68',
         alignSelf: 'stretch',
         marginTop: resHeight * 0.026,
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
         shadowRadius: resWidth * 0.05,
         elevation: resWidth * 0.02,
     },
-    txtSignUp: {
+    txtAddMenu: {
         color: '#fff',
         textAlign: 'center',
         fontSize: resWidth * 0.051,

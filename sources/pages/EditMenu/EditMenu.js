@@ -5,17 +5,18 @@ import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import LeftArrow from '../../assets/icons/left.png'
 import NotifIcon from '../../assets/icons/bell.png'
+import Bin from '../../assets/icons/bin.png'
+
 var resHeight = Dimensions.get('window').height;
 var resWidth = Dimensions.get('window').width;
 
-const AddMenu = ({navigation}) => {
+const EditMenu = ({navigation}) => {
     const [menuId, setMenuId] = useState("");
     const [menuName, setMenuName] = useState("");
     const [menuCategory, setMenuCategory] = useState("");
     const [menuPrice, setMenuPrice] = useState("");
-    const [refreshPage, setRefreshPage] = useState("");
-    const [btnAdd, setBtnAdd] = useState("Add Menu");
     const [dataMenu, setDataMenu] = useState({
+        menu_id: 0,
         menu_name: '',
         menu_category: '',
         menu_price: '',
@@ -38,6 +39,17 @@ const AddMenu = ({navigation}) => {
     })
     }, []);
 
+    const DataMenu = () => {
+        setDataMenu({
+          ...dataMenu,
+          menu_id: get.menu_id,
+          menu_name: setMenuName(getMenuName),
+          menu_category: get.menu_category,
+          menu_price: get.menu_price,
+        });
+        console.log('item selected');
+      };
+
     const onInputChange = (value, input) => {
         setDataMenu({
           ...dataMenu,
@@ -45,26 +57,29 @@ const AddMenu = ({navigation}) => {
         });
       };
 
-    
-    // const update = () => {{
-        
-    //     const editedMenuData = `menu_name=${dataMenu.menu_name}&menu_category=${dataMenu.menu_category}&menu_price=${dataMenu.menu_price}`;
-
-    //         axios.put('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=addMenu', editedMenuData)
-    //         .then(res => {
-    //             console.log('respon: ', res);
-    //             // window.location.reload(false);
-    //             // getData();
-    //             // setMenuName("");
-    //             // setMenuCategory("");
-    //             // setMenuPrice("");
-    //             navigation.navigate('Menu');
-    //             // navigation.goBack();
-    //     });
-
-    // }}
+    const deleteMenu = (item) => {
+        console.log(item);
+        axios
+        .get(`http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=deleteMenu&menu_id=${menuId}`)
+        .then(res => {
+            console.log('res delete: ', res);
+            navigation.navigate('Menu');
+        })
+    }
 
     
+    const update = () => {{
+
+        const editedMenuData = `menu_name=${dataMenu.menu_name}&menu_category=${dataMenu.menu_category}&menu_price=${dataMenu.menu_price}`;
+
+            axios.post(`http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=editMenu&menu_id=${menuId}`, editedMenuData)
+            .then(res => {
+                console.log('Res Edit: ', res);
+                // console.log('Menu ID: ', menuId)
+                navigation.navigate('Menu');
+        });
+
+    }}
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
@@ -86,10 +101,13 @@ const AddMenu = ({navigation}) => {
                 </View>
 
 
+
             <TextInput 
                 placeholder="What name will you go for the menu?" 
                 placeholderTextColor="#B1B1B1"
                 style={styles.customTextInput}
+                // onFocus={() => DataMenu(editMenu)}
+                defaultValue={menuName}
                 onChangeText={value => onInputChange(value, 'menu_name')} 
             />
 
@@ -97,6 +115,7 @@ const AddMenu = ({navigation}) => {
                 placeholder="What category is this menu in?" 
                 placeholderTextColor="#B1B1B1"
                 style={styles.customTextInput}
+                defaultValue={menuCategory}
                 onChangeText={value => onInputChange(value, 'menu_category')}
             />  
 
@@ -104,19 +123,45 @@ const AddMenu = ({navigation}) => {
                 placeholder="How much price will you give for the menu?" 
                 placeholderTextColor="#B1B1B1"
                 style={styles.customTextInput}
-                onChangeText={value => onInputChange(value, 'menu_price')} 
+                defaultValue={menuPrice}
+                onChangeText={value => onInputChange(value, 'menu_price')}
             />
 
-            <TouchableOpacity style={styles.btnSignUp} onPress={() => update()}>
-                <Text style={styles.txtSignUp}>Add Menu</Text>
+   
+            <TouchableOpacity 
+                style={styles.btnDeleteMenu}
+                onPress={() => {
+                    Alert.alert(
+                        'Warning',
+                        'Are you sure want to delete this menu?',
+                        [
+                            {
+                                text: 'No', 
+                                // onPress: () => console.log('Chose No')
+                            }, 
+                            {
+                                text: 'Yes', 
+                                // onPress: () => console.log('Chose Yes')
+                                onPress: () => deleteMenu()
+                            }
+                        ]
+                    )
+                }}
+            >
+                <Image source={Bin} style={{width: resWidth * 0.07, height: resWidth * 0.07}} />
             </TouchableOpacity>
+                     
+            <TouchableOpacity style={styles.btnUpdateMenu} onPress={() => update()}>
+                <Text style={styles.txtUpdateMenu}>Update Menu</Text>
+            </TouchableOpacity>
+
 
 
         </ScrollView>
     )
 }
 
-export default AddMenu
+export default EditMenu
 
 const styles = StyleSheet.create({
     container: {
@@ -165,10 +210,11 @@ const styles = StyleSheet.create({
         right: 0,
         position: 'absolute',
     },
-    btnSignUp: {
+    btnUpdateMenu: {
+        // backgroundColor: '#E3BD82',
         backgroundColor: '#FC6B68',
         alignSelf: 'stretch',
-        marginTop: resHeight * 0.026,
+        marginTop: resHeight * 0.03,
         padding: resWidth * 0.05,
         borderRadius: resWidth * 0.028,
         shadowColor: '#969696',
@@ -177,10 +223,15 @@ const styles = StyleSheet.create({
         shadowRadius: resWidth * 0.05,
         elevation: resWidth * 0.02,
     },
-    txtSignUp: {
+    txtUpdateMenu: {
         color: '#fff',
         textAlign: 'center',
         fontSize: resWidth * 0.051,
         fontWeight: '500',
     },
+    btnDeleteMenu: {
+        alignSelf: 'flex-end',
+        marginTop: resWidth * 0.05,
+    },
+    
 })
