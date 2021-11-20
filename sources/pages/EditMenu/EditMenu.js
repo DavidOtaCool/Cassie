@@ -2,15 +2,17 @@ import React, { useEffect, useState } from 'react'
 import { TouchableOpacity, Dimensions, Image, StyleSheet, Text, View, Alert, Touchable, ScrollView, RefreshControl } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler';
 import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import LeftArrow from '../../assets/icons/left.png'
 import NotifIcon from '../../assets/icons/bell.png'
 var resHeight = Dimensions.get('window').height;
 var resWidth = Dimensions.get('window').width;
 
 const AddMenu = ({navigation}) => {
-    // const [menuName, setMenuName] = useState("");
-    // const [menuCategory, setMenuCategory] = useState("");
-    // const [menuPrice, setMenuPrice] = useState("");
+    const [menuId, setMenuId] = useState("");
+    const [menuName, setMenuName] = useState("");
+    const [menuCategory, setMenuCategory] = useState("");
+    const [menuPrice, setMenuPrice] = useState("");
     const [refreshPage, setRefreshPage] = useState("");
     const [btnAdd, setBtnAdd] = useState("Add Menu");
     const [dataMenu, setDataMenu] = useState({
@@ -20,14 +22,22 @@ const AddMenu = ({navigation}) => {
       });
 
     useEffect(() => {
-        // navigation.addListener('focus', async() => {
-        //     await axios.get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showMenu')
-        //     .then(response => {
-        //         console.log('Response')
-        //     })
-        // })
-        getData();
+        navigation.addListener('focus', async() => {
+        const menuCheck = async () =>{
+
+            const getMenuId = await AsyncStorage.getItem('menu_id');
+            const getMenuName = await AsyncStorage.getItem('menu_name');
+            const getMenuCategory = await AsyncStorage.getItem('menu_category');
+            const getMenuPrice = await AsyncStorage.getItem('menu_price');
+            setMenuId(getMenuId);
+            setMenuName(getMenuName);
+            setMenuCategory(getMenuCategory);
+            setMenuPrice(getMenuPrice);
+        }
+        menuCheck();
+    })
     }, []);
+
     const onInputChange = (value, input) => {
         setDataMenu({
           ...dataMenu,
@@ -36,42 +46,25 @@ const AddMenu = ({navigation}) => {
       };
 
     
-    const submit = () => {{
+    // const update = () => {{
+        
+    //     const editedMenuData = `menu_name=${dataMenu.menu_name}&menu_category=${dataMenu.menu_category}&menu_price=${dataMenu.menu_price}`;
 
-        // function refreshing(){
-        //     window.location.reload(false);
-        // }
-        // const datanya = {
-        //     name,
-        //     email,
-        //     bidang,
-        // }
-        const menuData = `menu_name=${dataMenu.menu_name}&menu_category=${dataMenu.menu_category}&menu_price=${dataMenu.menu_price}`;
+    //         axios.put('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=addMenu', editedMenuData)
+    //         .then(res => {
+    //             console.log('respon: ', res);
+    //             // window.location.reload(false);
+    //             // getData();
+    //             // setMenuName("");
+    //             // setMenuCategory("");
+    //             // setMenuPrice("");
+    //             navigation.navigate('Menu');
+    //             // navigation.goBack();
+    //     });
 
-            axios.post('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=addMenu', menuData)
-            .then(res => {
-                console.log('respon: ', res);
-                // window.location.reload(false);
-                // getData();
-                // setRefreshPage("refresh");
-                // setMenuName("");
-                // setMenuCategory("");
-                // setMenuPrice("");
-                navigation.navigate('Menu');
-                // navigation.goBack();
-        });
-
-    }}
+    // }}
 
     
-    const getData = () => {
-        axios.get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showMenu')
-        .then(res => {
-            console.log("Res getData: ", res);
-            setDataMenu(res.data.data.result);
-
-        })
-    }
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
@@ -83,7 +76,8 @@ const AddMenu = ({navigation}) => {
                             style={styles.arrowLeft}
                         />
                     </TouchableOpacity>
-                    <Text style={styles.menuTitle}>Add Menu</Text>
+                    <Text style={styles.menuTitle}>Edit Menu {menuId}</Text>
+                    {/* <Text>{menuName},{menuCategory},{menuPrice}</Text> */}
                     <View style={{position: 'absolute', right: 0}}>
                         <Image source={NotifIcon} style={styles.notification} />
                         <View style={styles.notifStatus} />
@@ -113,7 +107,7 @@ const AddMenu = ({navigation}) => {
                 onChangeText={value => onInputChange(value, 'menu_price')} 
             />
 
-            <TouchableOpacity style={styles.btnSignUp} onPress={() => submit()}>
+            <TouchableOpacity style={styles.btnSignUp} onPress={() => update()}>
                 <Text style={styles.txtSignUp}>Add Menu</Text>
             </TouchableOpacity>
 

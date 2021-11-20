@@ -15,7 +15,7 @@ import {
         AddMenu,
         Order,
         Splash,
-
+        EditMenu,
     } from '../pages/pageCollection';
 
 // import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
@@ -122,6 +122,14 @@ const Router = () => {
             <Stack.Screen 
                 name="AddMenu" 
                 component={AddMenu}
+                options={{
+                    headerShown: false,
+                }}
+            />
+
+            <Stack.Screen 
+                name="EditMenu" 
+                component={EditMenu}
                 options={{
                     headerShown: false,
                 }}

@@ -14,6 +14,7 @@ import Cashier from './Cashier/Cashier';
 import History from './History/History';
 import AddMenu from './AddMenu/AddMenu';
 import Splash from './Splash/Splash';
+import EditMenu from './EditMenu/EditMenu';
 
 export {
     Welcome, 
@@ -32,4 +33,5 @@ export {
     History,
     AddMenu,
     Splash,
+    EditMenu,
 };

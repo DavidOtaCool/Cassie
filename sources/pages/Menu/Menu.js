@@ -3,6 +3,7 @@ import { Dimensions, StyleSheet, Text, View, TouchableOpacity, Image, FlatList, 
 import { ScrollView } from 'react-native-gesture-handler';
 import { Searchbar } from 'react-native-paper';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { createStackNavigator } from '@react-navigation/stack'
 import LeftArrow from '../../assets/icons/left.png'
@@ -10,17 +11,31 @@ import NotifIcon from '../../assets/icons/bell.png'
 import SearchIcon from '../../assets/icons/search.png'
 import ClearIcon from '../../assets/icons/cross.png'
 import Plus from '../../assets/icons/plus2.png'
+import PreviewImage from '../../assets/images/preview2.png'
+import EditIcon from '../../assets/icons/edit.png'
 
 var resHeight = Dimensions.get('window').height;
 var resWidth = Dimensions.get('window').width;
 
-const MenuData = ({menu_name, menu_category, menu_price}) => {
+const MenuData = ({menu_name, menu_category, menu_price, onClickUpdate, onSelect}) => {
     return (
-            <TouchableOpacity style={styles.menuBox}>
-                <Text style={styles.menuName}>{menu_name}</Text>
-                <Text>{menu_category}</Text>
-                <Text style={styles.menuPrice}>{menu_price}</Text>
-            </TouchableOpacity>
+            <View style={styles.menuBox}>
+                <Image 
+                    source={PreviewImage}
+                    style={styles.menuPicture}
+                />
+                <View style={styles.menuInfo}>
+                    <Text style={styles.menuName}>{menu_name}</Text>
+                    {/* <Text>{menu_category}</Text> */}
+                    <Text style={styles.menuPrice}>Rp{menu_price}</Text>
+                </View>
+                <TouchableOpacity style={styles.menuEditBtn} onPress={onClickUpdate}>
+                    <Image 
+                        source={EditIcon}
+                        style={styles.menuEditIcon}
+                    />
+                </TouchableOpacity>
+            </View>
 
     )
 }
@@ -28,6 +43,7 @@ const MenuData = ({menu_name, menu_category, menu_price}) => {
 const Menu = ({navigation}) => {
   
     const [menus, setMenus] = useState([]);
+    const [selectedMenu, setSelectedMenu] = useState({});
     // const [refreshPage, setRefreshPage] = useState("");
 
     const [searchQuery, setSearchQuery] = React.useState('');
@@ -55,6 +71,32 @@ const Menu = ({navigation}) => {
     //     refreshing;
     // };
     }, []);
+
+    const selectMenu = (item) => {
+        console.log("Selected menu: ", item);
+        // setSelectedMenu(item);
+        // setName(item.name);
+        // setEmail(item.email);
+        // setBidang(item.bidang);
+        // setTombol("Update");
+    }
+
+    const editMenu = (item) => {
+        // axios.get(`http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showMenu`)
+        // .then(item => {
+        //         console.log('Selected Menu: ', item);
+        //     // console.log("Selected menu: ", item);
+        //     // AsyncStorage.setItem('menu_id',item.menu_id)
+        //     // navigation.navigate('EditMenu');
+        // })
+        console.log('Selected Menu: ', item);
+        AsyncStorage.setItem('menu_id',item.menu_id);
+        AsyncStorage.setItem('menu_name',item.menu_name);
+        AsyncStorage.setItem('menu_category',item.menu_category);
+        AsyncStorage.setItem('menu_price',item.menu_price);
+        navigation.navigate('EditMenu');
+        
+}
 
 
     // const getData = () => {
@@ -113,6 +155,8 @@ const Menu = ({navigation}) => {
                             menu_category={item.menu_category} 
                             menu_price={item.menu_price}
                             horizontal={true}
+                            onClickUpdate={() => editMenu(item)}
+                            // onSelect={() => selectMenu(item)}
                         />
 
 
@@ -120,7 +164,7 @@ const Menu = ({navigation}) => {
                 })}
 
             </View>
-            <View style={{marginBottom: resWidth * 0.1}}></View>
+            <View style={{marginBottom: resWidth * 0.3}}></View>
 
             </ScrollView>
             <TouchableOpacity onPress={() => handleGoTo('AddMenu')}>
@@ -210,25 +254,54 @@ const styles = StyleSheet.create({
     },
     menuBox: {
         backgroundColor: '#fff',
-        height: resWidth * 0.28,
+        // height: resWidth * 0.28,
+        paddingBottom: resWidth * 0.1,
         // width: 150,
         width: resWidth * 0.38,
         shadowColor: '#969696',
-        shadowOffset: {width: 0, height: -(resWidth * 1)},
+        shadowOffset: {width: resWidth * 0.1, height: -(resWidth * 1)},
         shadowOpacity: resWidth * 0.01,
         shadowRadius: resWidth * 0.1,
         elevation: resWidth * 0.012,
         borderRadius: resWidth * 0.04,
         justifyContent: 'center',
-        alignItems: 'center',
         marginBottom: resWidth * 0.05,
+        marginHorizontal: resWidth * 0.005,
+    },
+    menuPicture: {
+        borderRadius: resWidth * 0.04,
+        height: resWidth * 0.3,
+        width: resWidth * 0.38,
+        marginBottom: resWidth * 0.04,
+    },
+    menuInfo: {
+        textAlign: 'left',
+        marginLeft: resWidth * 0.04,
     },
     menuName: {
         fontWeight: 'bold',
         color: '#000',
-        fontSize: resWidth * 0.045,
+        fontSize: resWidth * 0.044,
+        marginBottom: resWidth * 0.01,
     },
     menuPrice: {
         color: '#7E7E7E',
+        fontSize: resWidth * 0.035,
     },
+    menuEditBtn: {
+        backgroundColor: '#FC6B68',
+        position: 'absolute',
+        right: 0,
+        bottom: 0,
+        borderBottomRightRadius: resWidth * 0.04,
+        borderTopLeftRadius: resWidth * 0.04,
+        width: resWidth * 0.12,
+        height: resWidth * 0.1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },  
+    menuEditIcon: {
+        width: resWidth * 0.05,
+        height: resWidth * 0.05,
+    }
 })
