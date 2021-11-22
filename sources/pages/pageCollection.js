@@ -15,6 +15,9 @@ import History from './History/History';
 import AddMenu from './AddMenu/AddMenu';
 import Splash from './Splash/Splash';
 import EditMenu from './EditMenu/EditMenu';
+import EditCashier from './EditCashier/EditCashier';
+import AddOrder from './AddOrder/AddOrder';
+import Checkout from './Checkout/Checkout';
 
 export {
     Welcome, 
@@ -34,4 +37,7 @@ export {
     AddMenu,
     Splash,
     EditMenu,
+    EditCashier,
+    AddOrder,
+    Checkout,
 };

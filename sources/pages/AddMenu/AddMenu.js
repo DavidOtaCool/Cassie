@@ -77,7 +77,7 @@ const AddMenu = ({navigation}) => {
         <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.header}>
 
-                    <TouchableOpacity style={styles.btnArrowLeft} onPress={() => navigation.goBack()}>
+                    <TouchableOpacity style={styles.btnArrowLeft} onPress={() => navigation.navigate('Menu')}>
                         <Image 
                             source={LeftArrow}
                             style={styles.arrowLeft}
@@ -109,6 +109,7 @@ const AddMenu = ({navigation}) => {
             <TextInput 
                 placeholder="How much price will you give for the menu?" 
                 placeholderTextColor="#B1B1B1"
+                keyboardType="number-pad"
                 style={styles.customTextInput}
                 onChangeText={value => onInputChange(value, 'menu_price')} 
             />

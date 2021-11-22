@@ -10,72 +10,61 @@ import Bin from '../../assets/icons/bin3.png'
 var resHeight = Dimensions.get('window').height;
 var resWidth = Dimensions.get('window').width;
 
-const EditMenu = ({navigation}) => {
-    const [menuId, setMenuId] = useState("");
-    const [menuName, setMenuName] = useState("");
-    const [menuCategory, setMenuCategory] = useState("");
-    const [menuPrice, setMenuPrice] = useState("");
-    const [dataMenu, setDataMenu] = useState({
-        menu_id: 0,
-        menu_name: '',
-        menu_category: '',
-        menu_price: '',
+const EditCashier = ({navigation}) => {
+    const [cashierId, setCashierId] = useState("");
+    const [cashierName, setCashierName] = useState("");
+    const [cashierEmail, setCashierEmail] = useState("");
+    const [cashierStatus, setCashierStatus] = useState("");
+    const [dataCashier, setDataCashier] = useState({
+        cashier_id: 0,
+        cashier_name: '',
+        cashier_email: '',
+        cashier_status: '',
       });
 
     useEffect(() => {
         navigation.addListener('focus', async() => {
-        const menuCheck = async () =>{
+        const cashierCheck = async () =>{
 
-            const getMenuId = await AsyncStorage.getItem('menu_id');
-            const getMenuName = await AsyncStorage.getItem('menu_name');
-            const getMenuCategory = await AsyncStorage.getItem('menu_category');
-            const getMenuPrice = await AsyncStorage.getItem('menu_price');
-            setMenuId(getMenuId);
-            setMenuName(getMenuName);
-            setMenuCategory(getMenuCategory);
-            setMenuPrice(getMenuPrice);
+            const getCashierId = await AsyncStorage.getItem('cashier_id');
+            const getCashierName = await AsyncStorage.getItem('cashier_name');
+            const getCashierEmail = await AsyncStorage.getItem('cashier_email');
+            const getCashierStatus = await AsyncStorage.getItem('cashier_status');
+            setCashierId(getCashierId);
+            setCashierName(getCashierName);
+            setCashierEmail(getCashierEmail);
+            setCashierStatus(getCashierStatus);
         }
-        menuCheck();
+        cashierCheck();
     })
     }, []);
 
-    const DataMenu = () => {
-        setDataMenu({
-          ...dataMenu,
-          menu_id: get.menu_id,
-          menu_name: setMenuName(getMenuName),
-          menu_category: get.menu_category,
-          menu_price: get.menu_price,
-        });
-        console.log('item selected');
-      };
-
     const onInputChange = (value, input) => {
-        setDataMenu({
-          ...dataMenu,
+        setDataCashier({
+          ...dataCashier,
           [input]: value,
         });
       };
 
-    const deleteMenu = (item) => {
+    const deleteCashier = (item) => {
         console.log(item);
         axios
-        .get(`http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=deleteMenu&menu_id=${menuId}`)
+        .get(`http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=deleteCashier&cashier_id=${cashierId}`)
         .then(res => {
-            console.log('res delete: ', res);
-            navigation.navigate('Menu');
+            console.log('Res Delete Cashier: ', res);
+            navigation.navigate('Cashier');
         })
     }
 
     
     const update = () => {{
 
-        const editedMenuData = `menu_name=${dataMenu.menu_name}&menu_category=${dataMenu.menu_category}&menu_price=${dataMenu.menu_price}`;
+        const editedCashierData = `cashier_name=${dataCashier.cashier_name}&cashier_email=${dataCashier.cashier_email}&cashier_status=${dataCashier.cashier_status}`;
 
-            axios.post(`http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=editMenu&menu_id=${menuId}`, editedMenuData)
+            axios.post(`http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=updateCashier&cashier_id=${cashierId}`, editedCashierData)
             .then(res => {
-                console.log('Res Edit: ', res);
-                navigation.navigate('Menu');
+                console.log('Res Edit Cashier: ', res);
+                navigation.navigate('Cashier');
         });
 
     }}
@@ -90,7 +79,7 @@ const EditMenu = ({navigation}) => {
                             style={styles.arrowLeft}
                         />
                     </TouchableOpacity>
-                    <Text style={styles.menuTitle}>Edit Menu {menuId}</Text>
+                    <Text style={styles.menuTitle}>Edit Cashier {cashierId}</Text>
                     {/* <Text>{menuName},{menuCategory},{menuPrice}</Text> */}
                     <View style={{position: 'absolute', right: 0}}>
                         <Image source={NotifIcon} style={styles.notification} />
@@ -101,47 +90,45 @@ const EditMenu = ({navigation}) => {
 
 
             <View style={styles.forms}>
-                <Text style={styles.formName}>Menu Name</Text>
+                <Text style={styles.formName}>Cashier Name</Text>
                 <TextInput 
-                    placeholder="What name will you go for the menu?" 
+                    placeholder="Please tell us your full name" 
                     placeholderTextColor="#B1B1B1"
                     style={styles.customTextInput}
-                    // onFocus={() => DataMenu(editMenu)}
-                    defaultValue={menuName}
-                    onChangeText={value => onInputChange(value, 'menu_name')} 
+                    // onFocus={() => dataCashier(editMenu)}
+                    defaultValue={cashierName}
+                    onChangeText={value => onInputChange(value, 'cashier_name')} 
                 />
             </View>
 
             <View style={styles.forms}>
-                <Text style={styles.formName}>Menu Category</Text>
+                <Text style={styles.formName}>Cashier Email</Text>
                 <TextInput 
-                    placeholder="What category is this menu in?" 
+                    placeholder="Email" 
                     placeholderTextColor="#B1B1B1"
                     style={styles.customTextInput}
-                    defaultValue={menuCategory}
-                    onChangeText={value => onInputChange(value, 'menu_category')}
+                    defaultValue={cashierEmail}
+                    onChangeText={value => onInputChange(value, 'cashier_email')}
                 />
             </View>
 
             <View style={styles.forms}>
-                <Text style={styles.formName}>Menu Price</Text>
+                <Text style={styles.formName}>Cashier Status</Text>
                 <TextInput 
-                    placeholder="How much price will you give for the menu?" 
+                    placeholder="Cashier Status" 
                     placeholderTextColor="#B1B1B1"
                     style={styles.customTextInput}
-                    defaultValue={menuPrice}
-                    keyboardType="number-pad"
-                    onChangeText={value => onInputChange(value, 'menu_price')}
+                    defaultValue={cashierStatus}
+                    onChangeText={value => onInputChange(value, 'cashier_status')}
                 />
             </View>
-
    
             <TouchableOpacity 
-                style={styles.btnDeleteMenu}
+                style={styles.btndeleteCashier}
                 onPress={() => {
                     Alert.alert(
                         'Warning',
-                        `Are you sure want to delete ${menuName}?`,
+                        `Are you sure want to delete ${cashierName}?`,
                         [
                             {
                                 text: 'No', 
@@ -150,7 +137,7 @@ const EditMenu = ({navigation}) => {
                             {
                                 text: 'Yes', 
                                 // onPress: () => console.log('Chose Yes')
-                                onPress: () => deleteMenu()
+                                onPress: () => deleteCashier()
                             }
                         ]
                     )
@@ -162,8 +149,8 @@ const EditMenu = ({navigation}) => {
                 />
             </TouchableOpacity>
                      
-            <TouchableOpacity style={styles.btnUpdateMenu} onPress={() => update()}>
-                <Text style={styles.txtUpdateMenu}>Update Menu</Text>
+            <TouchableOpacity style={styles.btnUpdateCashier} onPress={() => update()}>
+                <Text style={styles.txtUpdateCashier}>Update Cashier</Text>
             </TouchableOpacity>
 
 
@@ -171,7 +158,7 @@ const EditMenu = ({navigation}) => {
     )
 }
 
-export default EditMenu
+export default EditCashier
 
 const styles = StyleSheet.create({
     container: {
@@ -229,7 +216,7 @@ const styles = StyleSheet.create({
         right: 0,
         position: 'absolute',
     },
-    btnUpdateMenu: {
+    btnUpdateCashier: {
         // backgroundColor: '#E3BD82',
         backgroundColor: '#FC6B68',
         alignSelf: 'stretch',
@@ -242,13 +229,13 @@ const styles = StyleSheet.create({
         shadowRadius: resWidth * 0.05,
         elevation: resWidth * 0.02,
     },
-    txtUpdateMenu: {
+    txtUpdateCashier: {
         color: '#fff',
         textAlign: 'center',
         fontSize: resWidth * 0.051,
         fontWeight: '500',
     },
-    btnDeleteMenu: {
+    btndeleteCashier: {
         alignSelf: 'flex-end',
         marginTop: resWidth * 0.05,
     },

@@ -12,6 +12,7 @@ import Cashier from '../../assets/icons/cashier.png'
 import History from '../../assets/icons/history2.png'
 import RightArrow from '../../assets/icons/right-arrow.png'
 import { ScrollView } from 'react-native-gesture-handler'
+import NumberFormat from 'react-number-format';
 
 var resHeight = Dimensions.get('window').height;
 var resWidth = Dimensions.get('window').width;
@@ -21,38 +22,53 @@ const Dashboard = ({navigation}) => {
         navigation.navigate(page)
     };
 
-    const [cashierName, setCashierName] = useState([]);
+    const [loginCashierName, setLoginCashierName] = useState([]);
+    const [totalOrder, setTotalOrder] = useState([]);
+    const [todayIncome, setTodayIncome] = useState([]);
     
     useEffect(() => {
         navigation.addListener('focus', async() => {
         const cashierNameCheck = async () =>{
 
-            const getCashierName = await AsyncStorage.getItem('cashier_name');
-            setCashierName(getCashierName);
+            const getLoginCashierName = await AsyncStorage.getItem('login_cashier_name');
+            setLoginCashierName(getLoginCashierName);
         }
         cashierNameCheck();
     })
     }, [])
 
-    // useEffect(() => {
-    //     navigation.addListener('focus', async() => {
-    //         await axios
-    //             .get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?')
-    //         .then(response => {
-    //             console.log('Cashier Name: ', response)
-    //             setCashierName(response.data.data.result)
-    //     })
-    //         .catch(e => alert(e.message))
-    //     })
+    useEffect(() => {
+        navigation.addListener('focus', async() => {
+            await axios
+                .get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showTotalOrder')
+            .then(response => {
+                console.log('Response Total Order: ', response)
+                setTotalOrder(response.data.data.result)
+        })
+            .catch(e => alert(e.message))
+        })
         
-    // }, []);
+    }, []);
+
+    useEffect(() => {
+        navigation.addListener('focus', async() => {
+            await axios
+                .get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showTodayIncome')
+            .then(response => {
+                console.log('Response Today Income: ', response)
+                setTodayIncome(response.data.data.result.today_income)
+        })
+            .catch(e => alert(e.message))
+        })
+        
+    }, []);
 
     return (
         <ScrollView style={styles.container} contentContainerStyle={{justifyContent: 'center', flexGrow: 1}}>
             <View style={styles.upperBackground}>
                 <View style={styles.upperItem}>
                     <Image source={profile1} style={styles.profilePicture} />
-                    <Text style={styles.userName}>Hi, {cashierName}</Text>
+                    <Text style={styles.userName}>Hi, {loginCashierName}</Text>
                     <View style={{position: 'absolute', right: 0}}>
                         <Image source={NotifIcon} style={styles.notification} />
                         <View style={styles.notifStatus} />
@@ -63,22 +79,31 @@ const Dashboard = ({navigation}) => {
             <View style={styles.shortcutBox}>
                 <View style={{flexDirection: 'row'}}>
                     <View style={styles.shortcutItem}>
-                        <Text style={styles.shortcutInfo}>500</Text>
+                        <Text style={styles.shortcutInfo}>{totalOrder}</Text>
                         <Text style={styles.shortcutDesc}>Total Order</Text>
                     </View>
                     <View style={styles.shortcutItem}>
-                        <Text style={styles.shortcutInfo}>Rp300.000</Text>
+                    {/* <NumberFormat 
+                        value={todayIncome} 
+                        displayType={'text'} 
+                        thousandSeparator={true} 
+                        prefix={'Rp'} 
+                        renderText={
+                            formattedValue => <Text style={styles.shortcutInfo}>{formattedValue}</Text>
+                        } 
+                    /> */}
+                        <Text style={styles.shortcutInfo}>{todayIncome}</Text>
                         <Text style={styles.shortcutDesc}>Today's Income</Text>
                     </View>
                 </View>
                         <View style={styles.line}></View>
                 <View style={{flexDirection: 'row'}}>
                 <View style={styles.shortcutItem}>
-                        <Text style={styles.shortcutInfo}>12</Text>
+                        <Text style={styles.shortcutInfo}>{totalOrder}</Text>
                         <Text style={styles.shortcutDesc}>Today's Order</Text>
                     </View>
                     <View style={styles.shortcutItem}>
-                        <Text style={styles.shortcutInfo}>3</Text>
+                        <Text style={styles.shortcutInfo}>0</Text>
                         <Text style={styles.shortcutDesc}>Cancelled Order</Text>
                     </View>
                 </View>
