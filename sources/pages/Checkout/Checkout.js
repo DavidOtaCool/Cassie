@@ -23,7 +23,7 @@ const Checkout = ({navigation}) => {
     const [cashierOnDuty, setCashierOnDuty] = useState([]);
     const [dataCheckout, setDataCheckout] = useState({
         // cashier_on_duty: cashierOnDuty,
-        ordering_customer_name: '',
+        ordering_customer_code: '',
         // order_grandtotal: grandTotal,
       });
 
@@ -58,15 +58,17 @@ const Checkout = ({navigation}) => {
 
     const placeOrder = () => {{
 
-        // console.log('Customer name: ', dataCheckout.ordering_customer_name);
+        // console.log('Customer name: ', dataCheckout.ordering_customer_code);
         // console.log('Cashier name: ', cashierOnDuty);
         // console.log('Grandtotal: ', grandTotal);
-        const checkoutData = `cashier_on_duty=${cashierOnDuty}&ordering_customer_name=${dataCheckout.ordering_customer_name}&order_grandtotal=${grandTotal}`;
+        const checkoutData = `cashier_on_duty=${cashierOnDuty}&ordering_customer_code=${dataCheckout.ordering_customer_code}&order_grandtotal=${grandTotal}`;
             axios.post('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=checkout', checkoutData)
             .then(res => {
                 console.log('respon: ', res);
-                navigation.navigate('DashboardfromLogin');
+                navigation.navigate('Dashboard');
         });
+        // navigation.navigate('Dashboard');
+
 
     }}
     
@@ -92,10 +94,11 @@ const Checkout = ({navigation}) => {
            <Text style={{textAlign: 'right'}}>Grandtotal: {grandTotal}</Text>
 
            <TextInput 
-                placeholder="Customer name" 
+                placeholder="Customer's special code" 
                 placeholderTextColor="#B1B1B1"
+                keyboardType="number-pad"
                 style={styles.customTextInput}
-                onChangeText={value => onInputChange(value, 'ordering_customer_name')} 
+                onChangeText={value => onInputChange(value, 'ordering_customer_code')} 
             />
 
            <TouchableOpacity style={styles.btnPlaceOrder} onPress={() => placeOrder()}>

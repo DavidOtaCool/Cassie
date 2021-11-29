@@ -21,12 +21,25 @@ const Dashboard = ({navigation}) => {
     const handleGoTo = (page) => {
         navigation.navigate(page)
     };
+    const [currentDate, setCurrentDate] = useState('');
 
     const [loginCashierName, setLoginCashierName] = useState([]);
     const [totalOrder, setTotalOrder] = useState([]);
-    const [todayIncome, setTodayIncome] = useState([]);
+    const [todayIncome, setTodayIncome] = useState(0);
+    const [todayOrder, setTodayOrder] = useState('');
     
     useEffect(() => {
+
+        var date = new Date().getDate(); //Current Date
+        var month = new Date().getMonth() + 1; //Current Month
+        var year = new Date().getFullYear(); //Current Year
+        // var hours = new Date().getHours(); //Current Hours
+        // var min = new Date().getMinutes(); //Current Minutes
+        // var sec = new Date().getSeconds(); //Current Seconds
+        setCurrentDate(
+          date + '/' + month + '/' + year 
+        );
+
         navigation.addListener('focus', async() => {
         const cashierNameCheck = async () =>{
 
@@ -40,23 +53,12 @@ const Dashboard = ({navigation}) => {
     useEffect(() => {
         navigation.addListener('focus', async() => {
             await axios
-                .get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showTotalOrder')
+                .get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=shortcutBoxInfo')
             .then(response => {
-                console.log('Response Total Order: ', response)
-                setTotalOrder(response.data.data.result)
-        })
-            .catch(e => alert(e.message))
-        })
-        
-    }, []);
-
-    useEffect(() => {
-        navigation.addListener('focus', async() => {
-            await axios
-                .get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showTodayIncome')
-            .then(response => {
-                console.log('Response Today Income: ', response)
-                setTodayIncome(response.data.data.result.today_income)
+                console.log('Shortcut Box Info: ', response)
+                setTotalOrder(response.data.total_order)
+                setTodayOrder(response.data.today_order)
+                setTodayIncome(response.data.today_income.today_income)
         })
             .catch(e => alert(e.message))
         })
@@ -83,23 +85,23 @@ const Dashboard = ({navigation}) => {
                         <Text style={styles.shortcutDesc}>Total Order</Text>
                     </View>
                     <View style={styles.shortcutItem}>
-                    {/* <NumberFormat 
-                        value={todayIncome} 
+                    <NumberFormat 
+                        value={todayIncome}
                         displayType={'text'} 
                         thousandSeparator={true} 
                         prefix={'Rp'} 
                         renderText={
                             formattedValue => <Text style={styles.shortcutInfo}>{formattedValue}</Text>
                         } 
-                    /> */}
-                        <Text style={styles.shortcutInfo}>{todayIncome}</Text>
+                    />
+                        {/* <Text style={styles.shortcutInfo}>{todayIncome}</Text> */}
                         <Text style={styles.shortcutDesc}>Today's Income</Text>
                     </View>
                 </View>
                         <View style={styles.line}></View>
                 <View style={{flexDirection: 'row'}}>
                 <View style={styles.shortcutItem}>
-                        <Text style={styles.shortcutInfo}>{totalOrder}</Text>
+                        <Text style={styles.shortcutInfo}>{todayOrder}</Text>
                         <Text style={styles.shortcutDesc}>Today's Order</Text>
                     </View>
                     <View style={styles.shortcutItem}>
@@ -145,6 +147,7 @@ const Dashboard = ({navigation}) => {
 
             <View style={styles.waitingOrderElement}>
                 <Text style={styles.waitingOrderText}>Waiting Order(s)</Text>
+                {/* <Text style={styles.waitingOrderText}>{currentDate}</Text> */}
 
                 <View style={styles.waitingOrderBox}>
                     <View style={styles.waitingOrderList}>

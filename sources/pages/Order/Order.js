@@ -15,8 +15,10 @@ import NumberFormat from 'react-number-format';
 var resHeight = Dimensions.get('window').height;
 var resWidth = Dimensions.get('window').width;
 
-const MenuData = ({menu_name, menu_category, menu_price, onOrderPress}) => {
+const MenuData = ({menu_id, selected_menu_id, menu_name, menu_category, menu_price, onOrderPress}) => {
     return (
+        // menu_id >30 ? <View><Text>Hi</Text></View>
+        //     :
         <View style={styles.menuBox}>
             <Image 
                 source={PreviewImage}
@@ -43,20 +45,27 @@ const MenuData = ({menu_name, menu_category, menu_price, onOrderPress}) => {
                 />
             </TouchableOpacity>
         </View>
-
     )
 }
 
-// const cartData = ({cart_menu_name, item_amount}) => {
+// const SelectedMenuData = ({menu_id, menu_name, menu_category, menu_price, onOrderPress}) => {
+//     return (
+//         <View style={styles.menuBox}>
+//             <Text>{menu_id}</Text>
+//         </View>
 
+//     )
 // }
 
 const Order = ({navigation}) => {
 
     const [menus, setMenus] = useState([]);
+    const [selectedMenus, setSelectedMenus] = useState([]);
 
     const [cart, setCart] = useState([]);
+    const [menuId, setMenuId] = useState('');
     const [cartAmount, setCartAmount] = useState([]);
+    const [grandTotal, setGrandTotal] = useState([]);
 
     const [searchQuery, setSearchQuery] = React.useState('');
 
@@ -80,7 +89,7 @@ const Order = ({navigation}) => {
     }, []);
 
     const addOrder = (item) => {
-        console.log('Selected menu for order: ', item);
+        // console.log('Selected menu for order: ', item);
         AsyncStorage.setItem('order_menu_id',item.menu_id);
         AsyncStorage.setItem('order_menu_name',item.menu_name);
         AsyncStorage.setItem('order_menu_category',item.menu_category);
@@ -91,11 +100,12 @@ const Order = ({navigation}) => {
     useEffect(() => {
         navigation.addListener('focus', async() => {
             await axios
-                .get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showCartAmount')
+                .get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showCart')
             .then(response => {
                 console.log('Response Cart Amount: ', response)
-                setCartAmount(response.data.data.result.cart_amount)
-                // setCart(response.data.data.result)
+                setCartAmount(response.data.cart_amount.cart_amount)
+                setGrandTotal(response.data.grandtotal.grandtotal)
+                setSelectedMenus(response.data.data.result)
         })
             .catch(e => alert(e.message))
         })
@@ -106,7 +116,7 @@ const Order = ({navigation}) => {
         axios
         .get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showCart')
             .then(response => {
-                console.log('Proceed to Checkout: ', response);
+                // console.log('Proceed to Checkout: ', response);
                 navigation.navigate('Checkout');
         })
     }
@@ -154,27 +164,57 @@ const Order = ({navigation}) => {
 
                         <MenuData
                             key={item.menu_id} 
+                            // menu_id={item.menu_id} 
+                            // selected_menu_id={selectedMenus.menu_id} 
                             menu_name={item.menu_name} 
                             menu_category={item.menu_category} 
                             menu_price={item.menu_price}
                             horizontal={true}
                             onOrderPress={() => addOrder(item)}
                         />
-
-
                     );
                 })}
 
+                {/* {selectedMenus.map(item => {
+
+                    return(
+
+                        <SelectedMenuData
+                            key={item.menu_id} 
+                            menu_id={item.menu_id} 
+                            menu_name={item.menu_name} 
+                            menu_category={item.menu_category} 
+                            menu_price={item.menu_price}
+                            horizontal={true}
+                        />
+                    );
+                })} */}
+
             </View>
-                    <View style={{marginBottom: resWidth * 0.2}}></View>
+                    <View style={{marginBottom: resWidth * 0.4}}></View>
             </ScrollView>
 
-            <TouchableOpacity style={{marginHorizontal: resWidth * 0.1}} onPress={() => proceedToCheckout()}>        
-                <View style={styles.cart}>
-                    <Text style={styles.txtCartAmount}>
-                        {cartAmount} item(s)
-                    </Text>
-                </View>
+            <TouchableOpacity 
+                style={
+                    cartAmount === null ? styles.cartHidden : styles.cartShow
+                }
+                onPress={() => proceedToCheckout()}>        
+                    <View style={styles.cart}>
+                        <View style={styles.cartInfo}>
+                            {
+                                cartAmount > 1 
+                                    ? 
+                                        <Text style={styles.txtCartAmount}>
+                                            {cartAmount} items
+                                        </Text>
+                                    :
+                                        <Text style={styles.txtCartAmount}>
+                                            {cartAmount} item
+                                        </Text>
+                            }
+                            <Text style={styles.txtCartGrandTotal}>Rp{grandTotal}</Text>
+                        </View>
+                    </View>
             </TouchableOpacity>
 
     </View>
@@ -318,6 +358,12 @@ const styles = StyleSheet.create({
         width: resWidth * 0.05,
         height: resWidth * 0.05,
     },
+    cartShow: {
+        marginHorizontal: resWidth * 0.1,
+    },
+    cartHidden: {
+        display: 'none',
+    },
     cart: {
         bottom: resWidth * 0.18,
         position: 'absolute',
@@ -325,10 +371,19 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         paddingVertical: resWidth * 0.05,
-        paddingHorizontal: resWidth * 0.05,
+        paddingHorizontal: resWidth * 0.06,
         borderRadius: resHeight,
+    },
+    cartInfo: {
+        flexDirection: 'row', 
+        // backgroundColor: '#ccc'
     },
     txtCartAmount: {
         color: '#fff',
-    }
+    },
+    txtCartGrandTotal: {
+        color: '#fff',
+        right: 0,
+        position: 'absolute',
+    },
 })

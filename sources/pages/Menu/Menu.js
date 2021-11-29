@@ -145,7 +145,7 @@ const Menu = ({navigation}) => {
             await axios
                 .get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showMenu')
             .then(response => {
-                console.log('ResponseAddListener: ', response)
+                // console.log('ResponseAddListener: ', response)
                 setMenus(response.data.data.result)
         })
             .catch(e => alert(e.message))

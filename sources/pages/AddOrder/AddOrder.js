@@ -34,6 +34,7 @@ const AddOrder = ({navigation}) => {
             setMenuName(getMenuName);
             setMenuCategory(getMenuCategory);
             setMenuPrice(getMenuPrice);
+            setOrderQuantity(1);
         }
         menuCheck();
     })
