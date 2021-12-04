@@ -169,7 +169,6 @@ const EditOrder = ({navigation}) => {
 
             </View>
 
-
             <TouchableOpacity style={styles.btnAddToCart} onPress={() => updateCart()}>
                 <Text style={styles.txtAddToCart}>Save</Text>
             </TouchableOpacity>
