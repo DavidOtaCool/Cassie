@@ -19,6 +19,7 @@ import {
         EditCashier,
         AddOrder,
         Checkout,
+        EditOrder,
     } from '../pages/pageCollection';
 
 // import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
@@ -157,6 +158,14 @@ const Router = () => {
             <Stack.Screen 
                 name="AddOrder" 
                 component={AddOrder}
+                options={{
+                    headerShown: false,
+                }}
+            />
+
+            <Stack.Screen 
+                name="EditOrder" 
+                component={EditOrder}
                 options={{
                     headerShown: false,
                 }}

@@ -10,41 +10,89 @@ import NotifIcon from '../../assets/icons/bell.png'
 import SearchIcon from '../../assets/icons/search.png'
 import ClearIcon from '../../assets/icons/cross.png'
 import PlusIcon from '../../assets/icons/square-plus-white.png'
+import EditIcon from '../../assets/icons/pencil.png'
+import Checked from '../../assets/icons/checked.png'
 import NumberFormat from 'react-number-format';
 
 var resHeight = Dimensions.get('window').height;
 var resWidth = Dimensions.get('window').width;
 
-const MenuData = ({menu_id, selected_menu_id, menu_name, menu_category, menu_price, onOrderPress}) => {
+const MenuData = ({menu_qty, menu_status, menu_name, menu_price, onOrderPress, onEditOrderPress}) => {
     return (
-        // menu_id >30 ? <View><Text>Hi</Text></View>
-        //     :
-        <View style={styles.menuBox}>
-            <Image 
-                source={PreviewImage}
-                style={styles.menuPicture}
-            />
-            <View style={styles.menuInfo}>
-                <Text style={styles.menuName}>{menu_name}</Text>
-                {/* <Text>{menu_category}</Text> */}
-                {/* <Text style={styles.menuPrice}>Rp{menu_price}</Text> */}
-                <NumberFormat 
-                    value={menu_price} 
-                    displayType={'text'} 
-                    thousandSeparator={true} 
-                    prefix={'Rp'} 
-                    renderText={
-                        formattedValue => <Text style={styles.menuPrice}>{formattedValue}</Text>
-                    } 
-                />
+        menu_status === 'Selected'
+
+        ? 
+            <View>
+                <View style={styles.menuBox}>
+                <View style={styles.selectedMenuBox}></View>
+                    <View>
+                        <View style={styles.menuQtyBox}>
+                            <Text style={styles.txtMenuQty}>{menu_qty}</Text>
+                        </View>
+                        <View style={styles.checkedIcon}>
+                            <Image 
+                                source={Checked}
+                                style={{
+                                    width: resWidth * 0.10, height: resWidth * 0.10
+                                }}
+                            />
+                        </View>
+
+                        <Image 
+                            source={PreviewImage}
+                            style={styles.menuPicture}
+                        />
+                    </View>
+                    <View style={styles.menuInfo}>
+                        <Text style={styles.menuName}>{menu_name}</Text>
+                        <NumberFormat 
+                            value={menu_price} 
+                            displayType={'text'} 
+                            thousandSeparator={true} 
+                            prefix={'Rp'} 
+                            renderText={
+                                formattedValue => <Text style={styles.menuPrice}>{formattedValue}</Text>
+                            } 
+                        />
+                    </View>
+                    
+                    <TouchableOpacity style={styles.menuEditBtn} onPress={() => onEditOrderPress()}>
+                        <Image 
+                            source={EditIcon}
+                            style={styles.menuEditIcon}
+                        />
+                    </TouchableOpacity>
+                </View>
             </View>
-            <TouchableOpacity style={styles.menuEditBtn} onPress={() => onOrderPress()}>
+
+        :
+
+            <View style={styles.menuBox}>
                 <Image 
-                    source={PlusIcon}
-                    style={styles.menuPlusIcon}
+                    source={PreviewImage}
+                    style={styles.menuPicture}
                 />
-            </TouchableOpacity>
-        </View>
+                <View style={styles.menuInfo}>
+                    <Text style={styles.menuName}>{menu_name}</Text>
+                    {/* <Text>{menu_category}</Text> */}
+                    {/* <Text style={styles.menuPrice}>Rp{menu_price}</Text> */}
+                    <NumberFormat 
+                        value={menu_price} 
+                        displayType={'text'} 
+                        thousandSeparator={true} 
+                        prefix={'Rp'} 
+                        renderText={
+                            formattedValue => <Text style={styles.menuPrice}>{formattedValue}</Text>
+                        } 
+                    />
+                </View>
+                <TouchableOpacity style={styles.menuAddBtn} onPress={() => onOrderPress()}>
+                    <Image 
+                        source={PlusIcon}
+                        style={styles.menuPlusIcon}
+                    />
+                </TouchableOpacity>
+            </View>
     )
 }
 
@@ -60,10 +108,11 @@ const MenuData = ({menu_id, selected_menu_id, menu_name, menu_category, menu_pri
 const Order = ({navigation}) => {
 
     const [menus, setMenus] = useState([]);
-    const [selectedMenus, setSelectedMenus] = useState([]);
+    // const [selectedMenus, setSelectedMenus] = useState([]);
 
     const [cart, setCart] = useState([]);
     const [menuId, setMenuId] = useState('');
+    // const [menuQty, setMenuQty] = useState('');
     const [cartAmount, setCartAmount] = useState([]);
     const [grandTotal, setGrandTotal] = useState([]);
 
@@ -97,15 +146,26 @@ const Order = ({navigation}) => {
         navigation.navigate('AddOrder');
     }
 
+    const editOrder = (item) => {
+        console.log('Selected menu for edit order: ', item);
+        AsyncStorage.setItem('edit_order_menu_id',item.menu_id);
+        AsyncStorage.setItem('edit_order_menu_name',item.menu_name);
+        AsyncStorage.setItem('edit_order_menu_category',item.menu_category);
+        AsyncStorage.setItem('edit_order_menu_price',item.menu_price);
+        AsyncStorage.setItem('edit_order_menu_qty',item.menu_qty);
+        AsyncStorage.setItem('edit_order_menu_note',item.menu_note);
+        navigation.navigate('EditOrder');
+    }
+
     useEffect(() => {
         navigation.addListener('focus', async() => {
             await axios
                 .get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showCart')
             .then(response => {
-                console.log('Response Cart Amount: ', response)
+                // console.log('Response Cart Amount: ', response)
                 setCartAmount(response.data.cart_amount.cart_amount)
                 setGrandTotal(response.data.grandtotal.grandtotal)
-                setSelectedMenus(response.data.data.result)
+                // setSelectedMenus(response.data.data.result)
         })
             .catch(e => alert(e.message))
         })
@@ -128,7 +188,7 @@ const Order = ({navigation}) => {
             >
                 <View style={styles.header}>
 
-                    <TouchableOpacity style={styles.btnArrowLeft} onPress={() => navigation.goBack()}>
+                    <TouchableOpacity style={styles.btnArrowLeft} onPress={() => navigation.navigate('Dashboard')}>
                         <Image 
                             source={LeftArrow}
                             style={styles.arrowLeft}
@@ -165,12 +225,15 @@ const Order = ({navigation}) => {
                         <MenuData
                             key={item.menu_id} 
                             // menu_id={item.menu_id} 
-                            // selected_menu_id={selectedMenus.menu_id} 
                             menu_name={item.menu_name} 
                             menu_category={item.menu_category} 
                             menu_price={item.menu_price}
+                            menu_status={item.menu_status}
+                            menu_qty={item.menu_qty}
+                            menu_note={item.menu_note}
                             horizontal={true}
                             onOrderPress={() => addOrder(item)}
+                            onEditOrderPress={() => editOrder(item)}
                         />
                     );
                 })}
@@ -278,36 +341,6 @@ const styles = StyleSheet.create({
     },
     menuBox: {
         backgroundColor: '#fff',
-        height: resWidth * 0.28,
-        // width: 150,
-        width: resWidth * 0.38,
-        shadowColor: '#969696',
-        shadowOffset: {width: 0, height: -(resWidth * 1)},
-        shadowOpacity: resWidth * 0.01,
-        shadowRadius: resWidth * 0.1,
-        elevation: resWidth * 0.012,
-        borderRadius: resWidth * 0.04,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: resWidth * 0.05,
-    },
-    menuName: {
-        fontWeight: 'bold',
-        color: '#000',
-        fontSize: resWidth * 0.045,
-    },
-    menuPrice: {
-        color: '#7E7E7E',
-    },
-    menuList: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        // backgroundColor: '#eee',
-        marginVertical: resWidth * 0.1,
-    },
-    menuBox: {
-        backgroundColor: '#fff',
         // height: resWidth * 0.28,
         paddingBottom: resWidth * 0.1,
         // width: 150,
@@ -321,6 +354,19 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginBottom: resWidth * 0.05,
         marginHorizontal: resWidth * 0.005,
+    },
+    selectedMenuBox: {
+        backgroundColor: '#000',
+        opacity: 0.35,
+        // height: resWidth * 0.28,
+        paddingBottom: resWidth * 0.1,
+        width: resWidth * 0.38,
+        borderRadius: resWidth * 0.04,
+        justifyContent: 'center',
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        zIndex: 1,
     },
     menuPicture: {
         borderRadius: resWidth * 0.04,
@@ -342,7 +388,7 @@ const styles = StyleSheet.create({
         color: '#7E7E7E',
         fontSize: resWidth * 0.035,
     },
-    menuEditBtn: {
+    menuAddBtn: {
         backgroundColor: '#FC6B68',
         position: 'absolute',
         right: 0,
@@ -357,6 +403,51 @@ const styles = StyleSheet.create({
     menuPlusIcon: {
         width: resWidth * 0.05,
         height: resWidth * 0.05,
+    },
+    menuEditBtn: {
+        backgroundColor: '#FC6B68',
+        position: 'absolute',
+        right: 0,
+        bottom: 0,
+        borderBottomRightRadius: resWidth * 0.04,
+        borderTopLeftRadius: resWidth * 0.04,
+        width: resWidth * 0.12,
+        height: resWidth * 0.1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 1,
+    },  
+    menuEditIcon: {
+        width: resWidth * 0.048,
+        height: resWidth * 0.048,
+    },
+    checkedIcon: {
+        zIndex: 1,
+        position: 'absolute',
+        right: 0,
+        left: 0,
+        top: 0,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    menuQtyBox: {
+        backgroundColor: '#66FFCC',
+        zIndex: 1,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        borderBottomRightRadius: resWidth * 0.04,
+        borderTopLeftRadius: resWidth * 0.04,
+        width: resWidth * 0.12,
+        height: resWidth * 0.1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    txtMenuQty: {
+        color: '#fff',
+        fontSize: resWidth * 0.05,
+        fontWeight: 'bold',
     },
     cartShow: {
         marginHorizontal: resWidth * 0.1,

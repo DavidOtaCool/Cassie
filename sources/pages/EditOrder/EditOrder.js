@@ -11,14 +11,17 @@ import NumberFormat from 'react-number-format';
 var resHeight = Dimensions.get('window').height;
 var resWidth = Dimensions.get('window').width;
 
-const AddOrder = ({navigation}) => {
+const EditOrder = ({navigation}) => {
     const keyboardVerticalOffset = Platform.OS === 'android' ? resWidth * 0.1 : 0
-    const [orderQuantity, setOrderQuantity] = useState(1);
     
     const [menuId, setMenuId] = useState("");
     const [menuName, setMenuName] = useState("");
     const [menuCategory, setMenuCategory] = useState("");
     const [menuPrice, setMenuPrice] = useState(0);
+    const [menuNote, setMenuNote] = useState("");
+    
+    const [orderQuantity, setOrderQuantity] = useState(1);
+
     const [dataMenu, setDataMenu] = useState({
         menu_id: menuId,
         menu_name: menuName,
@@ -40,7 +43,14 @@ const AddOrder = ({navigation}) => {
                 {
                     text: 'Yes', 
                     // onPress: () => navigation.navigate('Order'),
-                    onPress: () => navigation.goBack(),
+                    //onPress: () => navigation.goBack(),
+
+                    onPress: () => axios
+                        .get(`http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=deleteCart&menu_id=${menuId}`)
+                        .then(res => {
+                            console.log('res delete cart: ', res);
+                            navigation.goBack();
+                        })
                 }
             ])
     }
@@ -49,15 +59,18 @@ const AddOrder = ({navigation}) => {
         navigation.addListener('focus', async() => {
         const menuCheck = async () =>{
 
-            const getMenuId = await AsyncStorage.getItem('order_menu_id');
-            const getMenuName = await AsyncStorage.getItem('order_menu_name');
-            const getMenuCategory = await AsyncStorage.getItem('order_menu_category');
-            const getMenuPrice = await AsyncStorage.getItem('order_menu_price');
+            const getMenuId = await AsyncStorage.getItem('edit_order_menu_id');
+            const getMenuName = await AsyncStorage.getItem('edit_order_menu_name');
+            const getMenuCategory = await AsyncStorage.getItem('edit_order_menu_category');
+            const getMenuPrice = await AsyncStorage.getItem('edit_order_menu_price');
+            const getMenuQty = await AsyncStorage.getItem('edit_order_menu_qty');
+            const getMenuNote = await AsyncStorage.getItem('edit_order_menu_note');
             setMenuId(getMenuId);
             setMenuName(getMenuName);
             setMenuCategory(getMenuCategory);
-            setMenuPrice(getMenuPrice);
-            setOrderQuantity(1);
+            setMenuPrice(parseInt(getMenuPrice));
+            setOrderQuantity(parseInt(getMenuQty));
+            setMenuNote(getMenuNote);
         }
         menuCheck();
     })
@@ -70,20 +83,15 @@ const AddOrder = ({navigation}) => {
         });
       };
 
-    const addToCart = () => {{
+      const updateCart = () => {{
 
-        const menuData = `menu_id=${menuId}&menu_name=${menuName}&temp_order_subtotal=${menuPrice}&temp_order_qty=${orderQuantity}&menu_note=${dataMenu.menu_note}`;
+        const editedCartData = `temp_order_subtotal=${menuPrice}&temp_order_qty=${orderQuantity}&menu_note=${dataMenu.menu_note}`;
 
-            axios.post('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=addToCart', menuData)
+            axios.post(`http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=editCart&menu_id=${menuId}`, editedCartData)
             .then(res => {
-                console.log('Add to Cart Response: ', res);
+                console.log('Res Edit: ', res);
                 navigation.navigate('Order');
         });
-
-                // console.log('menu_id: ', menuId);
-                // console.log('menu_name: ', menuName);
-                // console.log('temp_order_subtotal: ', menuPrice);
-                // console.log('temp_order_qty: ', orderQuantity);
 
     }}
 
@@ -98,7 +106,7 @@ const AddOrder = ({navigation}) => {
                             style={styles.arrowLeft}
                         />
                     </TouchableOpacity>
-                    <Text style={styles.menuTitle}>Add Order</Text>
+                    <Text style={styles.menuTitle}>Edit Order</Text>
 
             </View>
             <View style={styles.menuBox}>
@@ -153,6 +161,7 @@ const AddOrder = ({navigation}) => {
                         numberOfLines={resWidth * 0.02}
                         placeholder="What does your customer prefer?"
                         textAlignVertical="top"
+                        defaultValue={menuNote}
                         onChangeText={value => onInputChange(value, 'menu_note')} 
                     />
                    
@@ -161,15 +170,15 @@ const AddOrder = ({navigation}) => {
             </View>
 
 
-            <TouchableOpacity style={styles.btnAddToCart} onPress={() => addToCart()}>
-                <Text style={styles.txtAddToCart}>Add to Cart</Text>
+            <TouchableOpacity style={styles.btnAddToCart} onPress={() => updateCart()}>
+                <Text style={styles.txtAddToCart}>Save</Text>
             </TouchableOpacity>
             </KeyboardAvoidingView>
         </View>
     )
 }
 
-export default AddOrder
+export default EditOrder
 
 const styles = StyleSheet.create({
     container: {

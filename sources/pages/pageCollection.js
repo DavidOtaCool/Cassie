@@ -17,6 +17,7 @@ import Splash from './Splash/Splash';
 import EditMenu from './EditMenu/EditMenu';
 import EditCashier from './EditCashier/EditCashier';
 import AddOrder from './AddOrder/AddOrder';
+import EditOrder from './EditOrder/EditOrder';
 import Checkout from './Checkout/Checkout';
 
 export {
@@ -40,4 +41,5 @@ export {
     EditCashier,
     AddOrder,
     Checkout,
+    EditOrder
 };

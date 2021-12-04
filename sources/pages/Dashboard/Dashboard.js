@@ -55,7 +55,7 @@ const Dashboard = ({navigation}) => {
             await axios
                 .get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=shortcutBoxInfo')
             .then(response => {
-                console.log('Shortcut Box Info: ', response)
+                // console.log('Shortcut Box Info: ', response)
                 setTotalOrder(response.data.total_order)
                 setTodayOrder(response.data.today_order)
                 setTodayIncome(response.data.today_income.today_income)
