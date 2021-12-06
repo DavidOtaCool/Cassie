@@ -18,6 +18,7 @@ const AddOrder = ({navigation}) => {
     const [menuId, setMenuId] = useState("");
     const [menuName, setMenuName] = useState("");
     const [menuCategory, setMenuCategory] = useState("");
+    // const [menuNote, setMenuNote] = useState('');
     const [menuPrice, setMenuPrice] = useState(0);
     const [dataMenu, setDataMenu] = useState({
         menu_id: menuId,
@@ -58,6 +59,7 @@ const AddOrder = ({navigation}) => {
             setMenuCategory(getMenuCategory);
             setMenuPrice(getMenuPrice);
             setOrderQuantity(1);
+            // setMenuNote("");
         }
         menuCheck();
     })
@@ -77,7 +79,9 @@ const AddOrder = ({navigation}) => {
             axios.post('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=addToCart', menuData)
             .then(res => {
                 console.log('Add to Cart Response: ', res);
-                navigation.navigate('Order');
+                // setMenuNote("");
+                // navigation.navigate('Order');
+                navigation.goBack()
         });
 
                 // console.log('menu_id: ', menuId);
@@ -153,6 +157,7 @@ const AddOrder = ({navigation}) => {
                         numberOfLines={resWidth * 0.02}
                         placeholder="What does your customer prefer?"
                         textAlignVertical="top"
+                        // defaultValue={menuNote}
                         onChangeText={value => onInputChange(value, 'menu_note')} 
                     />
                    

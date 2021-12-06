@@ -90,7 +90,7 @@ const EditOrder = ({navigation}) => {
             axios.post(`http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=editCart&menu_id=${menuId}`, editedCartData)
             .then(res => {
                 console.log('Res Edit: ', res);
-                navigation.navigate('Order');
+                navigation.goBack();
         });
 
     }}
@@ -162,7 +162,7 @@ const EditOrder = ({navigation}) => {
                         placeholder="What does your customer prefer?"
                         textAlignVertical="top"
                         defaultValue={menuNote}
-                        onChangeText={value => onInputChange(value, 'menu_note')} 
+                        onChangeText={defaultValue => onInputChange(defaultValue, 'menu_note')} 
                     />
                    
                 </View>

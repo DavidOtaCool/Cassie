@@ -114,7 +114,7 @@ const Order = ({navigation}) => {
     const [menuId, setMenuId] = useState('');
     // const [menuQty, setMenuQty] = useState('');
     const [cartAmount, setCartAmount] = useState([]);
-    const [grandTotal, setGrandTotal] = useState([]);
+    const [grandTotal, setGrandTotal] = useState('');
 
     const [searchQuery, setSearchQuery] = React.useState('');
 
@@ -275,7 +275,17 @@ const Order = ({navigation}) => {
                                             {cartAmount} item
                                         </Text>
                             }
-                            <Text style={styles.txtCartGrandTotal}>Rp{grandTotal}</Text>
+                            {/* <Text style={styles.txtCartGrandTotal}>Rp{grandTotal}</Text> */}
+                            <NumberFormat 
+                                value={grandTotal}
+                                displayType={'text'} 
+                                thousandSeparator={true} 
+                                prefix={'Rp'}
+                                
+                                renderText={
+                                    formattedValue => <Text style={styles.txtCartGrandTotal}> {formattedValue}</Text>
+                                } 
+                            />
                         </View>
                     </View>
             </TouchableOpacity>
