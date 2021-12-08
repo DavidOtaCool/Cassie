@@ -47,6 +47,10 @@ const Checkout = ({navigation}) => {
     const [notMember, setNotMember] = useState(null);
     const [isMember, setIsMember] = useState(null);
 
+    const [checkMember, setCheckMember] = useState(null);
+    const [validatedMemberName, setValidatedMemberName] = useState('');
+
+
     const btnNo = () => {{
         setIsMember(null);
         setNotMember(true);
@@ -73,6 +77,25 @@ const Checkout = ({navigation}) => {
           [input]: value,
         });
       };
+
+    
+    const checkMemberCode = () => {{
+    //   const dataMember = `customer_unique=${cashierLogin.email}&cashier_password=${cashierLogin.password}`;
+        axios.get(
+            `http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=validateMember&customer_unique_code=${dataCheckout.ordering_customer_code}`)
+            .then(res => {
+                console.log('Result check member: ', res);
+                if (res.data.status == 'correct') {
+                    //alert('correct');
+                    setValidatedMemberName(res.data.customer_name);
+                    setCheckMember(true);
+                }else{
+                    alert('Sorry, the code you entered is wrong :(');
+                    setCheckMember(null);
+                }
+
+            })
+    }}
 
     useEffect(() => {
         navigation.addListener('focus', async() => {
@@ -195,16 +218,23 @@ const Checkout = ({navigation}) => {
             </View>
 
         </View>
+                
+                <View style={{marginBottom: resWidth * 0.08}}></View>
 
             {
                 isMember ? (
-                    <TextInput 
-                        placeholder="Customer's special code" 
-                        placeholderTextColor="#B1B1B1"
-                        keyboardType="number-pad"
-                        style={styles.customTextInput}
-                        onChangeText={value => onInputChange(value, 'ordering_customer_code')} 
-                    />
+                    <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                        <TextInput 
+                            placeholder="Customer's special code" 
+                            placeholderTextColor="#B1B1B1"
+                            keyboardType="number-pad"
+                            style={styles.customTextInput}
+                            onChangeText={value => onInputChange(value, 'ordering_customer_code')} 
+                        />
+                        <TouchableOpacity onPress={() => checkMemberCode()} style={styles.buttonConfirm}>
+                            <Text style={styles.txtButtonConfirm}>Validate</Text>
+                        </TouchableOpacity>
+                    </View>
                 ) : 
                 null
             }
@@ -221,9 +251,17 @@ const Checkout = ({navigation}) => {
                 : null
             }
            
-                    <View style={{marginBottom: resWidth * 0.1}}></View>
+                    <View style={{marginBottom: resWidth * 0.08}}></View>
 
             <View style={styles.proceedToCheckoutBox}>
+
+                {
+                    checkMember ?
+                        <View style={styles.itemCheckOut}>
+                            <Text style={styles.itemInfo}>Customer name: {validatedMemberName}</Text>
+                        </View>
+                    : null
+                }
 
                 <View style={styles.itemCheckOut}>
                     <Text style={styles.itemInfo}>Cashier on duty: {cashierOnDuty}</Text>
@@ -367,7 +405,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     buttonNo: {
-        backgroundColor: '#FF6464',
+        // backgroundColor: '#FF6464',
+        backgroundColor: '#FF345D',
         height: resWidth * 0.12,
         width: resWidth * 0.28,
         borderRadius: resWidth,
@@ -379,6 +418,30 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: resWidth * 0.045,
         letterSpacing: resWidth * 0.008,
+    },
+    customTextInput: {
+        backgroundColor: '#F4F6FA',
+        borderTopLeftRadius: resWidth * 0.028,
+        borderBottomLeftRadius: resWidth * 0.028,
+        padding: resWidth * 0.05,
+        // flex: 0.65,
+        flex: resWidth * 0.065,
+    },
+    buttonConfirm: {
+        backgroundColor: '#32bea6',
+        borderTopRightRadius: resWidth * 0.028,
+        borderBottomRightRadius: resWidth * 0.028,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: resWidth * 0.05,
+        // flex: 0.35,
+        flex: resWidth * 0.035,
+    },
+    txtButtonConfirm: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: resWidth * 0.045,
+        letterSpacing: resWidth * 0.002,
     },
     proceedToCheckoutBox: {
         backgroundColor: '#F4F6FA',
@@ -424,13 +487,5 @@ const styles = StyleSheet.create({
         fontSize: resWidth * 0.042,
         fontWeight: '500',
         letterSpacing: resWidth * 0.01,
-    },
-    
-    customTextInput: {
-        alignSelf: 'stretch',
-        backgroundColor: '#F4F6FA',
-        borderRadius: resWidth * 0.028,
-        padding: resWidth * 0.05,
-        marginTop: resHeight * 0.03,
     },
 })
