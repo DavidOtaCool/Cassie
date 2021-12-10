@@ -318,7 +318,7 @@ const Checkout = ({navigation}) => {
                         {
                         usePoint ? 
                             memberPoint < 1 ? null :
-
+                            
                                 memberPoint > 1 ?
                                     (
                                         <Checkbox.Item
