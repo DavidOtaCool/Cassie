@@ -129,7 +129,7 @@ const Order = ({navigation}) => {
             await axios
                 .get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showMenu')
             .then(response => {
-                console.log('Response Order Menu: ', response)
+                // console.log('Response Order Menu: ', response)
                 setMenus(response.data.data.result)
         })
             .catch(e => alert(e.message))

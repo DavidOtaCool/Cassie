@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Dimensions, StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler';
 import { ScrollView } from 'react-native-gesture-handler';
+// import CheckBox from '@react-native-community/checkbox';
+import { Checkbox } from 'react-native-paper';
 import PreviewImage from '../../assets/images/preview2.png'
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -49,11 +51,19 @@ const Checkout = ({navigation}) => {
 
     const [checkMember, setCheckMember] = useState(null);
     const [validatedMemberName, setValidatedMemberName] = useState('');
+    const [memberPoint, setMemberPoint] = useState('');
+    const [memberPointValue, setMemberPointValue] = useState('');
+    const [pointCut, setPointCut] = useState('');
 
+    const [checked, setChecked] = useState(false);
+    const [usePoint, setUsePoint] = useState(null);
 
     const btnNo = () => {{
         setIsMember(null);
         setNotMember(true);
+        setCheckMember(null);
+        setUsePoint(null);
+        setChecked(false);
     }}
 
     const btnYes = () => {{
@@ -63,6 +73,8 @@ const Checkout = ({navigation}) => {
 
     const [cartItems, setCartItems] = useState([]);
     const [grandTotal, setGrandTotal] = useState('');
+    const [totalPayment, setTotalPayment] = useState('');
+
     const [cashierOnDuty, setCashierOnDuty] = useState([]);
     const [dataCheckout, setDataCheckout] = useState({
         // cashier_on_duty: cashierOnDuty,
@@ -84,17 +96,29 @@ const Checkout = ({navigation}) => {
         axios.get(
             `http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=validateMember&customer_unique_code=${dataCheckout.ordering_customer_code}`)
             .then(res => {
-                console.log('Result check member: ', res);
+                // console.log('Result check member: ', res);
                 if (res.data.status == 'correct') {
                     //alert('correct');
                     setValidatedMemberName(res.data.customer_name);
+                    setMemberPoint(parseInt(res.data.customer_point));
                     setCheckMember(true);
+                    setChecked(false);
+                    setUsePoint(true);
                 }else{
                     alert('Sorry, the code you entered is wrong :(');
                     setCheckMember(null);
+                    setChecked(false);
+                    setUsePoint(null);
                 }
 
             })
+    }}
+
+    // const [toggleCheckBox, setToggleCheckBox] = useState(false);
+
+    const checkUsePoint = () => {{
+        setChecked(!checked);
+        setMemberPointValue(parseInt(memberPoint * 100));
     }}
 
     useEffect(() => {
@@ -106,18 +130,57 @@ const Checkout = ({navigation}) => {
                 setCashierOnDuty(getCashierOnDuty);
             }
             menuNameCheck();
+            // setTotalPayment(grandTotal)
 
             await axios
                 .get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showCart')
             .then(response => {
-                console.log('Response Cart Items: ', response)
+                // console.log('Response Cart Items: ', response)
                 setCartItems(response.data.data.result)
-                setGrandTotal(response.data.grandtotal.grandtotal)
+                setGrandTotal(parseInt(response.data.grandtotal.grandtotal))
+                // setTotalPayment(parseInt(response.data.grandtotal.grandtotal))
+
+                // if(checked === true){
+                //     setTotalPayment(1)
+    
+                // }else{
+                //     setTotalPayment(parseInt(response.data.grandtotal.grandtotal))
+                // }
         })
+
             .catch(e => alert(e.message))
+
         })
         
     }, []);
+
+    useEffect(() => {
+        if(checked === true){
+            if(grandTotal >= memberPointValue)
+            {
+                setPointCut(memberPointValue)
+            }else{
+                setPointCut(grandTotal);
+            }
+        }else{
+            setPointCut(0);
+        }
+
+      });
+
+    useEffect(() => {
+        if(checked === true){
+            if(grandTotal >= pointCut)
+            {
+                setTotalPayment(grandTotal - pointCut)
+            }else{
+                setTotalPayment(0);
+            }
+        }else{
+            setTotalPayment(grandTotal);
+        }
+
+      });
 
     const placeOrder = () => {{
 
@@ -141,12 +204,28 @@ const Checkout = ({navigation}) => {
             if(dataCheckout.ordering_customer_code === ''){
                 alert("Please input your customer's special code");
             }else{
-                const checkoutData = `cashier_on_duty=${cashierOnDuty}&ordering_customer_code=${dataCheckout.ordering_customer_code}&member=${'Yes'}&order_grandtotal=${grandTotal}`;
+                // const checkoutData = `cashier_on_duty=${cashierOnDuty}&ordering_customer_code=${dataCheckout.ordering_customer_code}&member=${'Yes'}&order_grandtotal=${grandTotal}`;
+                //     axios.post('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=checkout', checkoutData)
+                //     .then(res => {
+                //         console.log('respon: ', res);
+                //         navigation.navigate('Dashboard');
+                // });
+
+                if(checked === true){
+                    const checkoutData = `cashier_on_duty=${cashierOnDuty}&ordering_customer_code=${dataCheckout.ordering_customer_code}&member=${'Yes'}&use_point=${'Yes'}&point_used=${pointCut/100}&order_grandtotal=${grandTotal}&point_cut=${pointCut}&total_payment=${totalPayment}`;
                     axios.post('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=checkout', checkoutData)
                     .then(res => {
                         console.log('respon: ', res);
                         navigation.navigate('Dashboard');
-                });
+                    });
+                }else{
+                    const checkoutData = `cashier_on_duty=${cashierOnDuty}&ordering_customer_code=${dataCheckout.ordering_customer_code}&member=${'Yes'}&use_point=${'No'}&order_grandtotal=${grandTotal}`;
+                        axios.post('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=checkout', checkoutData)
+                        .then(res => {
+                            console.log('respon: ', res);
+                            navigation.navigate('Dashboard');
+                        });
+                }
             }   
         }
         else{
@@ -223,35 +302,64 @@ const Checkout = ({navigation}) => {
 
             {
                 isMember ? (
-                    <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                        <TextInput 
-                            placeholder="Customer's special code" 
-                            placeholderTextColor="#B1B1B1"
-                            keyboardType="number-pad"
-                            style={styles.customTextInput}
-                            onChangeText={value => onInputChange(value, 'ordering_customer_code')} 
-                        />
-                        <TouchableOpacity onPress={() => checkMemberCode()} style={styles.buttonConfirm}>
-                            <Text style={styles.txtButtonConfirm}>Validate</Text>
-                        </TouchableOpacity>
+                    <View>
+                        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                            <TextInput 
+                                placeholder="Customer's special code" 
+                                placeholderTextColor="#B1B1B1"
+                                keyboardType="number-pad"
+                                style={styles.customTextInput}
+                                onChangeText={value => onInputChange(value, 'ordering_customer_code')} 
+                            />
+                            <TouchableOpacity onPress={() => checkMemberCode()} style={styles.buttonConfirm}>
+                                <Text style={styles.txtButtonConfirm}>Validate</Text>
+                            </TouchableOpacity>
+                        </View>
+                        {
+                        usePoint ? 
+                            memberPoint < 1 ? null :
+
+                                memberPoint > 1 ?
+                                    (
+                                        <Checkbox.Item
+                                            status={checked ? 'checked' : 'unchecked'}
+                                            label={"Use point? ("+memberPoint+" points)"}
+                                            onPress={() => checkUsePoint()}
+                                            style={styles.usePointCheckBox}
+                                        /> 
+                                    ) :
+                                    (
+                                        <Checkbox.Item
+                                            status={checked ? 'checked' : 'unchecked'}
+                                            label={"Use point? ("+memberPoint+" point)"}
+                                            onPress={() => checkUsePoint()}
+                                            style={styles.usePointCheckBox}
+                                        /> 
+                                    )
+                                : null
+                        }
+                            <View style={{marginBottom: resWidth * 0.08}} />
+                    
                     </View>
+                    
                 ) : 
                 null
             }
             {
                 notMember ? 
-                (
-                    <TextInput 
-                        placeholder="Customer's name" 
-                        placeholderTextColor="#B1B1B1"
-                        style={styles.customTextInput}
-                        onChangeText={value => onInputChange(value, 'not_member_customer_name')} 
-                    />
+                (   <View>
+                        <TextInput 
+                            placeholder="Customer's name" 
+                            placeholderTextColor="#B1B1B1"
+                            style={styles.customTextInput}
+                            onChangeText={value => onInputChange(value, 'not_member_customer_name')} 
+                        />
+                            <View style={{marginBottom: resWidth * 0.08}} />
+                    </View>
                 )
                 : null
             }
            
-                    <View style={{marginBottom: resWidth * 0.08}}></View>
 
             <View style={styles.proceedToCheckoutBox}>
 
@@ -263,12 +371,14 @@ const Checkout = ({navigation}) => {
                     : null
                 }
 
-                <View style={styles.itemCheckOut}>
-                    <Text style={styles.itemInfo}>Cashier on duty: {cashierOnDuty}</Text>
+                <View style={styles.itemCheckOutNormal}>
+                    <Text style={styles.itemInfoNormal}>Cashier on duty: {cashierOnDuty}</Text>
                 </View>
 
+                        <View style={{marginBottom: resWidth * 0.02}} />
+
                 <View style={styles.itemCheckOut}>
-                    <Text style={styles.itemInfo}>Total Price</Text>
+                    <Text style={styles.itemInfoNormal}>Total Price</Text>
                     <NumberFormat 
                         value={grandTotal}
                         displayType={'text'} 
@@ -276,9 +386,105 @@ const Checkout = ({navigation}) => {
                         prefix={'Rp'}
 
                         renderText={
-                            formattedValue => <Text style={styles.itemResult}> {formattedValue}</Text>
+                            formattedValue => <Text style={styles.itemResultNormal}> {formattedValue}</Text>
                         } 
-                />
+                    />
+                </View>
+
+                {
+                    checked ?
+                        <View style={styles.itemCheckOut}>
+                            <Text style={styles.itemInfoNormal}>Point cut:</Text>
+                            <NumberFormat 
+                                value={pointCut}
+                                displayType={'text'} 
+                                thousandSeparator={true} 
+                                prefix={'Rp'}
+
+                                renderText={
+                                    formattedValue => <Text style={styles.itemResultNormal}>-{formattedValue}</Text>
+                                } 
+                            />
+                            {/* {
+
+                            grandTotal >= (pointCut) ?
+                            <NumberFormat 
+                                value={pointCut}
+                                displayType={'text'} 
+                                thousandSeparator={true} 
+                                prefix={'Rp'}
+
+                                renderText={
+                                    formattedValue => <Text style={styles.itemResultNormal}>-{formattedValue}</Text>
+                                } 
+                            />
+                            :
+                            <NumberFormat 
+                                value={grandTotal}
+                                displayType={'text'} 
+                                thousandSeparator={true} 
+                                prefix={'Rp'}
+
+                                renderText={
+                                    formattedValue => <Text style={styles.itemResultNormal}>-{formattedValue}</Text>
+                                } 
+                            />
+                        } */}
+
+                        </View>
+                    : null
+                }
+
+                <View style={styles.itemCheckOut}>
+                    <Text style={styles.itemInfo}>Total Payment</Text>
+                    {/* {
+                        checked ?
+                            grandTotal > pointCut ?
+                            <NumberFormat 
+                                value={grandTotal - pointCut}
+                                displayType={'text'} 
+                                thousandSeparator={true} 
+                                prefix={'Rp'}
+
+                                renderText={
+                                    formattedValue => <Text style={styles.itemResult}> {formattedValue}</Text>
+                                } 
+                            />
+                            :
+                            <NumberFormat 
+                                value={0}
+                                displayType={'text'} 
+                                thousandSeparator={true} 
+                                prefix={'Rp'}
+
+                                renderText={
+                                    formattedValue => <Text style={styles.itemResult}> {formattedValue}</Text>
+                                } 
+                            />
+                        :
+                        <NumberFormat 
+                            value={grandTotal}
+                            displayType={'text'} 
+                            thousandSeparator={true} 
+                            prefix={'Rp'}
+
+                            renderText={
+                                formattedValue => <Text style={styles.itemResult}> {formattedValue}</Text>
+                            } 
+                        />
+                    } */}
+
+                    <NumberFormat 
+                            value={totalPayment}
+                            displayType={'text'} 
+                            thousandSeparator={true} 
+                            prefix={'Rp'}
+
+                            renderText={
+                                formattedValue => <Text style={styles.itemResult}> {formattedValue}</Text>
+                            } 
+                        />
+
                 </View>
                 
                 <TouchableOpacity style={styles.btnPlaceOrder} onPress={() => placeOrder()}>
@@ -443,6 +649,9 @@ const styles = StyleSheet.create({
         fontSize: resWidth * 0.045,
         letterSpacing: resWidth * 0.002,
     },
+    usePointCheckBox: {
+        marginTop: resWidth * 0.01,
+    },
     proceedToCheckoutBox: {
         backgroundColor: '#F4F6FA',
         paddingHorizontal: resWidth * 0.05,
@@ -462,6 +671,17 @@ const styles = StyleSheet.create({
     itemResult: {
         color: '#000',
         fontWeight: 'bold',
+        fontSize: resWidth * 0.04,
+        position: 'absolute',
+        right: 0,
+    },
+    itemInfoNormal: {
+        color: '#000',
+        fontSize: resWidth * 0.04,
+        marginBottom: resWidth * 0.02,
+    },
+    itemResultNormal: {
+        color: '#000',
         fontSize: resWidth * 0.04,
         position: 'absolute',
         right: 0,
