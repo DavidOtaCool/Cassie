@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Dimensions, StyleSheet, Text, View, TouchableOpacity, Image, FlatList, VirtualizedList } from 'react-native'
+import { Dimensions, StyleSheet, Text, View, TouchableOpacity, Image, FlatList, VirtualizedList, Touchable } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler';
 import { Searchbar } from 'react-native-paper';
 import axios from 'axios';
@@ -9,6 +9,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 import Animated from 'react-native-reanimated';
 import BottomSheet from 'reanimated-bottom-sheet';
 import ImagePicker from 'react-native-image-crop-picker';
+import ImgToBase64 from 'react-native-image-base64';
 import { createStackNavigator } from '@react-navigation/stack'
 import LeftArrow from '../../assets/icons/left.png'
 import NotifIcon from '../../assets/icons/bell.png'
@@ -22,82 +23,31 @@ import NumberFormat from 'react-number-format';
 var resHeight = Dimensions.get('window').height;
 var resWidth = Dimensions.get('window').width;
 
-const clickPicture = (item) => {
-    console.log("Selected Menu Picture: ", item);
-    // bs.current.snapTo(1);
-    bs.current.snapTo(0);
-}
 
-const takePhotoFromCamera = () => {
-    ImagePicker.openCamera({
-      compressImageMaxWidth: 300,
-      compressImageMaxHeight: 300,
-      cropping: true,
-    //   compressImageQuality: 0.7
-    }).then(image => {
-      console.log(image);
-      setImage(image.path);
-      bs.current.snapTo(1);
-    });
-  }
-
-  const choosePhotoFromLibrary = () => {
-    ImagePicker.openPicker({
-      width: 300,
-      height: 300,
-      cropping: true,
-    //   compressImageQuality: 0.7
-    }).then(image => {
-      console.log(image);
-      setImage(image.path);
-      bs.current.snapTo(1);
-    });
-  }
-
-const renderInner = () => (
-
-    <View style={styles.panel}>
-      <View style={{alignItems: 'center'}}>
-        <Text style={styles.panelTitle}>Upload Photo</Text>
-        <Text style={styles.panelSubtitle}>Choose the menu picture</Text>
-      </View>
-      <TouchableOpacity style={styles.panelButton} onPress={takePhotoFromCamera}>
-        <Text style={styles.panelButtonTitle}>Take Photo</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.panelButton} onPress={choosePhotoFromLibrary}>
-        <Text style={styles.panelButtonTitle}>Choose From Library</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.panelButton}
-        onPress={() => bs.current.snapTo(1)}>
-        <Text style={styles.panelButtonTitle}>Cancel</Text>
-      </TouchableOpacity>
-    </View>
-  );
-
-const renderHeader = () => (
-    <View style={styles.bottomSheetHeader}>
-      <View style={styles.panelHeader}>
-        <View style={styles.panelHandle} />
-      </View>
-    </View>
-  );
-
-const bs = React.createRef();
-const fall = new Animated.Value(1);
-
-
-
-const MenuData = ({menu_name, menu_category, menu_price, onClickUpdate, onSelect, onUpload, onClickPicture}) => {
+const MenuData = ({menu_name, menu_category, menu_price, menu_image, menu_picture, onClickUpdate, onSelect, onUpload, onClickPicture}) => {
     
     return (
             <View style={styles.menuBox}>
                 <TouchableOpacity onPress={() => onClickPicture()}>
-                    <Image 
-                        source={PreviewImage}
-                        style={styles.menuPicture}
-                    />
-                </TouchableOpacity>
+                    {
+                        menu_picture === null ?
+                        <Image 
+                            // source={PreviewImage
+                            source={{
+                                uri: menu_image,
+                            }}
+                            style={styles.menuPicture}
+                        /> 
+                        :
+                        <Image 
+                            // source={PreviewImage
+                            source={{
+                                uri: `http://cassie-pos.000webhostapp.com/cassie/upload/menuPicture/${menu_picture}`,
+                            }}
+                            style={styles.menuPicture}
+                        /> 
+                    }
+                    </TouchableOpacity>
                 <View style={styles.menuInfo}>
                     <Text style={styles.menuName}>{menu_name}</Text>
                     {/* <Text>{menu_category}</Text> */}
@@ -124,14 +74,211 @@ const MenuData = ({menu_name, menu_category, menu_price, onClickUpdate, onSelect
 }
 
 const Menu = ({navigation}) => {
+
+    // const [menuImage, setMenuImage] = useState('https://robohash.org/test');
+    const [menuImage, setMenuImage] = useState('http://cassie-pos.000webhostapp.com/cassie/upload/menuPicture/menu_preview.png');
+    const [uploadedImage, setUploadedImage] = useState('');
+    const [selectedMenuPictureId, setSelectedMenuPictureId] = useState("");
+    const [selectedMenuPictureName, setSelectedMenuPictureName] = useState("");
+    const [dataImage, setDataImage] = useState('');
+    const [confirmPicture, setConfirmPicture] = useState(null);
+
+    const bs = React.createRef();
+    const fall = new Animated.Value(1);
     
-  
+
+    const clickPicture = (item) => {
+        console.log("Selected Menu Picture: ", item);
+        // AsyncStorage.setItem('selected_menu_picture_id',item.menu_id);
+        setSelectedMenuPictureId(item.menu_id);
+        setSelectedMenuPictureName(item.menu_name);
+        // bs.current.snapTo(1);
+        bs.current.snapTo(0);
+    }
+
+    // useEffect(() => {
+    //     navigation.addListener('focus', async() => {
+    //     const selectedMenuPic = async () =>{
+    //         const getSelectedMenuPictureId = await AsyncStorage.getItem('selected_menu_picture_id');
+    //         setSelectedMenuPictureId(getSelectedMenuPictureId);
+    //     }
+    //     selectedMenuPic();
+    // })
+    // }, []);
+    
+    const takePhotoFromCamera = () => {
+        ImagePicker.openCamera({
+          compressImageMaxWidth: 300,
+          compressImageMaxHeight: 300,
+          cropping: true,
+        //   compressImageQuality: 0.7
+        }).then(image => {
+          console.log(image);
+        //   setMenuImage(image.path);
+          bs.current.snapTo(1);
+        });
+      }
+
+    //   const choosePhotoFromLibrary = option => {
+          
+    //     const options = {
+    //         storageOptions: {
+    //           path: 'image',
+    //           mediaType: 'photo',
+    //         },
+    //         includeBase64: true,
+    //       };
+            
+    //     ImagePicker.openPicker({
+    //       width: 300,
+    //       height: 300,
+    //       cropping: true,
+    //     //   compressImageQuality: 0.7
+    //     }).then(image => {
+    //       console.log(image);
+          
+          
+      
+    //       option(options, res => {
+    //           const source = {uri: res.assets[0].uri};
+
+    //             setMenuImage(image.path);
+    //             setDataImage(res.assets[0].base64);
+    //             uploadMenuPic();
+
+    //             bs.current.snapTo(1);
+    //       });   
+          
+    //     });
+    //   }
+    
+      const choosePhotoFromLibrary = () => {
+            
+        ImagePicker.openPicker({
+          width: 300,
+          height: 300,
+          cropping: true,
+        //   compressImageQuality: 0.7
+        }).then(image => {
+          console.log(image);
+        //   setMenuImage(image.path);
+          ImgToBase64.getBase64String(image.path)
+            .then(base64String => {
+                setDataImage(base64String)
+                // AsyncStorage.setItem('upload_picture_data_image',setDataImage(base64String));
+            })
+        bs.current.snapTo(1);
+          setUploadedImage(image.path);
+
+        setConfirmPicture(true);
+
+            // uploadThePic();
+            // .catch(err => setDataImage(err));
+        //   setDataImage(res.assets[0].base64);
+        //   uploadMenuPic();
+            
+            
+        })
+        // .finally(uploadThePic());
+            // RNFetchBlob.fetch('POST', `http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=uploadMenuPicture&menu_id=${selectedMenuPictureId}`, 
+            // {
+            //   Authorization : "Bearer access-token",
+            //   otherHeader : "foo",
+            //   'Content-Type' : 'multipart/form-data',
+            // }, [
+            // // element with property `filename` will be transformed into `file` in form data
+            // { name : 'image', filename : 'avatar.png', type: 'image/png', data: dataImage}
+            // // custom content type
+            // ]).then((resp) => {
+            //   console.log(resp);
+            // });
+      }
+         
+      const uploadMenuPic = async () => {
+        // console.log("Selected menu: ", item);
+        RNFetchBlob.fetch('POST', `http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=uploadMenuPicture&menu_id=${selectedMenuPictureId}`, {
+            Authorization : "Bearer access-token",
+            otherHeader : "foo",
+            'Content-Type' : 'multipart/form-data',
+          }, [
+            // element with property `filename` will be transformed into `file` in form data
+            { name : 'image', filename : 'avatar.png', type: 'image/png', data: dataImage}
+            // custom content type
+          ]).then((resp) => {
+            console.log(resp);
+            setConfirmPicture(null);
+            // navigation.navigate('Menu');
+          })
+        // RNFetchBlob.fetch(
+        //   'POST',
+        //   `http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=uploadMenuPicture&menu_id=${selectedMenuPictureId}`,
+        //   {
+        //     Authorization: 'Bearer access-token',
+        //     otherHeader: 'foo',
+        //     'Content-Type': 'multipart/form-data',
+        //   },
+        //   [
+        //     {
+        //       name: 'image',
+        //       filename: 'image.png',
+        //       type: 'image/png',
+        //       data: dataImage,
+        //     },
+        //   ],
+        // );
+        // setShowUpload(false);
+      };
+    //   const uploadThePic = async () => {{
+    //     bs.current.snapTo(1);
+    //     AsyncStorage.setItem('upload_picture_menu_id',selectedMenuPictureId);
+    //     AsyncStorage.setItem('upload_picture_data_image',dataImage);
+    //     navigation.navigate('UploadingMenuPic');
+    // }}
+
+    // const uploading = async () => {
+    //     choosePhotoFromLibrary();
+    //     uploadMenuPic();
+    // }
+    
+    const renderInner = () => (
+    
+        <View style={styles.panel}>
+          <View style={{alignItems: 'center'}}>
+            <Text style={styles.panelTitle}>Upload Photo</Text>
+            {/* <Text>{selectedMenuPictureId}</Text> */}
+            <View style={{flexDirection: 'row'}}>
+                <Text style={styles.panelSubtitle}>Choose picture for</Text>
+                <Text style={{fontWeight: 'bold', color: '#000'}}> {selectedMenuPictureName}</Text>
+            </View>
+          </View>
+          <TouchableOpacity style={styles.panelButton} onPress={takePhotoFromCamera}>
+            <Text style={styles.panelButtonTitle}>Take Photo</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.panelButton} onPress={choosePhotoFromLibrary}>
+            <Text style={styles.panelButtonTitle}>Choose From Library</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.panelButton}
+            onPress={() => bs.current.snapTo(1)}>
+            <Text style={styles.panelButtonTitle}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    
+    const renderHeader = () => (
+        <View style={styles.bottomSheetHeader}>
+          <View style={styles.panelHeader}>
+            <View style={styles.panelHandle} />
+          </View>
+        </View>
+      );
+    
+   
     const [menus, setMenus] = useState([]);
     const [selectedMenu, setSelectedMenu] = useState({});
     // const [refreshPage, setRefreshPage] = useState("");
     const [menuId , setMenuId ] = useState('');
     const [dataMenu , setDataMenu ] = useState('');
-    const [dataImage, setDataImage] = useState(null);
     const [searchQuery, setSearchQuery] = React.useState('');
 
     const onChangeSearch = query => setSearchQuery(query);
@@ -225,27 +372,7 @@ const Menu = ({navigation}) => {
     //     });
     //   };
 
-    // const uploadMenuPic = async (item) => {
-    //     console.log("Selected menu: ", item);
-    //     RNFetchBlob.fetch(
-    //       'POST',
-    //       `http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=uploadMenuPicture&menu_id=${item.menu_id}`,
-    //       {
-    //         Authorization: 'Bearer access-token',
-    //         otherHeader: 'foo',
-    //         'Content-Type': 'multipart/form-data',
-    //       },
-    //       [
-    //         {
-    //           name: 'image',
-    //           filename: 'image.png',
-    //           type: 'image/png',
-    //           data: dataImage,
-    //         },
-    //       ],
-    //     );
-    //     // setShowUpload(false);
-    //   };
+    
 
     return (
         <View>
@@ -261,6 +388,28 @@ const Menu = ({navigation}) => {
                     // isBackDrop={true}
                     // isBackDropDismisByPress={true}
             />
+            {
+                confirmPicture ? 
+                <View style={styles.confirmationBackground}>
+                    <View style={{backgroundColor: 'rgba(0,0,0,0.5)', height: resHeight, width: resWidth}} />
+                    <View style={styles.confirmationBox}>
+                        <Image 
+                            source={{
+                                uri: uploadedImage,
+                            }}
+                            style={styles.previewPicture}
+                        /> 
+                        <TouchableOpacity onPress={() => uploadMenuPic()} style={styles.btnUploadImage}>
+                                <Text>Upload image</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => setConfirmPicture(null)}>
+                                <Text>Cancel</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                : null
+            }
+
             <ScrollView style={styles.container} 
                 // contentContainerStyle={{justifyContent: 'center', flexGrow: 1}}
             >
@@ -306,6 +455,8 @@ const Menu = ({navigation}) => {
                             menu_name={item.menu_name} 
                             menu_category={item.menu_category} 
                             menu_price={item.menu_price}
+                            menu_picture={item.menu_picture}
+                            menu_image={menuImage}
                             horizontal={true}
                             onClickUpdate={() => editMenu(item)}
                             // onSelect={() => selectMenu(item)}
@@ -318,9 +469,11 @@ const Menu = ({navigation}) => {
                 })}
 
             </View>
+
             <View style={{marginBottom: resWidth * 0.3}}></View>
 
             </ScrollView>
+            
             <TouchableOpacity onPress={() => handleGoTo('AddMenu')}>
                 <View style={styles.addButton}>
                     <Image 
@@ -398,6 +551,41 @@ const styles = StyleSheet.create({
         width: resWidth * 0.15,
         height: resWidth * 0.15,
         borderRadius: (resWidth * 0.15)/2,
+    },
+    confirmationBackground: {
+        position: 'absolute',
+        width: resWidth,
+        height: resHeight,
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 1,
+    },
+    confirmationBox: {
+        backgroundColor: '#fff',
+        position: 'absolute',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: resWidth * 0.4,
+        paddingHorizontal: resWidth * 0.4,
+    },
+    previewPicture: {
+        borderRadius: resWidth * 0.04,
+        height: resWidth * 0.3,
+        width: resWidth * 0.38,
+        position: 'absolute',
+        top: resWidth * 0.1,
+    },
+    btnUploadImage: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        bottom: resWidth * 0.18,
+        position: 'absolute',
+        backgroundColor: '#A7796D',
+        left: resWidth * 0.1,
+        right: resWidth * 0.1,
+        paddingVertical: resWidth * 0.05,
+        paddingHorizontal: resWidth * 0.06,
+        borderRadius: resHeight,
     },
     menuList: {
         flexDirection: 'row',
@@ -507,12 +695,12 @@ const styles = StyleSheet.create({
       panelTitle: {
         fontSize: 27,
         height: 35,
+        marginBottom: 5,
       },
       panelSubtitle: {
         fontSize: 14,
         color: 'gray',
         height: 30,
-        marginBottom: 10,
       },
       panelButton: {
         padding: 13,
@@ -526,4 +714,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: 'white',
       },
+
+    
 })
