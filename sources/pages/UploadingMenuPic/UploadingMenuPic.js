@@ -10,18 +10,19 @@ var resHeight = Dimensions.get('window').height;
 var resWidth = Dimensions.get('window').width;
 
 const UploadingMenuPic = ({navigation}) => {
-    const [selectedMenuPictureId, setSelectedMenuPictureId] = useState("");
-    const [dataImage, setDataImage] = useState('');
+    // const [selectedMenuPictureId, setSelectedMenuPictureId] = useState("");
+    // const [dataImage, setDataImage] = useState('');
 
     useEffect(() => {
-        const gettingMenuData = async () =>{
-            const getSelectedMenuPictureId = await AsyncStorage.getItem('upload_picture_menu_id');
-            const getSelectedDataImage = await AsyncStorage.getItem('upload_picture_data_image');
+        navigation.goBack();
+        // const gettingMenuData = async () =>{
+        //     const getSelectedMenuPictureId = await AsyncStorage.getItem('upload_picture_menu_id');
+        //     const getSelectedDataImage = await AsyncStorage.getItem('upload_picture_data_image');
 
-            setSelectedMenuPictureId(getSelectedMenuPictureId);
-            setDataImage(getSelectedDataImage);
-        }
-        gettingMenuData();
+        //     setSelectedMenuPictureId(getSelectedMenuPictureId);
+        //     setDataImage(getSelectedDataImage);
+        // }
+        // gettingMenuData();
     }, []);
 
     // useEffect(() => {
@@ -45,8 +46,8 @@ const UploadingMenuPic = ({navigation}) => {
     return (
         <View style={styles.container}>
             <Image source={logoCassie} style={styles.logo}/>
-            <Text>Uploading your image</Text>
-            <Text>{dataImage}</Text>
+            <Text style={{color: '#fff'}}>Uploading your image</Text>
+            {/* <Text>{dataImage}</Text> */}
             <ActivityIndicator color="#FFE9C0" />
         </View>
     )

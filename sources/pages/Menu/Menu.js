@@ -16,6 +16,7 @@ import NotifIcon from '../../assets/icons/bell.png'
 import SearchIcon from '../../assets/icons/search.png'
 import ClearIcon from '../../assets/icons/cross.png'
 import Plus from '../../assets/icons/plus2.png'
+import CameraIcon from '../../assets/icons/camera2.png'
 import PreviewImage from '../../assets/images/preview2.png'
 import EditIcon from '../../assets/icons/edit.png'
 import NumberFormat from 'react-number-format';
@@ -29,24 +30,37 @@ const MenuData = ({menu_name, menu_category, menu_price, menu_image, menu_pictur
     return (
             <View style={styles.menuBox}>
                 <TouchableOpacity onPress={() => onClickPicture()}>
-                    {
-                        menu_picture === null ?
-                        <Image 
-                            // source={PreviewImage
-                            source={{
-                                uri: menu_image,
-                            }}
-                            style={styles.menuPicture}
-                        /> 
-                        :
-                        <Image 
-                            // source={PreviewImage
-                            source={{
-                                uri: `http://cassie-pos.000webhostapp.com/cassie/upload/menuPicture/${menu_picture}`,
-                            }}
-                            style={styles.menuPicture}
-                        /> 
-                    }
+                    <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                        {
+                            menu_picture === null || menu_picture === 'menu_preview.png' ?
+                            <View style={styles.editPictureBorder}>
+                                <Image 
+                                    source={CameraIcon}
+                                    style={styles.editPictureIcon}
+                                />
+                            </View>
+                            : null
+                        }
+                        {
+                            menu_picture === null ?
+                            <Image 
+                                // source={PreviewImage
+                                source={{
+                                    uri: menu_image,
+                                }}
+                                style={styles.menuPicture}
+                            /> 
+                            :
+                            <Image 
+                                // source={PreviewImage
+                                source={{
+                                    uri: `http://cassie-pos.000webhostapp.com/cassie/upload/menuPicture/${menu_picture}`,
+                                }}
+                                style={styles.menuPicture}
+                            /> 
+                        }
+
+                        </View>
                     </TouchableOpacity>
                 <View style={styles.menuInfo}>
                     <Text style={styles.menuName}>{menu_name}</Text>
@@ -76,7 +90,7 @@ const MenuData = ({menu_name, menu_category, menu_price, menu_image, menu_pictur
 const Menu = ({navigation}) => {
 
     // const [menuImage, setMenuImage] = useState('https://robohash.org/test');
-    const [menuImage, setMenuImage] = useState('http://cassie-pos.000webhostapp.com/cassie/upload/menuPicture/menu_preview.png');
+    const [menuImage, setMenuImage] = useState('http://cassie-pos.000webhostapp.com/cassie/upload/menuPicture/nopreview3.png');
     const [uploadedImage, setUploadedImage] = useState('');
     const [selectedMenuPictureId, setSelectedMenuPictureId] = useState("");
     const [selectedMenuPictureName, setSelectedMenuPictureName] = useState("");
@@ -136,8 +150,6 @@ const Menu = ({navigation}) => {
     //     //   compressImageQuality: 0.7
     //     }).then(image => {
     //       console.log(image);
-          
-          
       
     //       option(options, res => {
     //           const source = {uri: res.assets[0].uri};
@@ -207,7 +219,7 @@ const Menu = ({navigation}) => {
           ]).then((resp) => {
             console.log(resp);
             setConfirmPicture(null);
-            // navigation.navigate('Menu');
+            navigation.navigate('UploadingMenuPic');
           })
         // RNFetchBlob.fetch(
         //   'POST',
@@ -331,7 +343,6 @@ const Menu = ({navigation}) => {
         
 }
 
-
     // const getData = () => {
 
     //     axios.get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showMenu')
@@ -340,9 +351,6 @@ const Menu = ({navigation}) => {
     //         setMenus(res.data.data.result)
     //     })
     // }
-    
-
-    
 
     // const handleChoosePhoto = option => {
     //     setMenuId(item.menu_id);
@@ -372,8 +380,6 @@ const Menu = ({navigation}) => {
     //     });
     //   };
 
-    
-
     return (
         <View>
              <BottomSheet 
@@ -400,10 +406,10 @@ const Menu = ({navigation}) => {
                             style={styles.previewPicture}
                         /> 
                         <TouchableOpacity onPress={() => uploadMenuPic()} style={styles.btnUploadImage}>
-                                <Text>Upload image</Text>
+                                <Text style={styles.txtBtnUpload}>Upload Image</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setConfirmPicture(null)}>
-                                <Text>Cancel</Text>
+                        <TouchableOpacity onPress={() => setConfirmPicture(null)} style={styles.btnCancelUpload}>
+                                <Text style={{...styles.txtBtnUpload, color: '#fff'}}>Cancel Upload</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -463,8 +469,6 @@ const Menu = ({navigation}) => {
                             onUpload={() => uploadMenuPic(item)}
                             onClickPicture={() => clickPicture(item)}
                         />
-
-
                     );
                 })}
 
@@ -565,27 +569,48 @@ const styles = StyleSheet.create({
         position: 'absolute',
         justifyContent: 'center',
         alignItems: 'center',
-        paddingVertical: resWidth * 0.4,
+        paddingVertical: resWidth * 0.55,
         paddingHorizontal: resWidth * 0.4,
+        borderRadius: resWidth * 0.045,
     },
     previewPicture: {
         borderRadius: resWidth * 0.04,
-        height: resWidth * 0.3,
-        width: resWidth * 0.38,
+        height: resWidth * 0.5,
+        width: resWidth * 0.58,
         position: 'absolute',
         top: resWidth * 0.1,
     },
     btnUploadImage: {
         justifyContent: 'center',
         alignItems: 'center',
-        bottom: resWidth * 0.18,
+        bottom: resWidth * 0.28,
         position: 'absolute',
-        backgroundColor: '#A7796D',
+        borderColor: '#FC6B68',
+        borderWidth: resWidth * 0.01,
         left: resWidth * 0.1,
         right: resWidth * 0.1,
-        paddingVertical: resWidth * 0.05,
+        paddingVertical: resWidth * 0.035,
         paddingHorizontal: resWidth * 0.06,
         borderRadius: resHeight,
+    },
+    btnCancelUpload: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: resWidth * 0.01,
+        bottom: resWidth * 0.09,
+        borderColor: '#FC6B68',
+        position: 'absolute',
+        backgroundColor: '#FC6B68',
+        left: resWidth * 0.1,
+        right: resWidth * 0.1,
+        paddingVertical: resWidth * 0.035,
+        paddingHorizontal: resWidth * 0.06,
+        borderRadius: resHeight,
+    },
+    txtBtnUpload: {
+        fontSize: resWidth * 0.045,
+        fontWeight: 'bold',
+        color: '#000',
     },
     menuList: {
         flexDirection: 'row',
@@ -609,6 +634,24 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginBottom: resWidth * 0.05,
         marginHorizontal: resWidth * 0.005,
+    },
+    editPictureBorder: {
+        borderWidth: resWidth * 0.01, 
+        position: 'absolute', 
+        zIndex: 1, 
+        padding: resWidth * 0.08,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderColor: '#fff',
+        borderRadius: resWidth * 0.05,
+        top: resWidth * 0.06,
+    },
+    editPictureIcon: {
+        height: resWidth * 0.1,
+        width: resWidth * 0.1,
+        zIndex: 1,
+        position: 'absolute',
+        opacity: 1,
     },
     menuPicture: {
         borderRadius: resWidth * 0.04,
