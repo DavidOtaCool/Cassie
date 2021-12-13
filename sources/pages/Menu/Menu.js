@@ -90,7 +90,7 @@ const MenuData = ({menu_name, menu_category, menu_price, menu_image, menu_pictur
 const Menu = ({navigation}) => {
 
     // const [menuImage, setMenuImage] = useState('https://robohash.org/test');
-    const [menuImage, setMenuImage] = useState('http://cassie-pos.000webhostapp.com/cassie/upload/menuPicture/nopreview3.png');
+    const [menuImage, setMenuImage] = useState('http://cassie-pos.000webhostapp.com/cassie/upload/menuPicture/nopreview6.png');
     const [uploadedImage, setUploadedImage] = useState('');
     const [selectedMenuPictureId, setSelectedMenuPictureId] = useState("");
     const [selectedMenuPictureName, setSelectedMenuPictureName] = useState("");
@@ -120,6 +120,18 @@ const Menu = ({navigation}) => {
     // })
     // }, []);
     
+    // const takePhotoFromCamera = () => {
+    //     ImagePicker.openCamera({
+    //       compressImageMaxWidth: 300,
+    //       compressImageMaxHeight: 300,
+    //       cropping: true,
+    //     //   compressImageQuality: 0.7
+    //     }).then(image => {
+    //       console.log(image);
+    //     //   setMenuImage(image.path);
+    //       bs.current.snapTo(1);
+    //     });
+    //   }
     const takePhotoFromCamera = () => {
         ImagePicker.openCamera({
           compressImageMaxWidth: 300,
@@ -127,9 +139,17 @@ const Menu = ({navigation}) => {
           cropping: true,
         //   compressImageQuality: 0.7
         }).then(image => {
-          console.log(image);
-        //   setMenuImage(image.path);
-          bs.current.snapTo(1);
+            console.log(image);
+            //   setMenuImage(image.path);
+              ImgToBase64.getBase64String(image.path)
+                .then(base64String => {
+                    setDataImage(base64String)
+                    // AsyncStorage.setItem('upload_picture_data_image',setDataImage(base64String));
+                })
+            bs.current.snapTo(1);
+              setUploadedImage(image.path);
+    
+            setConfirmPicture(true);
         });
       }
 
@@ -255,35 +275,36 @@ const Menu = ({navigation}) => {
     const renderInner = () => (
     
         <View style={styles.panel}>
-          <View style={{alignItems: 'center'}}>
-            <Text style={styles.panelTitle}>Upload Photo</Text>
-            {/* <Text>{selectedMenuPictureId}</Text> */}
-            <View style={{flexDirection: 'row'}}>
-                <Text style={styles.panelSubtitle}>Choose picture for</Text>
-                <Text style={{fontWeight: 'bold', color: '#000'}}> {selectedMenuPictureName}</Text>
+            <View style={{alignItems: 'center'}}>
+              <View style={styles.panelHandle} />
+              <Text style={styles.panelTitle}>Upload Photo</Text>
+              {/* <Text>{selectedMenuPictureId}</Text> */}
+              <View style={{flexDirection: 'row'}}>
+                  <Text style={styles.panelSubtitle}>Choose picture for</Text>
+                  <Text style={{fontWeight: 'bold', color: '#000', fontSize: resWidth * 0.038}}> {selectedMenuPictureName}</Text>
+              </View>
             </View>
-          </View>
-          <TouchableOpacity style={styles.panelButton} onPress={takePhotoFromCamera}>
-            <Text style={styles.panelButtonTitle}>Take Photo</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.panelButton} onPress={choosePhotoFromLibrary}>
-            <Text style={styles.panelButtonTitle}>Choose From Library</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.panelButton}
-            onPress={() => bs.current.snapTo(1)}>
-            <Text style={styles.panelButtonTitle}>Cancel</Text>
-          </TouchableOpacity>
+            <TouchableOpacity style={styles.panelButton} onPress={takePhotoFromCamera}>
+              <Text style={styles.panelButtonTitle}>Take Photo</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.panelButton} onPress={choosePhotoFromLibrary}>
+              <Text style={styles.panelButtonTitle}>Choose From Library</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.panelButton}
+              onPress={() => bs.current.snapTo(1)}>
+              <Text style={styles.panelButtonTitle}>Cancel</Text>
+            </TouchableOpacity>
         </View>
       );
     
-    const renderHeader = () => (
-        <View style={styles.bottomSheetHeader}>
-          <View style={styles.panelHeader}>
-            <View style={styles.panelHandle} />
-          </View>
-        </View>
-      );
+    // const renderHeader = () => (
+    //     <View style={styles.bottomSheetHeader}>
+    //       <View style={styles.panelHeader}>
+    //         <View style={styles.panelHandle} />
+    //       </View>
+    //     </View>
+    //   );
     
    
     const [menus, setMenus] = useState([]);
@@ -384,9 +405,10 @@ const Menu = ({navigation}) => {
         <View>
              <BottomSheet 
                     ref={bs}
-                    snapPoints={[330, 0]}
+                    // snapPoints={[330, 0]}
+                    snapPoints={[resWidth * 0.94, 0]}
                     renderContent={renderInner}
-                    renderHeader={renderHeader}
+                    // renderHeader={renderHeader}
                     initialSnap={1}
                     callbackNode={fall.curent}
                     enabledGestureInteraction={true}
@@ -394,6 +416,7 @@ const Menu = ({navigation}) => {
                     // isBackDrop={true}
                     // isBackDropDismisByPress={true}
             />
+             
             {
                 confirmPicture ? 
                 <View style={styles.confirmationBackground}>
@@ -419,7 +442,6 @@ const Menu = ({navigation}) => {
             <ScrollView style={styles.container} 
                 // contentContainerStyle={{justifyContent: 'center', flexGrow: 1}}
             >
-                
                 <View style={styles.header}>
                     <TouchableOpacity style={styles.btnArrowLeft} onPress={() => navigation.navigate('DashboardfromLogin')}>
                         <Image 
@@ -636,19 +658,20 @@ const styles = StyleSheet.create({
         marginHorizontal: resWidth * 0.005,
     },
     editPictureBorder: {
-        borderWidth: resWidth * 0.01, 
+        borderWidth: resWidth * 0.008, 
         position: 'absolute', 
         zIndex: 1, 
-        padding: resWidth * 0.08,
+        padding: resWidth * 0.055,
         justifyContent: 'center',
         alignItems: 'center',
         borderColor: '#fff',
-        borderRadius: resWidth * 0.05,
-        top: resWidth * 0.06,
+        borderRadius: resWidth * 0.03,
+        top: resWidth * 0.09,
+        opacity: 0.8,
     },
     editPictureIcon: {
-        height: resWidth * 0.1,
-        width: resWidth * 0.1,
+        height: resWidth * 0.08,
+        width: resWidth * 0.08,
         zIndex: 1,
         position: 'absolute',
         opacity: 1,
@@ -712,48 +735,69 @@ const styles = StyleSheet.create({
     // },
     bottomSheetHeader: {
         backgroundColor: '#FFFFFF',
-        shadowColor: '#333333',
-        shadowOffset: {width: -1, height: -3},
-        shadowRadius: 2,
-        shadowOpacity: 0.4,
+        // shadowColor: '#333333',
+        // shadowOffset: {width: -1, height: -3},
+        // shadowRadius: 2,
+        // shadowOpacity: 0.4,
         // elevation: 5,
-        paddingTop: 20,
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
+        borderTopLeftRadius: resWidth * 0.1,
+        borderTopRightRadius: resWidth * 0.1,
       },
     panelHeader: {
         alignItems: 'center',
       },
       panel: {
-        padding: 20,
+        // paddingVertical: 20,
+        // paddingHorizontal: 20,
+        paddingVertical: resWidth * 0.065,
+        paddingHorizontal: resWidth * 0.05,
+        shadowColor: '#000',
+        shadowOffset: {width: (resWidth * 0.02), height: (resWidth * 0.8)},
+        shadowOpacity: resWidth * 0.1,
+        shadowRadius: resWidth * 0.08,
+        elevation: resWidth * 0.03,
+        // height: resWidth * 0.9,
+        // backgroundColor: '#FFE9C0',
         backgroundColor: '#FFFFFF',
+        borderTopRightRadius: resWidth * 0.1,
+        borderTopLeftRadius: resWidth * 0.1,
       },
       panelHandle: {
-        width: 40,
-        height: 8,
-        borderRadius: 4,
+        // width: 40,
+        // height: 8,
+        // borderRadius: 4,
+        height: resWidth * 0.02,
+        width: resWidth * 0.1,
+        borderRadius: resWidth,
         backgroundColor: '#00000040',
-        marginBottom: -40,
+        marginVertical: resWidth * 0.04,
       },
       panelTitle: {
-        fontSize: 27,
-        height: 35,
-        marginBottom: 5,
+        // fontSize: 27,
+        // height: 35,
+        // marginBottom: 10,
+        fontSize: resWidth * 0.07,
+        marginBottom: resWidth * 0.025,
       },
       panelSubtitle: {
-        fontSize: 14,
+        // fontSize: 14,
+        fontSize: resWidth * 0.038,
         color: 'gray',
-        height: 30,
+        marginBottom: resWidth * 0.025,
       },
       panelButton: {
-        padding: 13,
-        borderRadius: 10,
+        // padding: 13,
+        // borderRadius: 10,
+        padding: resWidth * 0.033,
+        borderRadius: resWidth * 0.03,
         backgroundColor: '#FF6347',
         alignItems: 'center',
-        marginVertical: 7,
+        // marginVertical: 7,
+        marginVertical: resWidth * 0.018,
       },
       panelButtonTitle: {
-        fontSize: 17,
+        // fontSize: 17,
+        fontSize: resWidth * 0.04,
         fontWeight: 'bold',
         color: 'white',
       },

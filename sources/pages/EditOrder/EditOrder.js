@@ -19,6 +19,7 @@ const EditOrder = ({navigation}) => {
     const [menuCategory, setMenuCategory] = useState("");
     const [menuPrice, setMenuPrice] = useState(0);
     const [menuNote, setMenuNote] = useState("");
+    const [displayMenuPicture, setDisplayMenuPicture] = useState('');
     
     const [orderQuantity, setOrderQuantity] = useState(1);
 
@@ -65,12 +66,14 @@ const EditOrder = ({navigation}) => {
             const getMenuPrice = await AsyncStorage.getItem('edit_order_menu_price');
             const getMenuQty = await AsyncStorage.getItem('edit_order_menu_qty');
             const getMenuNote = await AsyncStorage.getItem('edit_order_menu_note');
+            const getDisplayMenuPicture = await AsyncStorage.getItem('order_menu_picture');
             setMenuId(getMenuId);
             setMenuName(getMenuName);
             setMenuCategory(getMenuCategory);
             setMenuPrice(parseInt(getMenuPrice));
             setOrderQuantity(parseInt(getMenuQty));
             setMenuNote(getMenuNote);
+            setDisplayMenuPicture(getDisplayMenuPicture);
         }
         menuCheck();
     })
@@ -111,7 +114,9 @@ const EditOrder = ({navigation}) => {
             </View>
             <View style={styles.menuBox}>
                 <Image 
-                    source={PreviewImage}
+                    source={{
+                        uri: `http://cassie-pos.000webhostapp.com/cassie/upload/menuPicture/${displayMenuPicture}`
+                    }}
                     style={styles.menuPicture}
                 />
                 <Text style={styles.menuName}>{menuName}</Text>

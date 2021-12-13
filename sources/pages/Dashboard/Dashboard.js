@@ -24,9 +24,11 @@ const Dashboard = ({navigation}) => {
     const [currentDate, setCurrentDate] = useState('');
 
     const [loginCashierName, setLoginCashierName] = useState([]);
+    const [loginCashierEmail, setLoginCashierEmail] = useState([]);
     const [totalOrder, setTotalOrder] = useState([]);
     const [todayIncome, setTodayIncome] = useState(0);
     const [todayOrder, setTodayOrder] = useState('');
+    const [todayMostTransaction, setTodayMostTransaction] = useState('');
     
     useEffect(() => {
 
@@ -45,6 +47,9 @@ const Dashboard = ({navigation}) => {
 
             const getLoginCashierName = await AsyncStorage.getItem('login_cashier_name');
             setLoginCashierName(getLoginCashierName);
+
+            const getLoginCashierEmail = await AsyncStorage.getItem('login_cashier_email');
+            setLoginCashierEmail(getLoginCashierEmail);
         }
         cashierNameCheck();
     })
@@ -55,10 +60,11 @@ const Dashboard = ({navigation}) => {
             await axios
                 .get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=shortcutBoxInfo')
             .then(response => {
-                // console.log('Shortcut Box Info: ', response)
+                console.log('Shortcut Box Info: ', response)
                 setTotalOrder(response.data.total_order)
                 setTodayOrder(response.data.today_order)
                 setTodayIncome(response.data.today_income.today_income)
+                setTodayMostTransaction(response.data.most_transaction.most_transaction)
         })
             .catch(e => alert(e.message))
         })
@@ -69,7 +75,11 @@ const Dashboard = ({navigation}) => {
         <ScrollView style={styles.container} contentContainerStyle={{justifyContent: 'center', flexGrow: 1}}>
             <View style={styles.upperBackground}>
                 <View style={styles.upperItem}>
-                    <Image source={profile1} style={styles.profilePicture} />
+                    <Image source={{
+                            uri: `https://robohash.org/${loginCashierEmail}`
+                        }} 
+                    style={styles.profilePicture} 
+                    />
                     <Text style={styles.userName}>Hi, {loginCashierName}</Text>
                     <View style={{position: 'absolute', right: 0}}>
                         <Image source={NotifIcon} style={styles.notification} />
@@ -91,7 +101,7 @@ const Dashboard = ({navigation}) => {
                         thousandSeparator={true} 
                         prefix={'Rp'} 
                         renderText={
-                            formattedValue => <Text style={styles.shortcutInfo}>{formattedValue}</Text>
+                            formattedValue => <Text style={{...styles.shortcutInfo, fontSize: resWidth * 0.047}}>{formattedValue}</Text>
                         } 
                     />
                         {/* <Text style={styles.shortcutInfo}>{todayIncome}</Text> */}
@@ -105,8 +115,17 @@ const Dashboard = ({navigation}) => {
                         <Text style={styles.shortcutDesc}>Today's Order</Text>
                     </View>
                     <View style={styles.shortcutItem}>
-                        <Text style={styles.shortcutInfo}>0</Text>
-                        <Text style={styles.shortcutDesc}>Cancelled Order</Text>
+                        {/* <Text style={styles.shortcutInfo}>{todayMostTransaction}</Text> */}
+                        <NumberFormat 
+                            value={todayMostTransaction}
+                            displayType={'text'} 
+                            thousandSeparator={true} 
+                            prefix={'Rp'} 
+                            renderText={
+                                formattedValue => <Text style={{...styles.shortcutInfo, fontSize: resWidth * 0.047}}>{formattedValue}</Text>
+                            } 
+                        />
+                        <Text style={styles.shortcutDesc}>Most Checkout</Text>
                     </View>
                 </View>
             </View>
@@ -145,9 +164,8 @@ const Dashboard = ({navigation}) => {
             </View>
 
 
-            <View style={styles.waitingOrderElement}>
+            {/* <View style={styles.waitingOrderElement}>
                 <Text style={styles.waitingOrderText}>Waiting Order(s)</Text>
-                {/* <Text style={styles.waitingOrderText}>{currentDate}</Text> */}
 
                 <View style={styles.waitingOrderBox}>
                     <View style={styles.waitingOrderList}>
@@ -179,8 +197,8 @@ const Dashboard = ({navigation}) => {
                     </View>
 
                 </View>
-            </View>
-            <View style={{marginBottom: resWidth * 0.4}}></View>
+            </View> */}
+            <View style={{marginBottom: resWidth * 0.6}}></View>
         </ScrollView>
     )
 }
@@ -215,6 +233,7 @@ const styles = StyleSheet.create({
         top: -(resHeight * 0.045),
     },
     profilePicture: {
+        backgroundColor: '#fff',
         borderRadius: resHeight,
         borderColor: '#855B54',
         // borderWidth: 3,
@@ -277,6 +296,7 @@ const styles = StyleSheet.create({
         // marginHorizontal: 5,
         // marginVertical: 10,
         marginVertical: resHeight * 0.0129,
+        justifyContent: 'center',
     },
     
     shortcutInfo: {
@@ -287,6 +307,7 @@ const styles = StyleSheet.create({
     },
     shortcutDesc: {
         // fontSize: 14,
+        // backgroundColor: '#ccc',
         fontSize: resWidth * 0.036,
         color: '#AFAFAF',
         textAlign: 'center',

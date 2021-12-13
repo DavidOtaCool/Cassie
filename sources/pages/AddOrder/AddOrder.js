@@ -7,6 +7,7 @@ import btnMinus from '../../assets/icons/minus.png'
 import btnPlus from '../../assets/icons/add.png'
 import PreviewImage from '../../assets/images/preview2.png'
 import NumberFormat from 'react-number-format';
+import base64 from 'react-native-base64'
 
 var resHeight = Dimensions.get('window').height;
 var resWidth = Dimensions.get('window').width;
@@ -18,6 +19,9 @@ const AddOrder = ({navigation}) => {
     const [menuId, setMenuId] = useState("");
     const [menuName, setMenuName] = useState("");
     const [menuCategory, setMenuCategory] = useState("");
+    // const [menuImage, setMenuImage] = useState('http://cassie-pos.000webhostapp.com/cassie/upload/menuPicture/nopreview6.png');
+    const [displayMenuPicture, setDisplayMenuPicture] = useState('');
+
     // const [menuNote, setMenuNote] = useState('');
     const [menuPrice, setMenuPrice] = useState(0);
     const [dataMenu, setDataMenu] = useState({
@@ -54,10 +58,12 @@ const AddOrder = ({navigation}) => {
             const getMenuName = await AsyncStorage.getItem('order_menu_name');
             const getMenuCategory = await AsyncStorage.getItem('order_menu_category');
             const getMenuPrice = await AsyncStorage.getItem('order_menu_price');
+            const getDisplayMenuPicture = await AsyncStorage.getItem('order_menu_picture');
             setMenuId(getMenuId);
             setMenuName(getMenuName);
             setMenuCategory(getMenuCategory);
             setMenuPrice(getMenuPrice);
+            setDisplayMenuPicture(getDisplayMenuPicture);
             setOrderQuantity(1);
             // setMenuNote("");
         }
@@ -74,7 +80,7 @@ const AddOrder = ({navigation}) => {
 
     const addToCart = () => {{
 
-        const menuData = `menu_id=${menuId}&menu_name=${menuName}&temp_order_subtotal=${menuPrice}&temp_order_qty=${orderQuantity}&menu_note=${dataMenu.menu_note}`;
+        const menuData = `menu_id=${menuId}&menu_name=${menuName}&menu_picture=${displayMenuPicture}&temp_order_subtotal=${menuPrice}&temp_order_qty=${orderQuantity}&menu_note=${dataMenu.menu_note}`;
 
             axios.post('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=addToCart', menuData)
             .then(res => {
@@ -107,7 +113,9 @@ const AddOrder = ({navigation}) => {
             </View>
             <View style={styles.menuBox}>
                 <Image 
-                    source={PreviewImage}
+                    source={{
+                                uri: `http://cassie-pos.000webhostapp.com/cassie/upload/menuPicture/${displayMenuPicture}`
+                    }}
                     style={styles.menuPicture}
                 />
                 <Text style={styles.menuName}>{menuName}</Text>

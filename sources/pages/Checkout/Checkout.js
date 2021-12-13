@@ -13,27 +13,43 @@ import LeftArrow from '../../assets/icons/left.png'
 var resHeight = Dimensions.get('window').height;
 var resWidth = Dimensions.get('window').width;
 
-const CartItemData = ({menu_name, menu_qty, order_subtotal}) => {
+const CartItemData = ({menu_name, menu_qty, menu_note, image_not_available, menu_picture, order_subtotal, order_total, onPressDetail}) => {
     return (
         // <View>
         //    <Text style={{textAlign: 'right'}}>{menu_name} x {menu_qty}</Text>
         // </View>
+        <TouchableOpacity onPress={() => onPressDetail()}>
         <View style={styles.menuBox}>
             <View style={styles.menuPictureBox}>
                     <Image 
-                        source={PreviewImage}
+                        source={
+                            menu_picture === null ? 
+                                {
+                                    uri: image_not_available} : {
+                                    uri: `http://cassie-pos.000webhostapp.com/cassie/upload/menuPicture/${menu_picture}`
+                                }
+                        }
                         style={styles.menuPicture}
                     />
             </View>
             <View style={styles.menuInfo}>
                 <Text style={styles.menuName}>{menu_name}</Text>
+                {
+                    menu_note != '' ? 
+                        <Text style={styles.menuNote} numberOfLines={2}>Note: {menu_note}</Text>
+                    : null
+                }
                 <NumberFormat 
-                        value={order_subtotal}
+                        value={order_total}
                         displayType={'text'} 
                         thousandSeparator={true} 
-                        prefix={'Rp'} 
                         renderText={
-                            formattedValue => <Text style={styles.menuPrice}>{formattedValue}</Text>
+                            formattedValue => 
+                            
+                            <View style={{flexDirection: 'row'}}>
+                                <Text style={{...styles.menuPrice, ...styles.currency}}>Rp</Text>
+                                <Text style={styles.menuPrice}>{formattedValue}</Text>
+                            </View>
                         } 
                 />
             </View>
@@ -41,6 +57,7 @@ const CartItemData = ({menu_name, menu_qty, order_subtotal}) => {
                 <Text style={styles.txtMenuQuantity}>x {menu_qty}</Text>
             </View>
         </View>
+        </TouchableOpacity>
     )
 }
 
@@ -57,6 +74,21 @@ const Checkout = ({navigation}) => {
 
     const [checked, setChecked] = useState(false);
     const [usePoint, setUsePoint] = useState(null);
+    const [seeDetail, setSeeDetail] = useState(null);
+
+    const [menuNameDetail, setMenuNameDetail] = useState('');
+    const [menuNoteDetail, setMenuNoteDetail] = useState('');
+    const [menuPictureDetail, setMenuPictureDetail] = useState('');
+    const [menuPriceTotal, setMenuPriceTotal] = useState('');
+
+    const openDetailBox = (item) => {
+        console.log('Selected menu: ', item);
+        setMenuNameDetail(item.menu_name);
+        setMenuNoteDetail(item.menu_note);
+        setMenuPictureDetail(item.menu_picture);
+        setMenuPriceTotal(item.temp_order_total);
+        setSeeDetail(true);
+    }
 
     const btnNo = () => {{
         setIsMember(null);
@@ -72,6 +104,7 @@ const Checkout = ({navigation}) => {
     }}
 
     const [cartItems, setCartItems] = useState([]);
+    const [imageNotAvailable, setImageNotAvailable] = useState('http://cassie-pos.000webhostapp.com/cassie/upload/menuPicture/nopreview6.png');
     const [grandTotal, setGrandTotal] = useState('');
     const [totalPayment, setTotalPayment] = useState('');
 
@@ -203,6 +236,8 @@ const Checkout = ({navigation}) => {
         else if (isMember === true && notMember === null){
             if(dataCheckout.ordering_customer_code === ''){
                 alert("Please input your customer's special code");
+            }else if(checkMember === null){
+                alert("Please input the correct customer's code");
             }else{
                 // const checkoutData = `cashier_on_duty=${cashierOnDuty}&ordering_customer_code=${dataCheckout.ordering_customer_code}&member=${'Yes'}&order_grandtotal=${grandTotal}`;
                 //     axios.post('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=checkout', checkoutData)
@@ -211,32 +246,92 @@ const Checkout = ({navigation}) => {
                 //         navigation.navigate('Dashboard');
                 // });
 
-                if(checked === true){
-                    const checkoutData = `cashier_on_duty=${cashierOnDuty}&ordering_customer_code=${dataCheckout.ordering_customer_code}&member=${'Yes'}&use_point=${'Yes'}&point_used=${pointCut/100}&order_grandtotal=${grandTotal}&point_cut=${pointCut}&total_payment=${totalPayment}`;
-                    axios.post('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=checkout', checkoutData)
+                axios.get(
+                    `http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=validateMember&customer_unique_code=${dataCheckout.ordering_customer_code}`)
                     .then(res => {
-                        console.log('respon: ', res);
-                        navigation.navigate('Dashboard');
-                    });
-                }else{
-                    const checkoutData = `cashier_on_duty=${cashierOnDuty}&ordering_customer_code=${dataCheckout.ordering_customer_code}&member=${'Yes'}&use_point=${'No'}&order_grandtotal=${grandTotal}`;
-                        axios.post('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=checkout', checkoutData)
-                        .then(res => {
-                            console.log('respon: ', res);
-                            navigation.navigate('Dashboard');
-                        });
-                }
+                        // console.log('Result check member: ', res);
+                        if (res.data.status == 'correct') {
+                            
+                                if(checked === true){
+                                    const checkoutData = `cashier_on_duty=${cashierOnDuty}&ordering_customer_code=${dataCheckout.ordering_customer_code}&member=${'Yes'}&use_point=${'Yes'}&point_used=${pointCut/100}&order_grandtotal=${grandTotal}&point_cut=${pointCut}&total_payment=${totalPayment}`;
+                                    axios.post('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=checkout', checkoutData)
+                                    .then(res => {
+                                        console.log('respon: ', res);
+                                        navigation.navigate('Dashboard');
+                                    });
+                                }else{
+                                    const checkoutData = `cashier_on_duty=${cashierOnDuty}&ordering_customer_code=${dataCheckout.ordering_customer_code}&member=${'Yes'}&use_point=${'No'}&order_grandtotal=${grandTotal}`;
+                                        axios.post('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=checkout', checkoutData)
+                                        .then(res => {
+                                            console.log('respon: ', res);
+                                            navigation.navigate('Dashboard');
+                                        });
+                                }
+                                
+                        }else{
+                            alert('Sorry, the code you entered is wrong :(');
+                            setCheckMember(null);
+                            setChecked(false);
+                            setUsePoint(null);
+                        }
+        
+                    })
+
             }   
         }
         else{
             alert('Please confirm about your customer membership')
         }
         // navigation.navigate('Dashboard');
-
-
     }}
     
     return (
+      <View>
+        {
+            seeDetail ? 
+            <View style={styles.confirmationBackground}>
+                    <View style={{backgroundColor: 'rgba(0,0,0,0.5)', height: resHeight, width: resWidth}} />
+                    <View style={styles.confirmationBox}>
+                        <Image 
+                            source={{
+                                uri: `http://cassie-pos.000webhostapp.com/cassie/upload/menuPicture/${menuPictureDetail}`
+                            }}
+                            style={styles.previewPicture}
+                        />
+                        <View style={styles.itemDetailInfo}>
+                            <Text style={styles.menuNameDetailStyle}>
+                                {menuNameDetail}
+                            </Text>
+                            {
+                                menuNoteDetail != '' ?
+                                    <Text style={styles.menuNoteDetailStyle}>
+                                        Note: {menuNoteDetail}
+                                    </Text>
+                                : null
+                            }
+                            
+                            <NumberFormat 
+                                value={menuPriceTotal}
+                                displayType={'text'} 
+                                thousandSeparator={true} 
+
+                                renderText={
+                                    formattedValue => 
+                                    // <Text style={styles.itemResult}>{formattedValue}</Text>
+                                    <View style={styles.menuPriceDetailStyle}>
+                                            <Text style={{...styles.menuPrice, ...styles.currency, fontSize: resWidth * 0.04,}}>Rp</Text>
+                                            <Text style={styles.itemResult}>{formattedValue}</Text>
+                                    </View>
+                                } 
+                            />
+                        </View>
+                        <TouchableOpacity onPress={() => setSeeDetail(null)} style={styles.btnCloseDetailBox}>
+                                <Text style={{...styles.txtBtnClose, color: '#fff'}}>Close</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                : null
+        }
         <ScrollView style={styles.container}>
             <View style={styles.header}>
 
@@ -255,8 +350,12 @@ const Checkout = ({navigation}) => {
                             key={item.menu_id} 
                             menu_name={item.menu_name} 
                             menu_qty={item.temp_order_qty} 
+                            menu_note={item.menu_note} 
+                            image_not_available={imageNotAvailable} 
+                            menu_picture={item.menu_picture} 
                             order_subtotal={item.temp_order_subtotal}
                             order_total={item.temp_order_total} 
+                            onPressDetail={() => openDetailBox(item)}
                             horizontal={true}
                             // onOrderPress={() => addOrder(item)}
                         />
@@ -312,7 +411,7 @@ const Checkout = ({navigation}) => {
                                 onChangeText={value => onInputChange(value, 'ordering_customer_code')} 
                             />
                             <TouchableOpacity onPress={() => checkMemberCode()} style={styles.buttonConfirm}>
-                                <Text style={styles.txtButtonConfirm}>Validate</Text>
+                                <Text style={styles.txtButtonConfirm}>Confirm</Text>
                             </TouchableOpacity>
                         </View>
                         {
@@ -383,10 +482,13 @@ const Checkout = ({navigation}) => {
                         value={grandTotal}
                         displayType={'text'} 
                         thousandSeparator={true} 
-                        prefix={'Rp'}
 
                         renderText={
-                            formattedValue => <Text style={styles.itemResultNormal}> {formattedValue}</Text>
+                            formattedValue =>
+                            <View style={{flexDirection: 'row', position: 'absolute', right: 0, justifyContent: 'center', alignItems: 'center'}}>
+                                <Text style={{...styles.menuPrice, ...styles.currency, fontSize: resWidth * 0.04,}}>Rp</Text>
+                                <Text style={styles.itemResultNormal}>{formattedValue}</Text>
+                            </View>
                         } 
                     />
                 </View>
@@ -399,10 +501,13 @@ const Checkout = ({navigation}) => {
                                 value={pointCut}
                                 displayType={'text'} 
                                 thousandSeparator={true} 
-                                prefix={'Rp'}
 
                                 renderText={
-                                    formattedValue => <Text style={styles.itemResultNormal}>-{formattedValue}</Text>
+                                    formattedValue => 
+                                    <View style={{flexDirection: 'row', position: 'absolute', right: 0, justifyContent: 'center', alignItems: 'center'}}>
+                                        <Text style={{...styles.menuPrice, fontWeight: 'normal', fontSize: resWidth * 0.0375, color: '#a2a3a8'}}>-Rp</Text>
+                                        <Text style={{...styles.itemResultNormal, color: '#a2a3a8', fontSize: resWidth * 0.0375}}>{formattedValue}</Text>
+                                    </View>
                                 } 
                             />
                             {/* {
@@ -478,12 +583,16 @@ const Checkout = ({navigation}) => {
                             value={totalPayment}
                             displayType={'text'} 
                             thousandSeparator={true} 
-                            prefix={'Rp'}
 
                             renderText={
-                                formattedValue => <Text style={styles.itemResult}> {formattedValue}</Text>
+                                formattedValue => 
+                                // <Text style={styles.itemResult}>{formattedValue}</Text>
+                                <View style={{flexDirection: 'row', position: 'absolute', right: 0, justifyContent: 'center', alignItems: 'center'}}>
+                                        <Text style={{...styles.menuPrice, ...styles.currency, fontSize: resWidth * 0.04,}}>Rp</Text>
+                                        <Text style={styles.itemResult}>{formattedValue}</Text>
+                                </View>
                             } 
-                        />
+                    />
 
                 </View>
                 
@@ -496,6 +605,7 @@ const Checkout = ({navigation}) => {
                     <View style={{marginBottom: resWidth * 0.25}}></View>
 
         </ScrollView>
+      </View>
     )
 }
 
@@ -528,6 +638,78 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#000',
     },
+    confirmationBackground: {
+        position: 'absolute',
+        width: resWidth,
+        height: resHeight,
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 4,
+    },
+    confirmationBox: {
+        backgroundColor: '#fff',
+        position: 'absolute',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        height: resWidth * 1.1,
+        width: resWidth * 0.8,
+        borderRadius: resWidth * 0.045,
+        paddingVertical: resWidth * 0.05,
+    },
+    previewPicture: {
+        borderRadius: resWidth * 0.04,
+        height: resWidth * 0.4,
+        width: resWidth * 0.48,
+        // position: 'absolute',
+        // top: resWidth * 0.1,
+    },
+    itemDetailInfo: {
+        // position: 'absolute', 
+        // top: resWidth * 0.52,
+        justifyContent: 'center', 
+        alignItems: 'center',
+        // backgroundColor: '#ccc',
+        width: resWidth * 0.65,
+        height: resWidth * 0.34,
+    },
+    menuNameDetailStyle: {
+        fontWeight: 'bold',
+        color: '#000',
+        fontSize: resWidth * 0.05,
+        marginBottom: resWidth * 0.015
+    },
+    menuNoteDetailStyle: {
+        textAlign: 'center',
+        // color: '#a2a3a8',
+        fontWeight: 'bold',
+        marginBottom: resWidth * 0.015
+    },
+    menuPriceDetailStyle: {
+        flexDirection: 'row', 
+        justifyContent: 'center', 
+        alignItems: 'center',
+    },
+    btnCloseDetailBox: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: resWidth * 0.01,
+        // bottom: resWidth * 0.07,
+        borderColor: '#FC6B68',
+        // position: 'absolute',
+        backgroundColor: '#FC6B68',
+        alignSelf: 'stretch',
+        marginHorizontal: resWidth * 0.08,
+        // left: resWidth * 0.1,
+        // right: resWidth * 0.1,
+        paddingVertical: resWidth * 0.035,
+        paddingHorizontal: resWidth * 0.06,
+        borderRadius: resHeight,
+    },
+    txtBtnClose: {
+        fontSize: resWidth * 0.045,
+        fontWeight: 'bold',
+        color: '#000',
+    },
     menuBox: {
         backgroundColor: '#F4F6FA',
         // backgroundColor: '#FFF',
@@ -551,9 +733,10 @@ const styles = StyleSheet.create({
     },
     menuPicture: {
         borderRadius: resHeight,
-        height: resWidth * 0.26,
-        width: resWidth * 0.26,
+        height: resWidth * 0.27,
+        width: resWidth * 0.27,
     },
+    
     menuInfo: {
         textAlign: 'left',
         marginLeft: resWidth * 0.05,
@@ -567,11 +750,24 @@ const styles = StyleSheet.create({
         // width: resWidth * 0.3,
         // backgroundColor: '#ccc',
     },
+    menuNote: {
+        marginBottom: resWidth * 0.01,
+        color: '#a2a3a8',
+        fontWeight: 'bold',
+        // backgroundColor: '#000',
+        width: resWidth * 0.3,
+    },
     menuPrice: {
         fontSize: resWidth * 0.035,
-        color: '#c4c6cf',
+        color: '#000',
+        // color: '#c4c6cf',
         // color: '#dbdce2',
         fontWeight: 'bold',
+    },
+    currency: {
+        // color: '#FD9173',
+        // color: '#32bea6',
+        color: '#56DF95',
     },
     menuQuantity: {
         // backgroundColor: '#ccc',
@@ -672,8 +868,6 @@ const styles = StyleSheet.create({
         color: '#000',
         fontWeight: 'bold',
         fontSize: resWidth * 0.04,
-        position: 'absolute',
-        right: 0,
     },
     itemInfoNormal: {
         color: '#000',
@@ -683,8 +877,6 @@ const styles = StyleSheet.create({
     itemResultNormal: {
         color: '#000',
         fontSize: resWidth * 0.04,
-        position: 'absolute',
-        right: 0,
     },
     btnPlaceOrder: {
         backgroundColor: '#FC6B68',

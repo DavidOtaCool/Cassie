@@ -4,6 +4,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Searchbar } from 'react-native-paper';
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import ImgToBase64 from 'react-native-image-base64';
 import PreviewImage from '../../assets/images/preview2.png'
 import LeftArrow from '../../assets/icons/left.png'
 import NotifIcon from '../../assets/icons/bell.png'
@@ -17,7 +18,7 @@ import NumberFormat from 'react-number-format';
 var resHeight = Dimensions.get('window').height;
 var resWidth = Dimensions.get('window').width;
 
-const MenuData = ({menu_qty, menu_status, menu_name, menu_price, onOrderPress, onEditOrderPress}) => {
+const MenuData = ({menu_qty, menu_status, menu_name, menu_price, menu_image, menu_picture, onOrderPress, onEditOrderPress}) => {
     return (
         menu_status === 'Selected'
 
@@ -39,7 +40,13 @@ const MenuData = ({menu_qty, menu_status, menu_name, menu_price, onOrderPress, o
                         </View>
 
                         <Image 
-                            source={PreviewImage}
+                            source={
+                                menu_picture === null ? 
+                                    {
+                                        uri: menu_image} : {
+                                        uri: `http://cassie-pos.000webhostapp.com/cassie/upload/menuPicture/${menu_picture}`
+                                    }
+                            }
                             style={styles.menuPicture}
                         />
                     </View>
@@ -69,7 +76,13 @@ const MenuData = ({menu_qty, menu_status, menu_name, menu_price, onOrderPress, o
 
             <View style={styles.menuBox}>
                 <Image 
-                    source={PreviewImage}
+                    source={
+                        menu_picture === null ? 
+                            {
+                                uri: menu_image} : {
+                                uri: `http://cassie-pos.000webhostapp.com/cassie/upload/menuPicture/${menu_picture}`
+                            }
+                    }
                     style={styles.menuPicture}
                 />
                 <View style={styles.menuInfo}>
@@ -109,6 +122,7 @@ const Order = ({navigation}) => {
 
     const [menus, setMenus] = useState([]);
     // const [selectedMenus, setSelectedMenus] = useState([]);
+    const [menuImage, setMenuImage] = useState('http://cassie-pos.000webhostapp.com/cassie/upload/menuPicture/nopreview6.png');
 
     const [cart, setCart] = useState([]);
     const [menuId, setMenuId] = useState('');
@@ -143,6 +157,11 @@ const Order = ({navigation}) => {
         AsyncStorage.setItem('order_menu_name',item.menu_name);
         AsyncStorage.setItem('order_menu_category',item.menu_category);
         AsyncStorage.setItem('order_menu_price',item.menu_price);
+        if(item.menu_picture != null){
+            AsyncStorage.setItem('order_menu_picture',item.menu_picture);
+        }else{
+            AsyncStorage.setItem('order_menu_picture','nopreview6.png');
+        }
         navigation.navigate('AddOrder');
     }
 
@@ -154,6 +173,11 @@ const Order = ({navigation}) => {
         AsyncStorage.setItem('edit_order_menu_price',item.menu_price);
         AsyncStorage.setItem('edit_order_menu_qty',item.menu_qty);
         AsyncStorage.setItem('edit_order_menu_note',item.menu_note);
+        if(item.menu_picture != null){
+            AsyncStorage.setItem('edit_order_menu_picture',item.menu_picture);
+        }else{
+            AsyncStorage.setItem('edit_order_menu_picture','nopreview6.png');
+        }
         navigation.navigate('EditOrder');
     }
 
@@ -231,6 +255,8 @@ const Order = ({navigation}) => {
                             menu_status={item.menu_status}
                             menu_qty={item.menu_qty}
                             menu_note={item.menu_note}
+                            menu_image={menuImage}
+                            menu_picture={item.menu_picture}
                             horizontal={true}
                             onOrderPress={() => addOrder(item)}
                             onEditOrderPress={() => editOrder(item)}
