@@ -239,7 +239,7 @@ const Menu = ({navigation}) => {
           ]).then((resp) => {
             console.log(resp);
             setConfirmPicture(null);
-            navigation.navigate('UploadingMenuPic');
+            navigation.navigate('UploadingPic');
           })
         // RNFetchBlob.fetch(
         //   'POST',

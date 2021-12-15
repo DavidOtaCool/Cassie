@@ -49,7 +49,7 @@ const Customer = ({navigation}) => {
             await axios
                 .get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=normal')
             .then(response => {
-                console.log('ResponseAddListener: ', response)
+                console.log('Response Show Customer: ', response)
                 setCashiers(response.data.data.result)
         })
             .catch(e => alert(e.message))

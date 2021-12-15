@@ -108,7 +108,7 @@ const Checkout = ({navigation}) => {
     const [grandTotal, setGrandTotal] = useState('');
     const [totalPayment, setTotalPayment] = useState('');
 
-    const [cashierOnDuty, setCashierOnDuty] = useState([]);
+    const [cashierOnDuty, setCashierOnDuty] = useState('');
     const [dataCheckout, setDataCheckout] = useState({
         // cashier_on_duty: cashierOnDuty,
         ordering_customer_code: '',
@@ -157,12 +157,18 @@ const Checkout = ({navigation}) => {
     useEffect(() => {
         navigation.addListener('focus', async() => {
             
-            const menuNameCheck = async () =>{
+            const cashierNameCheck = async () =>{
 
-                const getCashierOnDuty = await AsyncStorage.getItem('login_cashier_name');
-                setCashierOnDuty(getCashierOnDuty);
+                const getCashierOnDuty = await AsyncStorage.getItem('login_cashier_id');
+                // setCashierOnDuty(getCashierOnDuty);
+                axios
+                    .get(`http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showLoginCashier&cashier_id=${getCashierOnDuty}`)
+                    .then(response => {
+                        console.log('Response Logged In Cashier: ', response)
+                        setCashierOnDuty(response.data.logged_in_cashier.cashier_name);
+                })
             }
-            menuNameCheck();
+            cashierNameCheck();
             // setTotalPayment(grandTotal)
 
             await axios

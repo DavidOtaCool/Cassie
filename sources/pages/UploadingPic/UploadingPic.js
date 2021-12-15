@@ -9,7 +9,7 @@ import logoCassie from '../../assets/icons/cashie_dark.png'
 var resHeight = Dimensions.get('window').height;
 var resWidth = Dimensions.get('window').width;
 
-const UploadingMenuPic = ({navigation}) => {
+const UploadingPic = ({navigation}) => {
     // const [selectedMenuPictureId, setSelectedMenuPictureId] = useState("");
     // const [dataImage, setDataImage] = useState('');
 
@@ -53,7 +53,7 @@ const UploadingMenuPic = ({navigation}) => {
     )
 }
 
-export default UploadingMenuPic
+export default UploadingPic
 
 const styles = StyleSheet.create({
     container: {

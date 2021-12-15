@@ -20,7 +20,8 @@ import {
         AddOrder,
         Checkout,
         EditOrder,
-        UploadingMenuPic,
+        UploadingPic,
+        EditProfile,
     } from '../pages/pageCollection';
 
 // import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
@@ -180,9 +181,17 @@ const Router = () => {
                 }}
             />
 
-             <Stack.Screen 
-                name="UploadingMenuPic" 
-                component={UploadingMenuPic}
+            <Stack.Screen 
+                name="UploadingPic" 
+                component={UploadingPic}
+                options={{
+                    headerShown: false,
+                }}
+            />
+
+            <Stack.Screen 
+                name="EditProfile" 
+                component={EditProfile}
                 options={{
                     headerShown: false,
                 }}

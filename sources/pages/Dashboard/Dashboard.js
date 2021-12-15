@@ -23,12 +23,15 @@ const Dashboard = ({navigation}) => {
     };
     const [currentDate, setCurrentDate] = useState('');
 
-    const [loginCashierName, setLoginCashierName] = useState([]);
-    const [loginCashierEmail, setLoginCashierEmail] = useState([]);
-    const [totalOrder, setTotalOrder] = useState([]);
+    const [loginCashierId, setLoginCashierId] = useState('');
+    const [loginCashierName, setLoginCashierName] = useState('');
+    const cashierFirstName = loginCashierName.split(' ')[0];
+    const [loginCashierEmail, setLoginCashierEmail] = useState('');
+    const [loginCashierPicture, setLoginCashierPicture] = useState('');
+    const [totalOrder, setTotalOrder] = useState(0);
     const [todayIncome, setTodayIncome] = useState(0);
-    const [todayOrder, setTodayOrder] = useState('');
-    const [todayMostTransaction, setTodayMostTransaction] = useState('');
+    const [todayOrder, setTodayOrder] = useState(0);
+    const [todayMostTransaction, setTodayMostTransaction] = useState(0);
     
     useEffect(() => {
 
@@ -45,22 +48,45 @@ const Dashboard = ({navigation}) => {
         navigation.addListener('focus', async() => {
         const cashierNameCheck = async () =>{
 
-            const getLoginCashierName = await AsyncStorage.getItem('login_cashier_name');
-            setLoginCashierName(getLoginCashierName);
+            const getLoginCashierId = await AsyncStorage.getItem('login_cashier_id');
+            setLoginCashierId(getLoginCashierId);
 
-            const getLoginCashierEmail = await AsyncStorage.getItem('login_cashier_email');
-            setLoginCashierEmail(getLoginCashierEmail);
+            // const getLoginCashierName = await AsyncStorage.getItem('login_cashier_name');
+            // setLoginCashierName(getLoginCashierName);
+
+            // const getLoginCashierEmail = await AsyncStorage.getItem('login_cashier_email');
+            // setLoginCashierEmail(getLoginCashierEmail);
+
+            // const getLoginCashierPicture = await AsyncStorage.getItem('login_cashier_picture');
+            // // setLoginCashierPicture(`https://robohash.org/${loginCashierEmail}`);
+            // setLoginCashierPicture(getLoginCashierPicture);
+        }
+        const getCashierData = async () => {
+            const gettingLoginCashierId = await AsyncStorage.getItem('login_cashier_id');
+
+            axios
+                .get(`http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showLoginCashier&cashier_id=${gettingLoginCashierId}`)
+                .then(response => {
+                    // console.log('Response Logged In Cashier: ', response)
+                    setLoginCashierName(response.data.logged_in_cashier.cashier_name);
+                    setLoginCashierEmail(response.data.logged_in_cashier.cashier_email);
+                    setLoginCashierPicture(response.data.logged_in_cashier.cashier_picture);
+        
+            })
+                .catch(e => alert(e.message))
         }
         cashierNameCheck();
+        getCashierData();
     })
-    }, [])
+    }, []);
 
+    
     useEffect(() => {
         navigation.addListener('focus', async() => {
             await axios
                 .get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=shortcutBoxInfo')
             .then(response => {
-                console.log('Shortcut Box Info: ', response)
+                // console.log('Shortcut Box Info: ', response)
                 setTotalOrder(response.data.total_order)
                 setTodayOrder(response.data.today_order)
                 setTodayIncome(response.data.today_income.today_income)
@@ -71,16 +97,33 @@ const Dashboard = ({navigation}) => {
         
     }, []);
 
+            // const getCashierData = () => {
+            //     axios
+            //             .get(`http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showLoginCashier&cashier_id=${loginCashierId}`)
+            //         .then(response => {
+            //             console.log('Response Logged In Cashier: ', response)
+            //             // setMenus(response.data.data.result)
+            //     })
+            //         .catch(e => alert(e.message))
+            // }
+
+
     return (
         <ScrollView style={styles.container} contentContainerStyle={{justifyContent: 'center', flexGrow: 1}}>
             <View style={styles.upperBackground}>
                 <View style={styles.upperItem}>
-                    <Image source={{
-                            uri: `https://robohash.org/${loginCashierEmail}`
-                        }} 
-                    style={styles.profilePicture} 
+                    <Image source={
+                            loginCashierPicture != null ?
+                            {
+                                uri: `http://cassie-pos.000webhostapp.com/cassie/upload/cashierPicture/${loginCashierPicture}`
+                            } : {
+                                uri: `https://robohash.org/${loginCashierEmail}`
+                            }
+                            // uri: `https://robohash.org/${loginCashierEmail}`
+                        } 
+                        style={styles.profilePicture} 
                     />
-                    <Text style={styles.userName}>Hi, {loginCashierName}</Text>
+                    <Text style={styles.userName}>Hi, {cashierFirstName}</Text>
                     <View style={{position: 'absolute', right: 0}}>
                         <Image source={NotifIcon} style={styles.notification} />
                         <View style={styles.notifStatus} />

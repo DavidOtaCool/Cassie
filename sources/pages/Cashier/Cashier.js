@@ -14,14 +14,21 @@ import ClearIcon from '../../assets/icons/cross.png'
 var resHeight = Dimensions.get('window').height;
 var resWidth = Dimensions.get('window').width;
 
-const CashierData = ({cashier_name, cashier_email, cashier_status, onClickEdit, onSelect, onUpload, onClickPicture}) => {
+const CashierData = ({cashier_name, cashier_email, cashier_picture, cashier_status, onClickEdit, onSelect, onUpload, onClickPicture}) => {
 
         
     return (
         <TouchableOpacity style={styles.cashierBox} onPress={() => onClickEdit()}>
             <TouchableOpacity onPress={() => alert('Click picture')} style={styles.cashierPictureBox}>
                     <Image 
-                        source={PreviewCashier}
+                        source={
+                            cashier_picture != null ? 
+                                {
+                                    uri: `http://cassie-pos.000webhostapp.com/cassie/upload/cashierPicture/${cashier_picture}`
+                                } : {
+                                    uri: `https://robohash.org/${cashier_email}`
+                            }
+                        }
                         style={styles.cashierPicture}
                     />
             </TouchableOpacity>
@@ -49,7 +56,7 @@ const Cashier = ({navigation}) => {
             await axios
                 .get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=normal')
             .then(response => {
-                console.log('ResponseAddListener: ', response)
+                console.log('Response Show Cashier: ', response)
                 setCashiers(response.data.data.result)
         })
             .catch(e => alert(e.message))
@@ -121,6 +128,7 @@ const Cashier = ({navigation}) => {
                             cashier_name={item.cashier_name} 
                             cashier_email={item.cashier_email} 
                             cashier_status={item.cashier_status} 
+                            cashier_picture={item.cashier_picture} 
                             horizontal={true}
                             onClickEdit={() => editCashier(item)}
                             // onClickUpdate={() => editMenu(item)}
@@ -210,6 +218,11 @@ const styles = StyleSheet.create({
         borderRadius: resHeight,
         height: resWidth * 0.15,
         width: resWidth * 0.15,
+        // backgroundColor: '#CECDF3',
+        backgroundColor: '#FFE9C0',
+        // borderColor: '#855B54',
+        // borderColor: '#CECDF3',
+        borderWidth: resWidth * 0.008,
     },
     cashierInfo: {
         textAlign: 'left',
