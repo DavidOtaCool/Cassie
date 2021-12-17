@@ -32,6 +32,14 @@ const Dashboard = ({navigation}) => {
     const [todayIncome, setTodayIncome] = useState(0);
     const [todayOrder, setTodayOrder] = useState(0);
     const [todayMostTransaction, setTodayMostTransaction] = useState(0);
+    const [totalMember, setTotalMember] = useState(0);
+    const [previousOrderCashier, setPreviousOrderCashier] = useState('');
+    const [previousOrderCustomer, setPreviousOrderCustomer] = useState('');
+    const [previousOrderIsMember, setPreviousOrderIsMember] = useState('');
+    const [previousOrderNoOrder, setPreviousOrderNoOrder] = useState('');
+    const [previousOrderGrandtotal, setPreviousOrderGrandtotal] = useState('');
+    const [previousOrderPointCut, setPreviousOrderPointCut] = useState('');
+    const [previousOrderTotalPayment, setPreviousOrderTotalPayment] = useState('');
     
     useEffect(() => {
 
@@ -91,6 +99,14 @@ const Dashboard = ({navigation}) => {
                 setTodayOrder(response.data.today_order)
                 setTodayIncome(response.data.today_income.today_income)
                 setTodayMostTransaction(response.data.most_transaction.most_transaction)
+                setTotalMember(response.data.total_member)
+                setPreviousOrderCashier(response.data.latest_transaction.cashier_on_duty)
+                setPreviousOrderCustomer(response.data.latest_transaction.ordering_customer_name)
+                setPreviousOrderIsMember(response.data.latest_transaction.member)
+                setPreviousOrderNoOrder(response.data.latest_transaction.no_order)
+                setPreviousOrderGrandtotal(response.data.latest_transaction.order_grandtotal)
+                setPreviousOrderPointCut(response.data.latest_transaction.point_cut)
+                setPreviousOrderTotalPayment(response.data.latest_transaction.total_payment)
         })
             .catch(e => alert(e.message))
         })
@@ -160,15 +176,14 @@ const Dashboard = ({navigation}) => {
                     <View style={styles.shortcutItem}>
                         {/* <Text style={styles.shortcutInfo}>{todayMostTransaction}</Text> */}
                         <NumberFormat 
-                            value={todayMostTransaction}
+                            value={totalMember}
                             displayType={'text'} 
                             thousandSeparator={true} 
-                            prefix={'Rp'} 
                             renderText={
                                 formattedValue => <Text style={{...styles.shortcutInfo, fontSize: resWidth * 0.047}}>{formattedValue}</Text>
                             } 
                         />
-                        <Text style={styles.shortcutDesc}>Most Checkout</Text>
+                        <Text style={styles.shortcutDesc}>Total Member</Text>
                     </View>
                 </View>
             </View>
@@ -206,6 +221,94 @@ const Dashboard = ({navigation}) => {
                 </View>
             </View>
 
+            <View style={styles.lastOrderElement}>
+                <Text style={styles.lastOrderText}>Previous Order</Text>
+
+                    <View style={styles.previousOrderBox}>
+
+                        <Text style={{...styles.itemResult, textAlign: 'right', fontSize: resWidth * 0.04}}>{previousOrderNoOrder}</Text>
+
+                        <View style={styles.previousOrderItem}>
+                            <Text style={styles.itemInfoNormal}>Cashier on duty</Text>
+                            <Text style={styles.itemResult}>{previousOrderCashier}</Text>
+                        </View>
+
+                        <View style={styles.previousOrderItem}>
+                            <Text style={styles.itemInfoNormal}>Customer name</Text>
+                            <View style={{flexDirection: 'row'}}>
+                                <Text style={styles.itemResult}>{previousOrderCustomer}</Text>
+                                {
+                                    previousOrderIsMember === 'Yes' 
+                                    ? 
+                                        <Text style={{...styles.itemResult, color: '#56DF95'}}> (member)</Text>
+                                    : 
+                                        <Text style={{...styles.itemResultNormal}}> (not member)</Text>
+                                }
+                            </View>
+                        </View>
+
+                    {
+                        previousOrderIsMember === 'Yes' ?
+
+                            <View>
+                                <View style={{...styles.previousOrderItem, flexDirection: 'row', marginBottom: 0, marginTop: resWidth * 0.06}}>
+                                    <Text style={styles.itemInfoNormal}>Total Price</Text>
+
+                                    <NumberFormat 
+                                            value={previousOrderGrandtotal}
+                                            displayType={'text'} 
+                                            thousandSeparator={true} 
+
+                                            renderText={
+                                                formattedValue => 
+                                                <View style={{flexDirection: 'row', position: 'absolute', right: 0, justifyContent: 'center', alignItems: 'center'}}>
+                                                        <Text style={{...styles.menuPrice, ...styles.currency, fontSize: resWidth * 0.04,}}>Rp</Text>
+                                                        <Text style={styles.itemResultNormal}>{formattedValue}</Text>
+                                                </View>
+                                            } 
+                                    />
+                                </View>
+                                        
+                                <View style={{...styles.previousOrderItem, flexDirection: 'row', marginVertical: resWidth * 0.015}}>
+                                    <Text style={styles.itemInfoNormal}>Point Cut</Text>
+                                        
+                                    <NumberFormat 
+                                            value={previousOrderPointCut}
+                                            displayType={'text'} 
+                                            thousandSeparator={true} 
+                                        
+                                            renderText={
+                                                formattedValue => 
+                                                <View style={{flexDirection: 'row', position: 'absolute', right: 0, justifyContent: 'center', alignItems: 'center'}}>
+                                                    <Text style={{...styles.menuPrice, fontWeight: 'normal', fontSize: resWidth * 0.0375, color: '#a2a3a8'}}>-Rp</Text>
+                                                    <Text style={{...styles.itemResultNormal, color: '#a2a3a8', fontSize: resWidth * 0.0375}}>{formattedValue}</Text>
+                                                </View>
+                                            } 
+                                    />
+                                </View>
+                            </View>
+                        : null
+                    }
+                        <View style={{...styles.previousOrderItem, flexDirection: 'row', marginBottom: 0}}>
+                            <Text style={styles.itemInfo}>Total Payment</Text>
+
+                            <NumberFormat 
+                                    value={previousOrderTotalPayment}
+                                    displayType={'text'} 
+                                    thousandSeparator={true} 
+
+                                    renderText={
+                                        formattedValue => 
+                                        <View style={{flexDirection: 'row', position: 'absolute', right: 0, justifyContent: 'center', alignItems: 'center'}}>
+                                                <Text style={{...styles.menuPrice, ...styles.currency, fontSize: resWidth * 0.04,}}>Rp</Text>
+                                                <Text style={styles.itemResult}>{formattedValue}</Text>
+                                        </View>
+                                    } 
+                            />
+                        </View>
+                    </View>
+            </View>
+
 
             {/* <View style={styles.waitingOrderElement}>
                 <Text style={styles.waitingOrderText}>Waiting Order(s)</Text>
@@ -241,7 +344,7 @@ const Dashboard = ({navigation}) => {
 
                 </View>
             </View> */}
-            <View style={{marginBottom: resWidth * 0.6}}></View>
+            <View style={{marginBottom: resWidth * 0.35}}></View>
         </ScrollView>
     )
 }
@@ -408,6 +511,55 @@ const styles = StyleSheet.create({
         // fontSize: 13,
         fontSize: resWidth * 0.033,
     },
+    lastOrderElement:{
+        paddingHorizontal: resWidth * 0.115,
+        paddingVertical: resWidth * 0.01,
+        // backgroundColor: '#ccc',
+    },
+    lastOrderText: {
+        fontSize: resWidth * 0.0505,
+        color: '#000',
+        marginBottom: resHeight * 0.02,
+        marginLeft: resWidth * 0.01,
+    },
+    previousOrderBox: {
+        backgroundColor: '#F4F6FA',
+        paddingHorizontal: resWidth * 0.06,
+        paddingVertical: resWidth * 0.06,
+        borderRadius: resWidth * 0.05,
+    },
+    previousOrderItem: {
+        marginVertical: resWidth * 0.02,
+    },
+    itemInfo: {
+        color: '#000',
+        fontWeight: 'bold',
+        fontSize: resWidth * 0.04,
+        marginBottom: resWidth * 0.02,
+    },
+    itemInfoNormal: {
+        color: '#000',
+        fontSize: resWidth * 0.037,
+    },
+    itemResult: {
+        color: '#000',
+        fontWeight: 'bold',
+        fontSize: resWidth * 0.037,
+    },
+    itemResultNormal: {
+        color: '#000',
+        fontSize: resWidth * 0.037,
+    },
+    menuPrice: {
+        fontSize: resWidth * 0.035,
+        color: '#000',
+        fontWeight: 'bold',
+    },
+    currency: {
+        color: '#56DF95',
+    },
+
+
     
     waitingOrderElement:{
         // backgroundColor: '#ccc',

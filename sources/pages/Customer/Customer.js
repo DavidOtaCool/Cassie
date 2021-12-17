@@ -14,20 +14,20 @@ import ClearIcon from '../../assets/icons/cross.png'
 var resHeight = Dimensions.get('window').height;
 var resWidth = Dimensions.get('window').width;
 
-const CashierData = ({cashier_name, cashier_email, cashier_status, onClickEdit, onSelect, onUpload, onClickPicture}) => {
+const CashierData = ({customer_name, customer_email, customer_point}) => {
 
         
     return (
-        <TouchableOpacity style={styles.cashierBox} onPress={() => onClickEdit()}>
-            <TouchableOpacity onPress={() => alert('Click picture')} style={styles.cashierPictureBox}>
+        <TouchableOpacity style={styles.customerBox}>
+            <TouchableOpacity style={styles.customerPictureBox}>
                     <Image 
                         source={PreviewCashier}
-                        style={styles.cashierPicture}
+                        style={styles.customerPicture}
                     />
             </TouchableOpacity>
             <View style={styles.cashierInfo}>
-                <Text style={styles.cashierName}>{cashier_name} ({cashier_status})</Text>
-                <Text style={styles.cashierEmail}>{cashier_email}</Text>
+                <Text style={styles.customerName}>{customer_name} [{customer_point} point(s)]</Text>
+                <Text style={styles.customerEmail}>{customer_email}</Text>
             </View>
         </TouchableOpacity>
 
@@ -36,7 +36,7 @@ const CashierData = ({cashier_name, cashier_email, cashier_status, onClickEdit, 
 
 
 const Customer = ({navigation}) => {
-    const [cashiers, setCashiers] = useState([]);
+    const [customers, setCustomers] = useState([]);
     const [searchQuery, setSearchQuery] = React.useState('');
     const onChangeSearch = query => setSearchQuery(query);
 
@@ -47,26 +47,15 @@ const Customer = ({navigation}) => {
     useEffect(() => {
         navigation.addListener('focus', async() => {
             await axios
-                .get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=normal')
+                .get('http://cassie-pos.000webhostapp.com/cassie/php/api_customer.php?operation=normal')
             .then(response => {
                 console.log('Response Show Customer: ', response)
-                setCashiers(response.data.data.result)
+                setCustomers(response.data.data.result)
         })
             .catch(e => alert(e.message))
         })
         
     }, []);
-
-    const editCashier = (item) => {
-
-        // console.log('Selected Cashier: ', item);
-        AsyncStorage.setItem('cashier_id',item.cashier_id);
-        AsyncStorage.setItem('cashier_name',item.cashier_name);
-        AsyncStorage.setItem('cashier_email',item.cashier_email);
-        AsyncStorage.setItem('cashier_status',item.cashier_status);
-        navigation.navigate('EditCashier');
-        
-        }
 
     return (
         <View>
@@ -99,15 +88,15 @@ const Customer = ({navigation}) => {
 
             <View style={styles.cashierList}>    
 
-                {cashiers.map(item => {
+                {customers.map(item => {
 
                     return(
 
                         <CashierData
-                            key={item.cashier_id} 
-                            cashier_name={item.cashier_name} 
-                            cashier_email={item.cashier_email} 
-                            cashier_status={item.cashier_status} 
+                            key={item.customer_id} 
+                            customer_name={item.customer_name} 
+                            customer_email={item.customer_email} 
+                            customer_point={item.customer_point} 
                             horizontal={true}
                             onClickEdit={() => editCashier(item)}
                             // onClickUpdate={() => editMenu(item)}
@@ -176,7 +165,7 @@ const styles = StyleSheet.create({
         // backgroundColor: '#eee',
         marginVertical: resWidth * 0.1,
     },
-    cashierBox: {
+    customerBox: {
         backgroundColor: '#fff',
         paddingVertical: resWidth * 0.07,
         shadowColor: '#969696',
@@ -190,10 +179,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
-    cashierPictureBox: {
+    customerPictureBox: {
         marginLeft: resWidth * 0.05,
     },
-    cashierPicture: {
+    customerPicture: {
         borderRadius: resHeight,
         height: resWidth * 0.15,
         width: resWidth * 0.15,
@@ -202,13 +191,13 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         marginLeft: resWidth * 0.04,
     },
-    cashierName: {
+    customerName: {
         fontWeight: 'bold',
         color: '#000',
         fontSize: resWidth * 0.035,
         marginBottom: resWidth * 0.01,
     },
-    cashierEmail: {
+    customerEmail: {
         fontSize: resWidth * 0.035,
         marginBottom: resWidth * 0.01,
         color: '#c4c6cf',
