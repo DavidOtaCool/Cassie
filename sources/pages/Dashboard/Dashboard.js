@@ -28,6 +28,7 @@ const Dashboard = ({navigation}) => {
     const cashierFirstName = loginCashierName.split(' ')[0];
     const [loginCashierEmail, setLoginCashierEmail] = useState('');
     const [loginCashierPicture, setLoginCashierPicture] = useState('');
+    const [loginCashierStatus, setLoginCashierStatus] = useState('');
     const [totalOrder, setTotalOrder] = useState(0);
     const [todayIncome, setTodayIncome] = useState(0);
     const [todayOrder, setTodayOrder] = useState(0);
@@ -43,32 +44,32 @@ const Dashboard = ({navigation}) => {
     
     useEffect(() => {
 
-        var date = new Date().getDate(); //Current Date
-        var month = new Date().getMonth() + 1; //Current Month
-        var year = new Date().getFullYear(); //Current Year
-        // var hours = new Date().getHours(); //Current Hours
-        // var min = new Date().getMinutes(); //Current Minutes
-        // var sec = new Date().getSeconds(); //Current Seconds
-        setCurrentDate(
-          date + '/' + month + '/' + year 
-        );
+        // var date = new Date().getDate(); //Current Date
+        // var month = new Date().getMonth() + 1; //Current Month
+        // var year = new Date().getFullYear(); //Current Year
+        // // var hours = new Date().getHours(); //Current Hours
+        // // var min = new Date().getMinutes(); //Current Minutes
+        // // var sec = new Date().getSeconds(); //Current Seconds
+        // setCurrentDate(
+        //   date + '/' + month + '/' + year 
+        // );
 
         navigation.addListener('focus', async() => {
-        const cashierNameCheck = async () =>{
+        // const cashierNameCheck = async () =>{
 
-            const getLoginCashierId = await AsyncStorage.getItem('login_cashier_id');
-            setLoginCashierId(getLoginCashierId);
+        //     const getLoginCashierId = await AsyncStorage.getItem('login_cashier_id');
+        //     setLoginCashierId(getLoginCashierId);
 
-            // const getLoginCashierName = await AsyncStorage.getItem('login_cashier_name');
-            // setLoginCashierName(getLoginCashierName);
+        //     // const getLoginCashierName = await AsyncStorage.getItem('login_cashier_name');
+        //     // setLoginCashierName(getLoginCashierName);
 
-            // const getLoginCashierEmail = await AsyncStorage.getItem('login_cashier_email');
-            // setLoginCashierEmail(getLoginCashierEmail);
+        //     // const getLoginCashierEmail = await AsyncStorage.getItem('login_cashier_email');
+        //     // setLoginCashierEmail(getLoginCashierEmail);
 
-            // const getLoginCashierPicture = await AsyncStorage.getItem('login_cashier_picture');
-            // // setLoginCashierPicture(`https://robohash.org/${loginCashierEmail}`);
-            // setLoginCashierPicture(getLoginCashierPicture);
-        }
+        //     // const getLoginCashierPicture = await AsyncStorage.getItem('login_cashier_picture');
+        //     // // setLoginCashierPicture(`https://robohash.org/${loginCashierEmail}`);
+        //     // setLoginCashierPicture(getLoginCashierPicture);
+        // }
         const getCashierData = async () => {
             const gettingLoginCashierId = await AsyncStorage.getItem('login_cashier_id');
 
@@ -79,11 +80,11 @@ const Dashboard = ({navigation}) => {
                     setLoginCashierName(response.data.logged_in_cashier.cashier_name);
                     setLoginCashierEmail(response.data.logged_in_cashier.cashier_email);
                     setLoginCashierPicture(response.data.logged_in_cashier.cashier_picture);
-        
+                    setLoginCashierStatus(response.data.logged_in_cashier.cashier_status);
             })
                 .catch(e => alert(e.message))
         }
-        cashierNameCheck();
+        // cashierNameCheck();
         getCashierData();
     })
     }, []);
@@ -198,17 +199,49 @@ const Dashboard = ({navigation}) => {
                         <Image source={Inventory} style={styles.menuIcon} />
                         <Text style={styles.menuName}>Inventory</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.boxMenu} onPress={() => handleGoTo('Customer')}>
-                        <Image source={Customer} style={styles.menuIcon} />
-                        <Text style={styles.menuName}>Customer</Text>
+                    <TouchableOpacity style={styles.boxMenu} 
+                        onPress={
+                            loginCashierStatus === 'Owner' || loginCashierStatus === 'Manager' ?
+                                () => handleGoTo('Customer') :
+                                () => alert("Sorry, you don't have permission to access this feature")
+                        }
+                    >
+                        <Image source={Customer} 
+                            style={
+                                loginCashierStatus === 'Owner' || loginCashierStatus === 'Manager' ? styles.menuIcon
+                                : {...styles.menuIcon, opacity: 0.25}
+                            }
+                        />
+                        <Text 
+                            style={
+                                loginCashierStatus === 'Owner' || loginCashierStatus === 'Manager' ? styles.menuName
+                                : {...styles.menuName, opacity: 0.25}
+                            }
+                        >Customer</Text>
                     </TouchableOpacity>
                 </View>
 
                 <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
 
-                    <TouchableOpacity style={styles.boxMenu} onPress={() => handleGoTo('Report')}>
-                        <Image source={Report} style={styles.menuIcon} />
-                        <Text style={styles.menuName}>Report</Text>
+                    <TouchableOpacity style={styles.boxMenu} 
+                        onPress={
+                            loginCashierStatus === 'Owner' ?
+                                () => handleGoTo('Report') : 
+                                () => alert("Sorry, you don't have permission to access this feature")
+                        }
+                    >
+                        <Image source={Report} 
+                            style={
+                                loginCashierStatus === 'Owner' ? styles.menuIcon
+                                : {...styles.menuIcon, opacity: 0.25}
+                            } 
+                        />
+                        <Text 
+                            style={
+                                loginCashierStatus === 'Owner' ? styles.menuName
+                                : {...styles.menuName, opacity: 0.25}
+                            }
+                        >Report</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.boxMenu} onPress={() => handleGoTo('Cashier')}>
                         <Image source={Cashier} style={styles.menuIcon} />

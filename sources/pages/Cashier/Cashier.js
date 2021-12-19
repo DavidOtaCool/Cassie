@@ -14,9 +14,15 @@ import ClearIcon from '../../assets/icons/cross.png'
 var resHeight = Dimensions.get('window').height;
 var resWidth = Dimensions.get('window').width;
 
-const OwnerData = ({owner_id, owner_name, owner_email, owner_picture, owner_status, onClickEdit, onSelect, onUpload, onClickPicture, logged_in_cashier}) => {
+const OwnerData = ({owner_id, owner_name, owner_email, owner_picture, owner_status, onClickEdit, onSelect, onUpload, onClickPicture, logged_in_cashier, logged_in_cashier_status}) => {
     return (
-        <TouchableOpacity style={styles.cashierBox} onPress={() => onClickEdit()}>
+        <TouchableOpacity style={styles.cashierBox} 
+            onPress={
+                logged_in_cashier_status === 'Owner' ?
+                    () => onClickEdit()
+                : null
+            }
+        >
             <View style={styles.cashierPictureBox}>
                     <Image 
                         source={
@@ -43,9 +49,15 @@ const OwnerData = ({owner_id, owner_name, owner_email, owner_picture, owner_stat
     )
 }
 
-const ManagerData = ({manager_id, manager_name, manager_email, manager_picture, manager_status, onClickEdit, logged_in_cashier}) => {
+const ManagerData = ({manager_id, manager_name, manager_email, manager_picture, manager_status, onClickEdit, logged_in_cashier, logged_in_cashier_status}) => {
     return (
-        <TouchableOpacity style={styles.cashierBox} onPress={() => onClickEdit()}>
+        <TouchableOpacity style={styles.cashierBox} 
+            onPress={
+                logged_in_cashier_status === 'Owner' ?
+                    () => onClickEdit()
+                : null
+            }
+        >
             <View style={styles.cashierPictureBox}>
                     <Image 
                         source={
@@ -72,9 +84,15 @@ const ManagerData = ({manager_id, manager_name, manager_email, manager_picture, 
     )
 }
 
-const EmployeeData = ({employee_id, employee_name, employee_email, employee_picture, employee_status, onClickEdit, logged_in_cashier}) => {
+const EmployeeData = ({employee_id, employee_name, employee_email, employee_picture, employee_status, onClickEdit, logged_in_cashier, logged_in_cashier_status}) => {
     return (
-        <TouchableOpacity style={styles.cashierBox} onPress={() => onClickEdit()}>
+        <TouchableOpacity style={styles.cashierBox}
+            onPress={
+                logged_in_cashier_status === 'Owner' ?
+                    () => onClickEdit()
+                : null
+            }
+        >
             <View style={styles.cashierPictureBox}>
                     <Image 
                         source={
@@ -103,6 +121,7 @@ const EmployeeData = ({employee_id, employee_name, employee_email, employee_pict
 
 const Cashier = ({navigation}) => {
     const [loginCashierId, setLoginCashierId] = useState('');
+    const [loginCashierStatus, setLoginCashierStatus] = useState('');
 
     const [manager, setManager] = useState([]);
     const [owner, setOwner] = useState([]);
@@ -123,6 +142,7 @@ const Cashier = ({navigation}) => {
                     .then(response => {
                         // console.log('Response Logged In Cashier: ', response)
                         setLoginCashierId(response.data.logged_in_cashier.cashier_id);
+                        setLoginCashierStatus(response.data.logged_in_cashier.cashier_status);
                 })
                     .catch(e => alert(e.message))
             }
@@ -225,6 +245,7 @@ const Cashier = ({navigation}) => {
                             owner_status={item.cashier_status} 
                             owner_picture={item.cashier_picture} 
                             logged_in_cashier={loginCashierId}
+                            logged_in_cashier_status={loginCashierStatus}
                             horizontal={true}
                             onClickEdit={() => editCashier(item)}
                             // onClickUpdate={() => editMenu(item)}
@@ -248,6 +269,7 @@ const Cashier = ({navigation}) => {
                             manager_status={item.cashier_status} 
                             manager_picture={item.cashier_picture} 
                             logged_in_cashier={loginCashierId}
+                            logged_in_cashier_status={loginCashierStatus}
                             horizontal={true}
                             onClickEdit={() => editCashier(item)}
                         />
@@ -267,6 +289,7 @@ const Cashier = ({navigation}) => {
                             employee_status={item.cashier_status} 
                             employee_picture={item.cashier_picture} 
                             logged_in_cashier={loginCashierId}
+                            logged_in_cashier_status={loginCashierStatus}
                             horizontal={true}
                             onClickEdit={() => editCashier(item)}
                         />

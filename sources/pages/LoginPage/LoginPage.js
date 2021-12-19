@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { TouchableOpacity, Dimensions, Image, StyleSheet, Text, View, Alert} from 'react-native'
+import { TouchableOpacity, Dimensions, Image, StyleSheet, Text, View, Alert, KeyboardAvoidingView} from 'react-native'
 
 import { TextInput } from 'react-native-gesture-handler'
 import logoCassie from '../../assets/icons/cashie_light.png'
@@ -10,6 +10,7 @@ var resHeight = Dimensions.get('window').height;
 var resWidth = Dimensions.get('window').width;
 
 const LoginPage = ({navigation}) => {
+    const keyboardVerticalOffset = Platform.OS === 'android' ? resWidth * 0.1 : 0
     const handleGoTo = (page) => {
         navigation.navigate(page)
     };

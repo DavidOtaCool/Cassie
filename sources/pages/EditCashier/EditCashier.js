@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { TouchableOpacity, Dimensions, Image, StyleSheet, Text, View, Alert, Touchable, ScrollView, RefreshControl } from 'react-native'
+import { TouchableOpacity, Dimensions, Image, StyleSheet, Text, View, Alert, ScrollView, RefreshControl } from 'react-native'
+import {Picker} from '@react-native-picker/picker';
 import { TextInput } from 'react-native-gesture-handler';
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -11,10 +12,13 @@ var resHeight = Dimensions.get('window').height;
 var resWidth = Dimensions.get('window').width;
 
 const EditCashier = ({navigation}) => {
+    const [loginCashierId, setLoginCashierId] = useState('');
     const [cashierId, setCashierId] = useState("");
     const [cashierName, setCashierName] = useState("");
+    const cashierFirstName = cashierName.split(' ')[0];
     const [cashierEmail, setCashierEmail] = useState("");
     const [cashierStatus, setCashierStatus] = useState("");
+    const [newCashierStatus, setNewCashierStatus] = useState("");
     const [dataCashier, setDataCashier] = useState({
         cashier_id: 0,
         cashier_name: '',
@@ -59,7 +63,7 @@ const EditCashier = ({navigation}) => {
     
     const update = () => {{
 
-        const editedCashierData = `cashier_name=${dataCashier.cashier_name}&cashier_email=${dataCashier.cashier_email}&cashier_status=${dataCashier.cashier_status}`;
+        const editedCashierData = `cashier_name=${dataCashier.cashier_name}&cashier_email=${dataCashier.cashier_email}&cashier_status=${cashierStatus}`;
 
             axios.post(`http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=updateCashier&cashier_id=${cashierId}`, editedCashierData)
             .then(res => {
@@ -68,6 +72,22 @@ const EditCashier = ({navigation}) => {
         });
 
     }}
+
+    useEffect(() => {
+        navigation.addListener('focus', async() => {
+            const getCashierData = async () => {
+                const gettingLoginCashierId = await AsyncStorage.getItem('login_cashier_id');
+                axios
+                    .get(`http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showLoginCashier&cashier_id=${gettingLoginCashierId}`)
+                    .then(response => {
+                        // console.log('Response Logged In Cashier: ', response)
+                        setLoginCashierId(response.data.logged_in_cashier.cashier_id);
+                })
+                    .catch(e => alert(e.message))
+            }
+            getCashierData();
+    })
+    }, []);
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
@@ -79,7 +99,13 @@ const EditCashier = ({navigation}) => {
                             style={styles.arrowLeft}
                         />
                     </TouchableOpacity>
-                    <Text style={styles.menuTitle}>Edit Cashier {cashierId}</Text>
+                    <Text style={styles.menuTitle}>
+                        {
+                            cashierId === loginCashierId 
+                            ? `Edit Cashier ${cashierId} (You)`
+                            : `Edit Cashier ${cashierId}`
+                        }
+                    </Text>
                     {/* <Text>{menuName},{menuCategory},{menuPrice}</Text> */}
                     <View style={{position: 'absolute', right: 0}}>
                         <Image source={NotifIcon} style={styles.notification} />
@@ -89,7 +115,7 @@ const EditCashier = ({navigation}) => {
                 </View>
 
 
-            <View style={styles.forms}>
+            {/* <View style={styles.forms}>
                 <Text style={styles.formName}>Cashier Name</Text>
                 <TextInput 
                     placeholder="Please tell us your full name" 
@@ -110,9 +136,46 @@ const EditCashier = ({navigation}) => {
                     defaultValue={cashierEmail}
                     onChangeText={value => onInputChange(value, 'cashier_email')}
                 />
+            </View> */}
+
+            <View style={styles.forms}>
+                <Text style={styles.formName}>Cashier Name</Text>
+                <TextInput 
+                    editable={
+                        cashierId === loginCashierId ? true 
+                        : false
+                    }
+                    placeholder="Please tell us your full name" 
+                    // color='#000'
+                    placeholderTextColor="#B1B1B1"
+                    style={styles.customTextInput}
+                    // onFocus={() => dataCashier(editMenu)}
+                    defaultValue={cashierName}
+                    onChangeText={value => onInputChange(value, 'cashier_name')} 
+                />
             </View>
 
             <View style={styles.forms}>
+                <Text style={styles.formName}>Cashier Status</Text>
+                <View style={styles.customPicker}>
+                    <Picker
+                        enabled={
+                            cashierId === loginCashierId ? false 
+                                : true
+                        }
+                        prompt={`Change ${cashierFirstName}'s status`}
+                        selectedValue={cashierStatus}
+                        // onValueChange={value => onInputChange(value, 'cashier_status')}
+                        onValueChange={(itemValue, itemIndex) => setCashierStatus(itemValue)}
+                    >
+                        <Picker.Item label="Owner" value="Owner" />
+                        <Picker.Item label="Manager" value="Manager" />
+                        <Picker.Item label="Employee" value="Employee" />
+                    </Picker>
+                </View>
+            </View>
+
+            {/* <View style={styles.forms}>
                 <Text style={styles.formName}>Cashier Status</Text>
                 <TextInput 
                     placeholder="Cashier Status" 
@@ -121,7 +184,7 @@ const EditCashier = ({navigation}) => {
                     defaultValue={cashierStatus}
                     onChangeText={value => onInputChange(value, 'cashier_status')}
                 />
-            </View>
+            </View> */}
    
             <TouchableOpacity 
                 style={styles.btndeleteCashier}
@@ -197,6 +260,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#F4F6FA',
         borderRadius: resWidth * 0.028,
         padding: resWidth * 0.05,
+    },
+    customPicker: {
+        alignSelf: 'stretch',
+        backgroundColor: '#F4F6FA',
+        borderRadius: resWidth * 0.028,
+        padding: resWidth * 0.018,
     },
     forms: {
         marginTop: resHeight * 0.04,

@@ -25,11 +25,20 @@ var resHeight = Dimensions.get('window').height;
 var resWidth = Dimensions.get('window').width;
 
 
-const MenuData = ({menu_name, menu_category, menu_price, menu_image, menu_picture, onClickUpdate, onSelect, onUpload, onClickPicture}) => {
+const MenuData = ({menu_name, menu_category, menu_price, menu_image, menu_picture, onClickUpdate, onSelect, onUpload, onClickPicture, login_cashier_status}) => {
     
     return (
             <View style={styles.menuBox}>
-                <TouchableOpacity onPress={() => onClickPicture()}>
+                <TouchableOpacity 
+                    onPress={
+                        login_cashier_status === 'Owner' || login_cashier_status === 'Manager' ?
+                            () => onClickPicture() : null
+                    }
+                    disabled={
+                        login_cashier_status === 'Owner' || login_cashier_status === 'Manager' ?
+                        false : true
+                    }
+                >
                     <View style={{justifyContent: 'center', alignItems: 'center'}}>
                         {
                             menu_picture === null || menu_picture === 'menu_preview.png' ?
@@ -76,7 +85,12 @@ const MenuData = ({menu_name, menu_category, menu_price, menu_image, menu_pictur
                         } 
                     />
                 </View>
-                <TouchableOpacity style={styles.menuEditBtn} onPress={onClickUpdate}>
+                <TouchableOpacity onPress={onClickUpdate}
+                    style={
+                        login_cashier_status === 'Owner' || login_cashier_status === 'Manager' ?
+                        styles.menuEditBtn : {display: 'none'}
+                    } 
+                >
                     <Image 
                         source={EditIcon}
                         style={styles.menuEditIcon}
@@ -88,6 +102,7 @@ const MenuData = ({menu_name, menu_category, menu_price, menu_image, menu_pictur
 }
 
 const Menu = ({navigation}) => {
+    const [loginCashierStatus, setLoginCashierStatus] = useState('');
 
     // const [menuImage, setMenuImage] = useState('https://robohash.org/test');
     const [menuImage, setMenuImage] = useState('http://cassie-pos.000webhostapp.com/cassie/upload/menuPicture/nopreview6.png');
@@ -322,6 +337,19 @@ const Menu = ({navigation}) => {
 
     useEffect(() => {
         navigation.addListener('focus', async() => {
+            const getCashierData = async () => {
+                const gettingLoginCashierId = await AsyncStorage.getItem('login_cashier_id');
+                axios
+                    .get(`http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showLoginCashier&cashier_id=${gettingLoginCashierId}`)
+                    .then(response => {
+                        // console.log('Response Logged In Cashier: ', response)
+                        setLoginCashierStatus(response.data.logged_in_cashier.cashier_status);
+                })
+                    .catch(e => alert(e.message))
+            }
+            getCashierData();
+        })
+        navigation.addListener('focus', async() => {
             await axios
                 .get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showMenu')
             .then(response => {
@@ -485,6 +513,7 @@ const Menu = ({navigation}) => {
                             menu_price={item.menu_price}
                             menu_picture={item.menu_picture}
                             menu_image={menuImage}
+                            login_cashier_status={loginCashierStatus}
                             horizontal={true}
                             onClickUpdate={() => editMenu(item)}
                             // onSelect={() => selectMenu(item)}
@@ -500,7 +529,12 @@ const Menu = ({navigation}) => {
 
             </ScrollView>
             
-            <TouchableOpacity onPress={() => handleGoTo('AddMenu')}>
+            <TouchableOpacity onPress={() => handleGoTo('AddMenu')}
+                style={
+                    loginCashierStatus === 'Owner' || loginCashierStatus === 'Manager' ?
+                    null : {display: 'none'}
+                }
+            >
                 <View style={styles.addButton}>
                     <Image 
                         source={Plus}
