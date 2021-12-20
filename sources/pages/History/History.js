@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Dimensions, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import { Dimensions, StyleSheet, Text, View, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler';
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -56,13 +56,17 @@ const OrderData = ({no_order, order_date, cashier_on_duty, ordering_customer_nam
 }
 
 // const OrderDetailData = ({no_order, menu_name, menu_note, order_qty, order_subtotal, order_total, cashier_on_duty, ordering_customer_name, member, order_date, order_grandtotal, point_cut, total_payment}) => {
-const OrderDetailData = ({no_order, menu_name, menu_note, order_qty, order_subtotal, order_total}) => {
+const OrderDetailData = ({no_order, menu_name, menu_category, menu_note, order_qty, order_subtotal, order_total}) => {
     return (    
 
     <View style={styles.orderDetailItemBox}>
         <View style={styles.orderDetailItem}>
             <Text style={styles.itemInfoNormal}>Menu Name:</Text>
             <Text style={styles.menuNameDetailStyle}>{menu_name}</Text>
+        </View>
+        <View style={styles.orderDetailItem}>
+            <Text style={styles.itemInfoNormal}>Menu Category:</Text>
+            <Text style={styles.menuNameDetailStyle}>{menu_category}</Text>
         </View>
         {
             menu_note ? 
@@ -130,6 +134,7 @@ const History = ({navigation}) => {
     const [selectedOrderQty, setSelectedOrderQty] = useState('');
     const [selectedOrderPointCut, setSelectedOrderPointCut] = useState('');
     const [selectedOrderTotalPayment, setSelectedOrderTotalPayment] = useState('');
+    const [selectedOrderPaymentMethod, setSelectedOrderPaymentMethod] = useState('');
     const [seeDetail, setSeeDetail] = useState(null);
 
     useEffect(() => {
@@ -162,6 +167,7 @@ const History = ({navigation}) => {
                 setSelectedOrderGrandtotal(response.data.selected_tborder.order_grandtotal)
                 setSelectedOrderPointCut(response.data.selected_tborder.point_cut)
                 setSelectedOrderTotalPayment(response.data.selected_tborder.total_payment)
+                setSelectedOrderPaymentMethod(response.data.selected_tborder.payment_method)
         })
             .catch(e => alert(e.message))
         setSeeDetail(true);
@@ -173,7 +179,9 @@ const History = ({navigation}) => {
             {
                 seeDetail ? 
                 <View style={styles.orderDetailBackground}>
-                    <View style={{backgroundColor: 'rgba(0,0,0,0.5)', height: resHeight, width: resWidth}} />
+                    <TouchableWithoutFeedback onPressOut={() => setSeeDetail(null)}>
+                        <View style={{backgroundColor: 'rgba(0,0,0,0.5)', height: resHeight, width: resWidth}} />
+                    </TouchableWithoutFeedback>
                     <ScrollView style={styles.orderDetailBox}>
                         <View style={{marginTop: resWidth * 0.06, marginBottom: resWidth * 0.1}}>
                             <View style={{...styles.itemTitleInfo, alignSelf: 'flex-start'}}>
@@ -216,6 +224,7 @@ const History = ({navigation}) => {
                                         key={item.menu_id} 
                                         no_order={item.no_order} 
                                         menu_name={item.menu_name} 
+                                        menu_category={item.menu_category} 
                                         menu_note={item.menu_note}
                                         order_qty={item.order_qty}
                                         order_subtotal={item.order_subtotal}
@@ -234,6 +243,12 @@ const History = ({navigation}) => {
                             })}
                             <View style={styles.paymentDetailBox}>
                                 <Text style={styles.itemInfo}>Payment Details</Text>
+                                    <View style={{...styles.orderDetailItem, flexDirection: 'row'}}>
+                                            <Text style={styles.itemInfoNormal}>Payment Method</Text>
+                                            <Text style={{...styles.itemResult, position: 'absolute', right: 0}}>{selectedOrderPaymentMethod}</Text>
+                                                     
+                                    </View>
+                                            <View style={{...styles.line, marginBottom: resWidth * 0.015, marginTop: resWidth * 0.02}} />
                                     <View style={{...styles.orderDetailItem, flexDirection: 'row'}}>
                                             <Text style={styles.itemInfoNormal}>
                                                 {
@@ -277,6 +292,7 @@ const History = ({navigation}) => {
                                             } 
                                     />
                                         </View>
+                                            <View style={{...styles.line, marginBottom: resWidth * 0.015, marginTop: resWidth * 0.02}} />
                                     </View>
                                     : null
                                 }

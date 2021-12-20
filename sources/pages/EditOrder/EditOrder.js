@@ -49,7 +49,7 @@ const EditOrder = ({navigation}) => {
                     onPress: () => axios
                         .get(`http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=deleteCart&menu_id=${menuId}`)
                         .then(res => {
-                            console.log('res delete cart: ', res);
+                            // console.log('res delete cart: ', res);
                             navigation.goBack();
                         })
                 }
@@ -66,7 +66,7 @@ const EditOrder = ({navigation}) => {
             const getMenuPrice = await AsyncStorage.getItem('edit_order_menu_price');
             const getMenuQty = await AsyncStorage.getItem('edit_order_menu_qty');
             const getMenuNote = await AsyncStorage.getItem('edit_order_menu_note');
-            const getDisplayMenuPicture = await AsyncStorage.getItem('order_menu_picture');
+            const getDisplayMenuPicture = await AsyncStorage.getItem('edit_order_menu_picture');
             setMenuId(getMenuId);
             setMenuName(getMenuName);
             setMenuCategory(getMenuCategory);
@@ -92,7 +92,7 @@ const EditOrder = ({navigation}) => {
 
             axios.post(`http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=editCart&menu_id=${menuId}`, editedCartData)
             .then(res => {
-                console.log('Res Edit: ', res);
+                // console.log('Res Edit: ', res);
                 navigation.goBack();
         });
 

@@ -28,7 +28,7 @@ const LoginPage = ({navigation}) => {
           data,
         )
         .then(res => {
-            console.log('respon: ', res);
+            // console.log('respon: ', res);
 
           if (res.data.status == 'correct') {
 
@@ -74,7 +74,7 @@ const LoginPage = ({navigation}) => {
         });
 
       };
-      console.log(cashierLogin);
+    //   console.log(cashierLogin);
 
     return (
         <View style={styles.container}>

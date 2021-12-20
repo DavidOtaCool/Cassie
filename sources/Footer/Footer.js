@@ -100,7 +100,7 @@ const Footer = () => {
                 }}
             />
 
-            <Tab.Screen 
+            {/* <Tab.Screen 
                 name="NewsFeed" 
                 component={NewsFeed}
                 options={{
@@ -131,7 +131,7 @@ const Footer = () => {
                         </View>
                     ),
                 }}
-            />
+            /> */}
 
             <Tab.Screen 
                 name="Order" 
@@ -158,7 +158,7 @@ const Footer = () => {
                 }}
             />
 
-            <Tab.Screen 
+            {/* <Tab.Screen 
                 name="Stats" 
                 component={Stats}
                 options={{
@@ -189,7 +189,7 @@ const Footer = () => {
                         </View>
                     ),
                 }}
-            />
+            /> */}
 
             <Tab.Screen 
                 name="Profile" 

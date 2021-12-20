@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Dimensions, StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
+import { Dimensions, StyleSheet, Text, View, TouchableOpacity, Image, TouchableWithoutFeedback } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler';
 import { ScrollView } from 'react-native-gesture-handler';
 // import CheckBox from '@react-native-community/checkbox';
@@ -9,6 +9,8 @@ import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import NumberFormat from 'react-number-format';
 import LeftArrow from '../../assets/icons/left.png'
+import DebitIcon from '../../assets/icons/debit.png'
+import CashIcon from '../../assets/icons/cash3.png'
 
 var resHeight = Dimensions.get('window').height;
 var resWidth = Dimensions.get('window').width;
@@ -33,7 +35,7 @@ const CartItemData = ({menu_name, menu_qty, menu_note, image_not_available, menu
                     />
             </View>
             <View style={styles.menuInfo}>
-                <Text style={styles.menuName}>{menu_name}</Text>
+                <Text style={styles.menuName} numberOfLines={1}>{menu_name}</Text>
                 {
                     menu_note != '' ? 
                         <Text style={styles.menuNote} numberOfLines={2}>Note: {menu_note}</Text>
@@ -75,15 +77,19 @@ const Checkout = ({navigation}) => {
     const [checked, setChecked] = useState(false);
     const [usePoint, setUsePoint] = useState(null);
     const [seeDetail, setSeeDetail] = useState(null);
+    const [choosePaymentMethod, setChoosePaymentMethod] = useState(null);
+    const [chosenPaymentMethod, setChosenPaymentMethod] = useState(null);
 
     const [menuNameDetail, setMenuNameDetail] = useState('');
+    const [menuCategoryDetail, setMenuCategoryDetail] = useState('');
     const [menuNoteDetail, setMenuNoteDetail] = useState('');
     const [menuPictureDetail, setMenuPictureDetail] = useState('');
     const [menuPriceTotal, setMenuPriceTotal] = useState('');
 
     const openDetailBox = (item) => {
-        console.log('Selected menu: ', item);
+        // console.log('Selected menu: ', item);
         setMenuNameDetail(item.menu_name);
+        setMenuCategoryDetail(item.menu_category);
         setMenuNoteDetail(item.menu_note);
         setMenuPictureDetail(item.menu_picture);
         setMenuPriceTotal(item.temp_order_total);
@@ -165,7 +171,7 @@ const Checkout = ({navigation}) => {
                 axios
                     .get(`http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showLoginCashier&cashier_id=${getCashierOnDuty}`)
                     .then(response => {
-                        console.log('Response Logged In Cashier: ', response)
+                        // console.log('Response Logged In Cashier: ', response)
                         setCashierOnDuty(response.data.logged_in_cashier.cashier_name);
                         setCashierIdOnDuty(response.data.logged_in_cashier.cashier_id);
                 })
@@ -223,18 +229,36 @@ const Checkout = ({navigation}) => {
 
       });
 
+
+    const chooseCash = () => {{
+        setChosenPaymentMethod('Cash')
+        setChoosePaymentMethod(null);
+    }}
+
+    const chooseDebit = () => {{
+        setChosenPaymentMethod('Debit')
+        setChoosePaymentMethod(null);
+    }}
+
     const placeOrder = () => {{
 
         if (notMember === true && isMember === null){
             if(dataCheckout.not_member_customer_name === ''){
                 alert("Please input your customer's name");
             }else{
-                const checkoutData = `cashier_on_duty=${cashierOnDuty}&ordering_customer_name=${dataCheckout.not_member_customer_name}&member=${'No'}&order_grandtotal=${grandTotal}`;
-                    axios.post('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=checkout', checkoutData)
-                    .then(res => {
-                        console.log('respon: ', res);
-                        navigation.navigate('Dashboard');
-                    });
+                // setChoosePaymentMethod(true);
+                // if(chosenPaymentMethod === 'Cash' || chosenPaymentMethod === 'Debit')
+                // {
+                    const checkoutData = `cashier_on_duty_id=${cashierIdOnDuty}&cashier_on_duty=${cashierOnDuty}&ordering_customer_name=${dataCheckout.not_member_customer_name}&member=${'No'}&order_grandtotal=${grandTotal}&payment_method=${chosenPaymentMethod}`;
+                        axios.post('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=checkout', checkoutData)
+                        .then(res => {
+                            // console.log('respon: ', res);
+                            // setChoosePaymentMethod(null);
+                            // setChosenPaymentMethod(null);
+                            navigation.navigate('Dashboard');
+                        });
+                // }
+                
             }
         }
 
@@ -261,17 +285,17 @@ const Checkout = ({navigation}) => {
                         if (res.data.status == 'correct') {
                             
                                 if(checked === true){
-                                    const checkoutData = `cashier_on_duty=${cashierOnDuty}&ordering_customer_code=${dataCheckout.ordering_customer_code}&member=${'Yes'}&use_point=${'Yes'}&point_used=${pointCut/100}&order_grandtotal=${grandTotal}&point_cut=${pointCut}&total_payment=${totalPayment}`;
+                                    const checkoutData = `cashier_on_duty_id=${cashierIdOnDuty}&cashier_on_duty=${cashierOnDuty}&ordering_customer_code=${dataCheckout.ordering_customer_code}&member=${'Yes'}&use_point=${'Yes'}&point_used=${pointCut/100}&order_grandtotal=${grandTotal}&point_cut=${pointCut}&total_payment=${totalPayment}&payment_method=${chosenPaymentMethod}`;
                                     axios.post('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=checkout', checkoutData)
                                     .then(res => {
-                                        console.log('respon: ', res);
+                                        // console.log('respon: ', res);
                                         navigation.navigate('Dashboard');
                                     });
                                 }else{
-                                    const checkoutData = `cashier_on_duty=${cashierOnDuty}&ordering_customer_code=${dataCheckout.ordering_customer_code}&member=${'Yes'}&use_point=${'No'}&order_grandtotal=${grandTotal}`;
+                                    const checkoutData = `cashier_on_duty_id=${cashierIdOnDuty}&cashier_on_duty=${cashierOnDuty}&ordering_customer_code=${dataCheckout.ordering_customer_code}&member=${'Yes'}&use_point=${'No'}&order_grandtotal=${grandTotal}&payment_method=${chosenPaymentMethod}`;
                                         axios.post('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=checkout', checkoutData)
                                         .then(res => {
-                                            console.log('respon: ', res);
+                                            // console.log('respon: ', res);
                                             navigation.navigate('Dashboard');
                                         });
                                 }
@@ -298,7 +322,9 @@ const Checkout = ({navigation}) => {
         {
             seeDetail ? 
             <View style={styles.confirmationBackground}>
-                    <View style={{backgroundColor: 'rgba(0,0,0,0.5)', height: resHeight, width: resWidth}} />
+                    <TouchableWithoutFeedback onPressOut={() => setSeeDetail(null)}>
+                        <View style={{backgroundColor: 'rgba(0,0,0,0.5)', height: resHeight, width: resWidth}} />
+                    </TouchableWithoutFeedback>
                     <View style={styles.confirmationBox}>
                         <Image 
                             source={{
@@ -309,6 +335,9 @@ const Checkout = ({navigation}) => {
                         <View style={styles.itemDetailInfo}>
                             <Text style={styles.menuNameDetailStyle}>
                                 {menuNameDetail}
+                            </Text>
+                            <Text style={{marginBottom: resWidth * 0.05, fontWeight: 'normal', fontSize: resWidth * 0.04, color: '#969696'}}>
+                                {menuCategoryDetail}
                             </Text>
                             {
                                 menuNoteDetail != '' ?
@@ -340,6 +369,56 @@ const Checkout = ({navigation}) => {
                 </View>
                 : null
         }
+        {
+            choosePaymentMethod ? 
+            <View style={styles.confirmationBackground}>
+                    <TouchableWithoutFeedback onPressOut={() => setChoosePaymentMethod(null)}>
+                        <View style={{backgroundColor: 'rgba(0,0,0,0.5)', height: resHeight, width: resWidth}} />
+                    </TouchableWithoutFeedback>
+                    <View style={styles.paymentMethodBox}>
+                        <Text style={{...styles.paymentMethodName, marginVertical: resWidth * 0.05}}>Choose the payment method</Text>
+
+                        <View style={styles.paymentMethodList}>
+                            <TouchableOpacity style={styles.choosePaymentMethodBox} 
+                                onPress={() => chooseCash()}>
+                                    <View style={styles.paymentMethodPictureBox}>
+                                        <View style={styles.paymentMethodIcon}>
+                                            <Image 
+                                                source={CashIcon}
+                                                style={styles.paymentMethodPicture}
+                                            />
+                                        </View>
+                                    </View>
+                                    <View style={styles.paymentMethodInfo}>
+                                        <Text style={styles.paymentMethodName}>Cash</Text>
+                                    </View>
+                            </TouchableOpacity>
+
+                                <Text style={{...styles.paymentMethodName, marginVertical: resWidth * 0.04}}>Or</Text>
+
+                            <TouchableOpacity style={styles.choosePaymentMethodBox} 
+                                onPress={() => chooseDebit()}>
+                                    <View style={styles.paymentMethodPictureBox}>
+                                        <View style={styles.paymentMethodIcon}>
+                                            <Image 
+                                                source={DebitIcon}
+                                                style={styles.paymentMethodPicture}
+                                            />
+                                        </View>
+                                    </View>
+                                    <View style={styles.paymentMethodInfo}>
+                                        <Text style={styles.paymentMethodName}>Debit</Text>
+                                    </View>
+                            </TouchableOpacity>
+
+                        </View>
+                        <TouchableOpacity onPress={() => setChoosePaymentMethod(null)} style={styles.btnCancelPaymentMethod}>
+                                <Text style={{...styles.txtCancelPaymentMethod, color: '#fff'}}>Cancel</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            : null
+        }
         <ScrollView style={styles.container}>
             <View style={styles.header}>
 
@@ -357,6 +436,7 @@ const Checkout = ({navigation}) => {
                         <CartItemData
                             key={item.menu_id} 
                             menu_name={item.menu_name} 
+                            menu_category={item.menu_category} 
                             menu_qty={item.temp_order_qty} 
                             menu_note={item.menu_note} 
                             image_not_available={imageNotAvailable} 
@@ -603,10 +683,34 @@ const Checkout = ({navigation}) => {
                     />
 
                 </View>
-                
+
+                {
+                    chosenPaymentMethod === 'Cash' || chosenPaymentMethod === 'Debit' ?
+                    <TouchableWithoutFeedback onPress={() => setChoosePaymentMethod(true)}>
+                        <View style={{flexDirection: 'row', marginTop: resWidth * 0.02}}>
+                            <Text style={styles.itemInfoNormal}>Payment Method: </Text>
+                            <Text style={{...styles.itemInfoNormal, fontWeight: 'bold'}}>{chosenPaymentMethod}</Text>
+                        </View>
+                    </TouchableWithoutFeedback>
+                    : null
+                }
+
+
+                {
+                    chosenPaymentMethod === 'Cash' || chosenPaymentMethod === 'Debit' ?
+                    
+                            <TouchableOpacity style={styles.btnPlaceOrder} onPress={() => placeOrder()}>
+                                <Text style={styles.txtPlaceOrder}>CHECKOUT</Text>
+                            </TouchableOpacity>
+                    :
+                            <TouchableOpacity style={styles.btnPlaceOrder} onPress={() => setChoosePaymentMethod(true)}>
+                                <Text style={{...styles.txtPlaceOrder, letterSpacing: resWidth *  0.002}}>Choose Payment Method</Text>
+                            </TouchableOpacity>
+                }
+{/*                 
                 <TouchableOpacity style={styles.btnPlaceOrder} onPress={() => placeOrder()}>
                     <Text style={styles.txtPlaceOrder}>CHECKOUT</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
             </View>
 
@@ -907,5 +1011,83 @@ const styles = StyleSheet.create({
         fontSize: resWidth * 0.042,
         fontWeight: '500',
         letterSpacing: resWidth * 0.01,
+    },
+    paymentMethodBox: {
+        backgroundColor: '#fff',
+        position: 'absolute',
+        // justifyContent: 'space-evenly',
+        alignItems: 'center',
+        height: resWidth * 1.3,
+        width: resWidth * 0.8,
+        borderRadius: resWidth * 0.045,
+        paddingVertical: resWidth * 0.05,
+    },
+    btnCancelPaymentMethod: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: resWidth * 0.01,
+        borderColor: '#FC6B68',
+        backgroundColor: '#FC6B68',
+        alignSelf: 'stretch',
+        marginHorizontal: resWidth * 0.08,
+        paddingVertical: resWidth * 0.035,
+        paddingHorizontal: resWidth * 0.06,
+        borderRadius: resHeight,
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: resWidth * 0.1,
+    },
+    txtCancelPaymentMethod: {
+        fontSize: resWidth * 0.045,
+        fontWeight: 'bold',
+        color: '#000',
+    },
+    paymentMethodList: {
+        // backgroundColor: '#ccc',
+        alignSelf: 'stretch',
+        marginHorizontal: resWidth * 0.08,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: resWidth * 0.02,
+    },
+    choosePaymentMethodBox: {
+        // backgroundColor: '#FFF',
+        // shadowColor: '#969696',
+        // shadowOffset: {width: -(resWidth * 0.1), height: resWidth * 1},
+        // shadowOpacity: resWidth * 0.01,
+        // shadowRadius: resWidth * 0.9,
+        // elevation: resWidth * 0.012,
+        backgroundColor: '#F4F6FA',
+        borderRadius: resWidth * 0.05,
+        flexDirection: 'row',
+        alignItems: 'center',
+        alignSelf: 'stretch',
+    },
+    paymentMethodPictureBox: {
+        // marginLeft: resWidth * 0.05,
+        zIndex: 1,
+    },
+    paymentMethodIcon: {
+        height: resWidth * 0.18,
+        width: resWidth * 0.27,
+        // backgroundColor: '#ccc',
+        alignItems: 'center',
+        marginVertical: resWidth * 0.03,
+        marginLeft: resWidth * 0.03,
+        justifyContent: 'center',
+    },
+    paymentMethodPicture: {
+        height: resWidth * 0.16,
+        width: resWidth * 0.16,
+    },
+    paymentMethodInfo: {
+        textAlign: 'left',
+        marginLeft: resWidth * 0.03,
+    },
+    paymentMethodName: {
+        fontWeight: 'bold',
+        color: '#000',
+        fontSize: resWidth * 0.05,
     },
 })

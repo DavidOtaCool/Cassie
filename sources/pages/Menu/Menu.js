@@ -725,6 +725,8 @@ const styles = StyleSheet.create({
         color: '#000',
         fontSize: resWidth * 0.044,
         marginBottom: resWidth * 0.01,
+        // backgroundColor: '#ccc',
+        maxWidth: resWidth * 0.29,
     },
     menuPrice: {
         color: '#7E7E7E',

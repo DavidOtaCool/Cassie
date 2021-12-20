@@ -80,11 +80,11 @@ const AddOrder = ({navigation}) => {
 
     const addToCart = () => {{
 
-        const menuData = `menu_id=${menuId}&menu_name=${menuName}&menu_picture=${displayMenuPicture}&temp_order_subtotal=${menuPrice}&temp_order_qty=${orderQuantity}&menu_note=${dataMenu.menu_note}`;
+        const menuData = `menu_id=${menuId}&menu_name=${menuName}&menu_category=${menuCategory}&menu_picture=${displayMenuPicture}&temp_order_subtotal=${menuPrice}&temp_order_qty=${orderQuantity}&menu_note=${dataMenu.menu_note}`;
 
             axios.post('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=addToCart', menuData)
             .then(res => {
-                console.log('Add to Cart Response: ', res);
+                // console.log('Add to Cart Response: ', res);
                 // setMenuNote("");
                 // navigation.navigate('Order');
                 navigation.goBack()

@@ -45,10 +45,9 @@ const UploadingPic = ({navigation}) => {
 
     return (
         <View style={styles.container}>
-            <Image source={logoCassie} style={styles.logo}/>
+            {/* <Image source={logoCassie} style={styles.logo}/>
             <Text style={{color: '#fff'}}>Uploading your image</Text>
-            {/* <Text>{dataImage}</Text> */}
-            <ActivityIndicator color="#FFE9C0" />
+            <ActivityIndicator color="#FFE9C0" /> */}
         </View>
     )
 }
@@ -62,7 +61,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         justifyContent: 'center',
         height: resHeight,
-        backgroundColor: '#855B54',
+        backgroundColor: '#FFF',
+        // backgroundColor: '#855B54',
     },
     logo: {
         width: resWidth * 0.4,

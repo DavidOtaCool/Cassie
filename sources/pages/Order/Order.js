@@ -166,7 +166,7 @@ const Order = ({navigation}) => {
     }
 
     const editOrder = (item) => {
-        console.log('Selected menu for edit order: ', item);
+        // console.log('Selected menu for edit order: ', item);
         AsyncStorage.setItem('edit_order_menu_id',item.menu_id);
         AsyncStorage.setItem('edit_order_menu_name',item.menu_name);
         AsyncStorage.setItem('edit_order_menu_category',item.menu_category);
@@ -419,6 +419,7 @@ const styles = StyleSheet.create({
         color: '#000',
         fontSize: resWidth * 0.044,
         marginBottom: resWidth * 0.01,
+        maxWidth: resWidth * 0.29,
     },
     menuPrice: {
         color: '#7E7E7E',

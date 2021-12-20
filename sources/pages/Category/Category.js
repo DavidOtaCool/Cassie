@@ -122,7 +122,7 @@ const Category = ({navigation}) => {
                     );
                 })}
             </View>
-                <View style={{marginBottom: resWidth * 0.2}}></View>
+                <View style={{marginBottom: resWidth * 0.3}}></View>
         </ScrollView>
 
         <TouchableOpacity onPress={() => handleGoTo('AddCategory')}
@@ -208,6 +208,7 @@ const styles = StyleSheet.create({
         color: '#000',
         fontSize: resWidth * 0.044,
         marginBottom: resWidth * 0.01,
+        maxWidth: resWidth * 0.29,
     },
     menuPrice: {
         color: '#7E7E7E',
