@@ -6,6 +6,7 @@ import profile1 from '../../assets/images/profile1.jpg'
 import NotifIcon from '../../assets/icons/bell.png'
 import Menu from '../../assets/icons/coffee-cup.png'
 import Inventory from '../../assets/icons/inventory.png'
+import Category from '../../assets/icons/category3.png'
 import Customer from '../../assets/icons/customer.png'
 import Report from '../../assets/icons/report.png'
 import Cashier from '../../assets/icons/cashier.png'
@@ -141,10 +142,10 @@ const Dashboard = ({navigation}) => {
                         style={styles.profilePicture} 
                     />
                     <Text style={styles.userName}>Hi, {cashierFirstName}</Text>
-                    <View style={{position: 'absolute', right: 0}}>
+                    {/* <View style={{position: 'absolute', right: 0}}>
                         <Image source={NotifIcon} style={styles.notification} />
                         <View style={styles.notifStatus} />
-                    </View>
+                    </View> */}
                 </View>
             </View>
 
@@ -195,9 +196,9 @@ const Dashboard = ({navigation}) => {
                         <Image source={Menu} style={styles.menuIcon} />
                         <Text style={styles.menuName}>Menu</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.boxMenu} onPress={() => handleGoTo('Inventory')}>
-                        <Image source={Inventory} style={styles.menuIcon} />
-                        <Text style={styles.menuName}>Inventory</Text>
+                    <TouchableOpacity style={styles.boxMenu} onPress={() => handleGoTo('Category')}>
+                        <Image source={Category} style={styles.menuIcon} />
+                        <Text style={styles.menuName}>Category</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.boxMenu} 
                         onPress={

@@ -39,7 +39,10 @@ const OwnerData = ({owner_id, owner_name, owner_email, owner_picture, owner_stat
             <View style={styles.cashierInfo}>
                 {
                     owner_id === logged_in_cashier ?
-                        <Text style={styles.cashierName}>{owner_name} (You)</Text>
+                    <View style={{flexDirection: 'row'}}>
+                        <Text style={styles.cashierName}>{owner_name} </Text>
+                        <Text style={{...styles.cashierName, color: '#32bea6'}}>(You)</Text>
+                    </View>
                     :
                         <Text style={styles.cashierName}>{owner_name}</Text>
                 }
@@ -213,7 +216,7 @@ const Cashier = ({navigation}) => {
                     </TouchableOpacity> */}
 
                 </View>
-                <Searchbar
+                {/* <Searchbar
                     placeholder="Who are you looking for?"
                     onChangeText={onChangeSearch}
                     value={searchQuery}
@@ -227,7 +230,7 @@ const Cashier = ({navigation}) => {
                         left: -(resWidth * 0.01),
                         color: '#96A0AB',
                     }}
-                />
+                /> */}
 
             <View style={styles.cashierList}> 
                     

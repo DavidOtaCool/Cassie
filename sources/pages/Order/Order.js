@@ -219,13 +219,13 @@ const Order = ({navigation}) => {
                         />
                     </TouchableOpacity>
                     <Text style={styles.menuTitle}>Order</Text>
-                    <View style={{position: 'absolute', right: 0}}>
+                    {/* <View style={{position: 'absolute', right: 0}}>
                         <Image source={NotifIcon} style={styles.notification} />
                         <View style={styles.notifStatus} />
-                    </View>
+                    </View> */}
 
                 </View>
-                <Searchbar
+                {/* <Searchbar
                     placeholder="What does your customer want?"
                     onChangeText={onChangeSearch}
                     value={searchQuery}
@@ -239,7 +239,7 @@ const Order = ({navigation}) => {
                         left: -(resWidth * 0.01),
                         color: '#96A0AB',
                     }}
-                />
+                /> */}
              <View style={styles.menuList}>    
 
                 {menus.map(item => {
@@ -334,7 +334,7 @@ const styles = StyleSheet.create({
         // backgroundColor: '#ccc',
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: resWidth * 0.06,
+        // marginBottom: resWidth * 0.06,
     },
     btnArrowLeft: {
         left: 0,

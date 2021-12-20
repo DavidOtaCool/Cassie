@@ -109,6 +109,7 @@ const Checkout = ({navigation}) => {
     const [totalPayment, setTotalPayment] = useState('');
 
     const [cashierOnDuty, setCashierOnDuty] = useState('');
+    const [cashierIdOnDuty, setCashierIdOnDuty] = useState('');
     const [dataCheckout, setDataCheckout] = useState({
         // cashier_on_duty: cashierOnDuty,
         ordering_customer_code: '',
@@ -166,6 +167,7 @@ const Checkout = ({navigation}) => {
                     .then(response => {
                         console.log('Response Logged In Cashier: ', response)
                         setCashierOnDuty(response.data.logged_in_cashier.cashier_name);
+                        setCashierIdOnDuty(response.data.logged_in_cashier.cashier_id);
                 })
             }
             cashierNameCheck();

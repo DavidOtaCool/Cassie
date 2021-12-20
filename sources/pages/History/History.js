@@ -151,7 +151,7 @@ const History = ({navigation}) => {
         axios
                 .get(`http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showHistoryDetail&no_order=${item.no_order}`)
             .then(response => {
-                console.log('History detail info: ', response)
+                // console.log('History detail info: ', response)
                 setOrderDetails(response.data.data.result)
                 setSelectedNoOrder(response.data.selected_tborder.no_order)
                 setSelectedOrderCashier(response.data.selected_tborder.cashier_on_duty)

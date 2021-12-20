@@ -107,10 +107,10 @@ const EditCashier = ({navigation}) => {
                         }
                     </Text>
                     {/* <Text>{menuName},{menuCategory},{menuPrice}</Text> */}
-                    <View style={{position: 'absolute', right: 0}}>
+                    {/* <View style={{position: 'absolute', right: 0}}>
                         <Image source={NotifIcon} style={styles.notification} />
                         <View style={styles.notifStatus} />
-                    </View>
+                    </View> */}
 
                 </View>
 

@@ -8,7 +8,7 @@ import {
         SignUpPage, 
         Customer,
         Menu,
-        Inventory,
+        Category,
         Report,
         Cashier,
         History,
@@ -22,6 +22,8 @@ import {
         EditOrder,
         UploadingPic,
         EditProfile,
+        AddCategory,
+        EditCategory,
     } from '../pages/pageCollection';
 
 // import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
@@ -94,8 +96,24 @@ const Router = () => {
             />
 
             <Stack.Screen 
-                name="Inventory" 
-                component={Inventory}
+                name="Category" 
+                component={Category}
+                options={{
+                    headerShown: false,
+                }}
+            />
+
+            <Stack.Screen 
+                name="AddCategory" 
+                component={AddCategory}
+                options={{
+                    headerShown: false,
+                }}
+            />
+
+            <Stack.Screen 
+                name="EditCategory" 
+                component={EditCategory}
                 options={{
                     headerShown: false,
                 }}

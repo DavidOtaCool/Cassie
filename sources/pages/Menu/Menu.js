@@ -383,10 +383,10 @@ const Menu = ({navigation}) => {
         //     // AsyncStorage.setItem('menu_id',item.menu_id)
         //     // navigation.navigate('EditMenu');
         // })
-        console.log('Selected Menu: ', item);
+        // console.log('Selected Menu: ', item);
         AsyncStorage.setItem('menu_id',item.menu_id);
         AsyncStorage.setItem('menu_name',item.menu_name);
-        AsyncStorage.setItem('menu_category',item.menu_category);
+        AsyncStorage.setItem('menu_category',item.menu_category_id);
         AsyncStorage.setItem('menu_price',item.menu_price);
         navigation.navigate('EditMenu');
         
@@ -478,13 +478,13 @@ const Menu = ({navigation}) => {
                         />
                     </TouchableOpacity>
                     <Text style={styles.menuTitle}>Menu</Text>
-                    <View style={{position: 'absolute', right: 0}}>
+                    {/* <View style={{position: 'absolute', right: 0}}>
                         <Image source={NotifIcon} style={styles.notification} />
                         <View style={styles.notifStatus} />
-                    </View>
+                    </View> */}
 
                 </View>
-                <Searchbar
+                {/* <Searchbar
                     placeholder="What are you looking for?"
                     onChangeText={onChangeSearch}
                     value={searchQuery}
@@ -498,7 +498,7 @@ const Menu = ({navigation}) => {
                         left: -(resWidth * 0.01),
                         color: '#96A0AB',
                     }}
-                />
+                /> */}
 
             <View style={styles.menuList}>    
 
@@ -566,7 +566,7 @@ const styles = StyleSheet.create({
         // backgroundColor: '#ccc',
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: resWidth * 0.06,
+        // marginBottom: resWidth * 0.06,
     },
     btnArrowLeft: {
         left: 0,

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { TouchableOpacity, Dimensions, Image, StyleSheet, Text, View, Alert, Touchable, ScrollView, RefreshControl } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler';
+import {Picker} from '@react-native-picker/picker';
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import LeftArrow from '../../assets/icons/left.png'
@@ -14,6 +15,8 @@ const EditMenu = ({navigation}) => {
     const [menuId, setMenuId] = useState("");
     const [menuName, setMenuName] = useState("");
     const [menuCategory, setMenuCategory] = useState("");
+    const [categories, setCategories] = useState([]);
+    const [menuCategoryId, setMenuCategoryId] = useState("");
     const [menuPrice, setMenuPrice] = useState("");
     const [dataMenu, setDataMenu] = useState({
         menu_id: 0,
@@ -21,6 +24,19 @@ const EditMenu = ({navigation}) => {
         menu_category: '',
         menu_price: '',
       });
+
+      useEffect(() => {
+        navigation.addListener('focus', async() => {
+            await axios
+                .get('http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=showCategory')
+            .then(response => {
+                // console.log('Response Show Categories: ', response)
+                setCategories(response.data.data.result)
+        })
+            .catch(e => alert(e.message))
+        })
+        
+    }, []);
 
     useEffect(() => {
         navigation.addListener('focus', async() => {
@@ -47,7 +63,7 @@ const EditMenu = ({navigation}) => {
           menu_category: get.menu_category,
           menu_price: get.menu_price,
         });
-        console.log('item selected');
+        // console.log('item selected');
       };
 
     const onInputChange = (value, input) => {
@@ -58,11 +74,11 @@ const EditMenu = ({navigation}) => {
       };
 
     const deleteMenu = (item) => {
-        console.log(item);
+        // console.log(item);
         axios
         .get(`http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=deleteMenu&menu_id=${menuId}`)
         .then(res => {
-            console.log('res delete: ', res);
+            // console.log('res delete: ', res);
             navigation.navigate('Menu');
         })
     }
@@ -70,11 +86,11 @@ const EditMenu = ({navigation}) => {
     
     const update = () => {{
 
-        const editedMenuData = `menu_name=${dataMenu.menu_name}&menu_category=${dataMenu.menu_category}&menu_price=${dataMenu.menu_price}`;
+        const editedMenuData = `menu_name=${dataMenu.menu_name}&menu_category_id=${menuCategory}&menu_price=${dataMenu.menu_price}`;
 
             axios.post(`http://cassie-pos.000webhostapp.com/cassie/php/api_cassie.php?operation=editMenu&menu_id=${menuId}`, editedMenuData)
             .then(res => {
-                console.log('Res Edit: ', res);
+                // console.log('Res Edit: ', res);
                 navigation.navigate('Menu');
         });
 
@@ -92,10 +108,10 @@ const EditMenu = ({navigation}) => {
                     </TouchableOpacity>
                     <Text style={styles.menuTitle}>Edit Menu {menuId}</Text>
                     {/* <Text>{menuName},{menuCategory},{menuPrice}</Text> */}
-                    <View style={{position: 'absolute', right: 0}}>
+                    {/* <View style={{position: 'absolute', right: 0}}>
                         <Image source={NotifIcon} style={styles.notification} />
                         <View style={styles.notifStatus} />
-                    </View>
+                    </View> */}
 
                 </View>
 
@@ -114,14 +130,39 @@ const EditMenu = ({navigation}) => {
 
             <View style={styles.forms}>
                 <Text style={styles.formName}>Menu Category</Text>
-                <TextInput 
+                <View style={styles.customPicker}>
+                    <Picker
+                        prompt={`Change ${menuName}'s category`}
+                        selectedValue={menuCategory}
+                        // defaultValue={menuCategory}
+                        // onValueChange={value => onInputChange(value, 'cashier_status')}
+                        onValueChange={(itemValue, itemIndex) => setMenuCategory(itemValue)}
+                    >
+                        {categories.map(item => {
+                            return(
+                                <Picker.Item
+                                    key={item.category_id} 
+                                    label={item.category_name} 
+                                    value={item.category_id} 
+                                    horizontal={true}
+                                />
+                            );
+                        })}
+                        {/* <Picker.Item label="Owner" value="Owner" />
+                        <Picker.Item label="Manager" value="Manager" />
+                        <Picker.Item label="Employee" value="Employee" /> */}
+                    </Picker>
+                </View>
+                {/* <TextInput 
                     placeholder="What category is this menu in?" 
                     placeholderTextColor="#B1B1B1"
                     style={styles.customTextInput}
                     defaultValue={menuCategory}
                     onChangeText={value => onInputChange(value, 'menu_category')}
-                />
+                /> */}
             </View>
+
+            
 
             <View style={styles.forms}>
                 <Text style={styles.formName}>Menu Price</Text>
@@ -210,6 +251,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#F4F6FA',
         borderRadius: resWidth * 0.028,
         padding: resWidth * 0.05,
+    },
+    customPicker: {
+        alignSelf: 'stretch',
+        backgroundColor: '#F4F6FA',
+        borderRadius: resWidth * 0.028,
+        padding: resWidth * 0.018,
     },
     forms: {
         marginTop: resHeight * 0.04,

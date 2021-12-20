@@ -70,7 +70,7 @@ const Customer = ({navigation}) => {
                     <Text style={styles.menuTitle}>Customer</Text>
 
                 </View>
-                <Searchbar
+                {/* <Searchbar
                     placeholder="Who are you looking for?"
                     onChangeText={onChangeSearch}
                     value={searchQuery}
@@ -84,7 +84,7 @@ const Customer = ({navigation}) => {
                         left: -(resWidth * 0.01),
                         color: '#96A0AB',
                     }}
-                />
+                /> */}
 
             <View style={styles.cashierList}>    
 
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: resWidth * 0.06,
+        // marginBottom: resWidth * 0.06,
         marginTop: resWidth * 0.01,
     },
     btnArrowLeft: {

@@ -8,7 +8,7 @@ import Order from './Order/Order';
 import NewsFeed from './NewsFeed/NewsFeed';
 import Customer from './Customer/Customer';
 import Menu from './Menu/Menu';
-import Inventory from './Inventory/Inventory';
+import Category from './Category/Category';
 import Report from './Report/Report';
 import Cashier from './Cashier/Cashier';
 import History from './History/History';
@@ -21,6 +21,8 @@ import EditOrder from './EditOrder/EditOrder';
 import Checkout from './Checkout/Checkout';
 import UploadingPic from './UploadingPic/UploadingPic';
 import EditProfile from './EditProfile/EditProfile';
+import AddCategory from './AddCategory/AddCategory';
+import EditCategory from './EditCategory/EditCategory';
 
 export {
     Welcome, 
@@ -33,7 +35,7 @@ export {
     NewsFeed, 
     Customer,
     Menu,
-    Inventory,
+    Category,
     Report,
     Cashier,
     History,
@@ -46,4 +48,6 @@ export {
     EditOrder,
     UploadingPic,
     EditProfile,
+    AddCategory,
+    EditCategory
 };
