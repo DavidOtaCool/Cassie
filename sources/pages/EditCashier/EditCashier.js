@@ -187,7 +187,10 @@ const EditCashier = ({navigation}) => {
             </View> */}
    
             <TouchableOpacity 
-                style={styles.btndeleteCashier}
+                style={
+                    cashierId === loginCashierId ?
+                    {display: 'none'} : styles.btndeleteCashier
+                }
                 onPress={() => {
                     Alert.alert(
                         'Warning',

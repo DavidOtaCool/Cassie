@@ -697,7 +697,7 @@ const Checkout = ({navigation}) => {
 
 
                 {
-                    chosenPaymentMethod === 'Cash' || chosenPaymentMethod === 'Debit' ?
+                    chosenPaymentMethod === 'Cash' || chosenPaymentMethod === 'Debit' || totalPayment === 0 ?
                     
                             <TouchableOpacity style={styles.btnPlaceOrder} onPress={() => placeOrder()}>
                                 <Text style={styles.txtPlaceOrder}>CHECKOUT</Text>
