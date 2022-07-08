@@ -28,4 +28,8 @@
 <img src="https://user-images.githubusercontent.com/39546098/177985737-df3bfdfe-a88b-4ba7-a252-2ffc804318dc.png" width="250" />
 <img src="https://user-images.githubusercontent.com/39546098/177985821-c7c38296-6180-492c-b0db-55035cd2046c.png" width="250" />
 
+## Customer (List of users who already registered using a separate app for customers)
+<img src="https://user-images.githubusercontent.com/39546098/177987198-dbf630dc-f3cf-4b20-bc28-441a44c1f09e.jpg" width="250" />   <img src="https://user-images.githubusercontent.com/39546098/177987313-681988f8-5282-4d3b-8de1-25fac5704c86.png" width="250" />
+
+
 
