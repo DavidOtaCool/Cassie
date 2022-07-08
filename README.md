@@ -24,4 +24,5 @@
 <img src="https://user-images.githubusercontent.com/39546098/177984080-d713818d-7af2-4658-94b5-fbe7dc7533c0.png" width="250" /> <br /> <br />
 
 ## Category
-<img src="https://user-images.githubusercontent.com/39546098/177984133-8c6f9897-5b8f-4b20-807c-afb8e51ec18d.png" width="250" />
+<img src="https://user-images.githubusercontent.com/39546098/177984296-05a1ece1-b432-4cf1-a602-b3c04083bfa9.jpg" width="250" />
+<img src="https://user-images.githubusercontent.com/39546098/177984382-0dfc73c0-54d6-4224-a97b-5790f887a14a.png" width="250" />
