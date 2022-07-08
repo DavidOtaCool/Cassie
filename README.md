@@ -26,10 +26,15 @@
 ## Category
 <img src="https://user-images.githubusercontent.com/39546098/177984492-2cf40fe7-7eb2-4d64-a415-79799030d58f.jpg" width="250" />   <img src="https://user-images.githubusercontent.com/39546098/177984382-0dfc73c0-54d6-4224-a97b-5790f887a14a.png" width="250" />
 <img src="https://user-images.githubusercontent.com/39546098/177985737-df3bfdfe-a88b-4ba7-a252-2ffc804318dc.png" width="250" />
-<img src="https://user-images.githubusercontent.com/39546098/177985821-c7c38296-6180-492c-b0db-55035cd2046c.png" width="250" />
+<img src="https://user-images.githubusercontent.com/39546098/177985821-c7c38296-6180-492c-b0db-55035cd2046c.png" width="250" /> <br /> <br />
 
 ## Customer (List of users who already registered using a separate app for customers)
-<img src="https://user-images.githubusercontent.com/39546098/177987198-dbf630dc-f3cf-4b20-bc28-441a44c1f09e.jpg" width="250" />   <img src="https://user-images.githubusercontent.com/39546098/177987313-681988f8-5282-4d3b-8de1-25fac5704c86.png" width="250" />
+<img src="https://user-images.githubusercontent.com/39546098/177987198-dbf630dc-f3cf-4b20-bc28-441a44c1f09e.jpg" width="250" />   <img src="https://user-images.githubusercontent.com/39546098/177987313-681988f8-5282-4d3b-8de1-25fac5704c86.png" width="250" /> <br /> <br />
+
+## Cashier
+<img src="https://user-images.githubusercontent.com/39546098/177990605-297e1444-a130-4717-854f-13140b480ad0.jpg" width="250" />   <img src="https://user-images.githubusercontent.com/39546098/177990644-5e69b227-721f-4ecf-9408-6830c02b9475.png" width="250" />
+<img src="https://user-images.githubusercontent.com/39546098/177990779-1a79c852-5f26-4824-978d-5a6a64d62d58.png" width="250" />
+
 
 
 
