@@ -71,7 +71,11 @@
 
 #### If the customer is not a member
 <img src="https://user-images.githubusercontent.com/39546098/178095792-cc469251-d602-4d4e-89aa-39a8e5658a76.png" width="250" />   <img src="https://user-images.githubusercontent.com/39546098/178095794-e895c509-2b95-4a40-836d-751c7a0a8b54.png" width="250" />
-<img src="https://user-images.githubusercontent.com/39546098/178095797-2a897d60-757a-4ff4-af13-cd0a73df07e6.png" width="250" />
+<img src="https://user-images.githubusercontent.com/39546098/178095797-2a897d60-757a-4ff4-af13-cd0a73df07e6.png" width="250" />  <br /> <br />
+<img src="https://user-images.githubusercontent.com/39546098/178095932-ac33b774-9ccd-42c7-b78a-a368ff2b30e6.jpg" width="250" />
+<img src="https://user-images.githubusercontent.com/39546098/178095938-6b5432a9-bf1d-4a03-98b1-31f75d6f03bb.png" width="250" />   <br /> <br />
 
+## Report
+<img src="https://user-images.githubusercontent.com/39546098/178096022-f0cda81a-ff5f-4790-89ad-8f25bc28fc45.png" width="250" />
 
 (The rest of screenshots will be upload soon)
