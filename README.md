@@ -54,8 +54,9 @@
 <img src="https://user-images.githubusercontent.com/39546098/177994752-e275c527-51d3-4d4d-8d36-1f0b3dd6b96c.png" width="250" />
 <img src="https://user-images.githubusercontent.com/39546098/177994816-2f3bacfc-f552-4a6b-8385-70c1b0830f33.png" width="250" />
 <img src="https://user-images.githubusercontent.com/39546098/177995729-76f94208-fbfe-45a9-8e57-ed76f8177640.jpg" width="250" />  <br /> <br />
-<img src="https://user-images.githubusercontent.com/39546098/177996130-80cccbe4-461e-4506-9a9e-0b37c72ca143.png" width="250" />
-<img src="https://user-images.githubusercontent.com/39546098/178095458-9b8c31ca-451f-4526-a03f-52744baa2ba6.jpg" width="250" />
+
+#### If the customer is a member
+<img src="https://user-images.githubusercontent.com/39546098/177996130-80cccbe4-461e-4506-9a9e-0b37c72ca143.png" width="250" />   <img src="https://user-images.githubusercontent.com/39546098/178095458-9b8c31ca-451f-4526-a03f-52744baa2ba6.jpg" width="250" />
 <img src="https://user-images.githubusercontent.com/39546098/178095460-553b4176-41f2-40c2-b7b5-98c301069bf8.png" width="250" />  <br /> <br />
 
 #### (The "Customer's Special Code" is automatically generated uniquely for every member)
