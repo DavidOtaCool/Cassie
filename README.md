@@ -81,7 +81,7 @@
 <img src="https://user-images.githubusercontent.com/39546098/178096493-5d21cc3a-85c6-439e-b2a8-492f3958e293.jpg" width="250" />   <img src="https://user-images.githubusercontent.com/39546098/178096022-f0cda81a-ff5f-4790-89ad-8f25bc28fc45.png" width="250" />
 <img src="https://user-images.githubusercontent.com/39546098/178096512-46e621fd-2b65-4118-82ea-8950bc8ab947.png" width="250" />  <br /> <br />
 
-### Other common functions
+### Other common feature
 <img src="https://user-images.githubusercontent.com/39546098/178096739-cc7f703c-da46-4755-998b-12bac2dc0305.jpg" width="250" />   <img src="https://user-images.githubusercontent.com/39546098/178096743-2692648c-dd14-4e43-9ea6-54b5a1612a5c.png" width="250" />
 <img src="https://user-images.githubusercontent.com/39546098/178096745-b9154335-cc29-4981-b81c-36c2692ed911.png" width="250" />  <br /> <br />
 <img src="https://user-images.githubusercontent.com/39546098/178096748-73cae48c-6073-4a58-ada9-72b413f45829.png" width="250" />
