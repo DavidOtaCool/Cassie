@@ -77,6 +77,7 @@
 <img src="https://user-images.githubusercontent.com/39546098/178095938-6b5432a9-bf1d-4a03-98b1-31f75d6f03bb.png" width="250" />   <br /> <br />
 
 ## Report
-<img src="https://user-images.githubusercontent.com/39546098/178096022-f0cda81a-ff5f-4790-89ad-8f25bc28fc45.png" width="250" />
+<img src="https://user-images.githubusercontent.com/39546098/178096493-5d21cc3a-85c6-439e-b2a8-492f3958e293.jpg" width="250" />   <img src="https://user-images.githubusercontent.com/39546098/178096022-f0cda81a-ff5f-4790-89ad-8f25bc28fc45.png" width="250" />
+<img src="https://user-images.githubusercontent.com/39546098/178096512-46e621fd-2b65-4118-82ea-8950bc8ab947.png" width="250" />
 
 (The rest of screenshots will be upload soon)
