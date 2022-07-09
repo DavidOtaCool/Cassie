@@ -28,7 +28,7 @@
 <img src="https://user-images.githubusercontent.com/39546098/177985737-df3bfdfe-a88b-4ba7-a252-2ffc804318dc.png" width="250" />
 <img src="https://user-images.githubusercontent.com/39546098/177985821-c7c38296-6180-492c-b0db-55035cd2046c.png" width="250" /> <br /> <br />
 
-## Customer (List of users who already registered using a separate app for customers)
+## Customer (List of users who already become *members* by registering using a separate app for customers)
 <img src="https://user-images.githubusercontent.com/39546098/177987198-dbf630dc-f3cf-4b20-bc28-441a44c1f09e.jpg" width="250" />   <img src="https://user-images.githubusercontent.com/39546098/177987313-681988f8-5282-4d3b-8de1-25fac5704c86.png" width="250" /> <br /> <br />
 
 ## Cashier
@@ -58,16 +58,20 @@
 <img src="https://user-images.githubusercontent.com/39546098/178095458-9b8c31ca-451f-4526-a03f-52744baa2ba6.jpg" width="250" />
 <img src="https://user-images.githubusercontent.com/39546098/178095460-553b4176-41f2-40c2-b7b5-98c301069bf8.png" width="250" />  <br /> <br />
 
-#### (The "Customer's Special Code" is automatically generated for every user who has already registered using a separate app.)
+#### (The "Customer's Special Code" is automatically generated uniquely for every member)
 <img src="https://user-images.githubusercontent.com/39546098/178095464-0e33a9c6-ec8e-4877-ad0a-6f65662667da.png" width="250" />   <img src="https://user-images.githubusercontent.com/39546098/178095469-c286cd89-2c70-4936-844e-90ab27f9d1f2.png" width="250" />
 <img src="https://user-images.githubusercontent.com/39546098/178095472-2db381ac-fb1f-46b6-b41d-44399c91f93e.png" width="250" />  <br /> <br />
 <img src="https://user-images.githubusercontent.com/39546098/178095480-163f81a4-80ec-4e8b-9122-6ada69b57511.png" width="250" />
 <img src="https://user-images.githubusercontent.com/39546098/178095482-b5e782c3-e295-4cf3-b16c-22afc51ba18b.png" width="250" />
 <img src="https://user-images.githubusercontent.com/39546098/178095562-ebc35573-7db4-4923-9bbb-7ab18cb6ad79.png" width="250" />  <br /> <br />
-<img src="https://user-images.githubusercontent.com/39546098/178095566-158e8954-3002-457a-a446-9ce66037e434.png" width="250" />
-<img src="https://user-images.githubusercontent.com/39546098/178095570-05994b48-5446-4a55-9d8a-e9bd1749773b.png" width="250" />
-<img src="https://user-images.githubusercontent.com/39546098/178095571-25b18f7e-da24-42b1-9990-d9a921b52e7d.png" width="250" />
 
+#### (Every member will get points every time they do a transaction. And they can use those points when purchasing orders)
+<img src="https://user-images.githubusercontent.com/39546098/178095566-158e8954-3002-457a-a446-9ce66037e434.png" width="250" />   <img src="https://user-images.githubusercontent.com/39546098/178095570-05994b48-5446-4a55-9d8a-e9bd1749773b.png" width="250" />
+<img src="https://user-images.githubusercontent.com/39546098/178095571-25b18f7e-da24-42b1-9990-d9a921b52e7d.png" width="250" />  <br /> <br />
+
+#### If the customer is not a member
+<img src="https://user-images.githubusercontent.com/39546098/178095792-cc469251-d602-4d4e-89aa-39a8e5658a76.png" width="250" />   <img src="https://user-images.githubusercontent.com/39546098/178095794-e895c509-2b95-4a40-836d-751c7a0a8b54.png" width="250" />
+<img src="https://user-images.githubusercontent.com/39546098/178095797-2a897d60-757a-4ff4-af13-cd0a73df07e6.png" width="250" />
 
 
 (The rest of screenshots will be upload soon)
